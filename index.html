@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Little Orien School Portal</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+header {
+    background: #064e3b;
+    color: white;
+    padding: 22px;
+    text-align: center;
+}
+
+header p {
+    margin-top: 8px;
+    font-size: 14px;
+}
+
+.login-box {
+    max-width: 400px;
+    margin: 60px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 3px 15px #0001;
+}
+
+input, select, button {
+    padding: 11px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    width: 100%;
+    margin: 7px 0;
+    font-size: 14px;
+}
+
+button {
+    background: #047857;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #065f46;
+}
+
+.layout {
+    display: flex;
+    min-height: 80vh;
+}
+
+.sidebar {
+    width: 220px;
+    background: #064e3b;
+    padding: 15px;
+    flex-shrink: 0;
+}
+
+.sidebar button {
+    background: transparent;
+    text-align: left;
+    color: white;
+}
+
+.sidebar button:hover {
+    background: #047857;
+}
+
+main {
+    flex: 1;
+    padding: 25px;
+    min-width: 0;
+}
+
+.panel {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px #00000008;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.stat {
+    background: #d1fae5;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.stat h2 {
+    color: #065f46;
+    margin-top: 10px;
+}
+
+h2, h3 {
+    margin-bottom: 15px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    min-width: 480px;
+}
+
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+}
+
+th {
+    background: #ecfdf5;
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+.small-btn {
+    width: auto;
+    padding: 8px 12px;
+}
+
+.danger {
+    background: #dc2626;
+}
+
+.hidden {
+    display: none !important;
+}
+
+footer {
+    text-align: center;
+    padding: 18px;
+    background: #064e3b;
+    color: white;
+}
+
+@media (max-width: 650px) {
+    .layout {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+    }
+
+    .sidebar button {
+        width: 48%;
+    }
+
+    main {
+        padding: 12px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>Little Orien Public School and College</h1>
+    <p>Naway Kalay | School Management Portal</p>
+</header>
+
+<!-- LOGIN -->
+<section id="loginPage" class="login-box">
+    <h2>Admin Login</h2>
+    <p>Enter your demo login details.</p>
+
+    <form id="loginForm">
+        <input id="username" placeholder="Username"
+               autocomplete="username" required>
+
+        <input id="password" type="password"
+               placeholder="Password"
+               autocomplete="current-password" required>
+
+        <button type="submit">Login</button>
+    </form>
+
+    <p id="loginMessage" role="status"></p>
+
+    <p style="margin-top:12px;font-size:13px">
+        Demo username: admin<br>
+        Demo password: school123
+    </p>
+</section>
+
+<!-- MAIN PORTAL -->
+<div id="portal" class="layout hidden">
+
+    <aside class="sidebar">
+        <button onclick="showPage('dashboard')">Dashboard</button>
+        <button onclick="showPage('results')">Student Results</button>
+        <button onclick="showPage('attendance')">Attendance</button>
+        <button onclick="showPage('fees')">Fees Management</button>
+        <button onclick="showPage('teachers')">Teachers</button>
+        <button onclick="logout()">Logout</button>
+    </aside>
+
+    <main>
+
+        <!-- DASHBOARD -->
+        <section id="dashboard" class="page">
+            <h2>Admin Dashboard</h2>
+            <p>Welcome to your school portal.</p>
+
+            <div class="stats">
+                <div class="stat">
+                    Students
+                    <h2 id="studentCount">0</h2>
+                </div>
+
+                <div class="stat">
+                    Teachers
+                    <h2 id="teacherCount">0</h2>
+                </div>
+
+                <div class="stat">
+                    Attendance Records
+                    <h2 id="attendanceCount">0</h2>
+                </div>
+
+                <div class="stat">
+                    Fees Remaining
+                    <h2 id="feesRemaining">Rs 0</h2>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h3>Important Information</h3>
+                <p>Use the menu to manage school records.</p>
+                <p style="margin-top:10px">
+                    This is a demonstration portal. Do not enter
+                    real student or financial information.
+                </p>
+            </div>
+        </section>
+
+        <!-- RESULTS -->
+        <section id="results" class="page hidden">
+            <div class="panel">
+                <h2>Student Results</h2>
+
+                <form id="resultForm">
+                    <input id="rName" placeholder="Student Name" required>
+                    <input id="rClass" placeholder="Class" required>
+                    <input id="rMarks" type="number"
+                           placeholder="Obtained Marks"
+                           min="0" required>
+                    <input id="rTotal" type="number"
+                           placeholder="Total Marks"
+                           min="1" required>
+                    <button type="submit">Add Result</button>
+                </form>
+            </div>
+
+            <div class="panel">
+                <h3>Result Records</h3>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Class</th>
+                                <th>Marks</th>
+                                <th>Percentage</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ATTENDANCE -->
+        <section id="attendance" class="page hidden">
+            <div class="panel">
+                <h2>Student Attendance</h2>
+
+                <form id="attendanceForm">
+                    <input id="aName" placeholder="Student Name" required>
+                    <input id="aClass" placeholder="Class" required>
+                    <input id="aDate" type="date" required>
+
+                    <select id="aStatus">
+                        <option>Present</option>
+                        <option>Absent</option>
+                        <option>Leave</option>
+                    </select>
+
+                    <button type="submit">Save Attendance</button>
+                </form>
+            </div>
+
+            <div class="panel">
+                <h3>Attendance Records</h3>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Class</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendanceTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- FEES -->
+        <section id="fees" class="page hidden">
+            <div class="panel">
+                <h2>Fees Management</h2>
+
+                <form id="feeForm">
+                    <input id="fName" placeholder="Student Name" required>
+                    <input id="fClass" placeholder="Class" required>
+                    <input id="fTotal" type="number"
+                           min="0" placeholder="Total Fee" required>
+                    <input id="fPaid" type="number"
+                           min="0" placeholder="Paid Amount" required>
+
+                    <button type="submit">Save Fee Record</button>
+                </form>
+            </div>
+
+            <div class="panel">
+                <h3>Fee Records</h3>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Class</th>
+                                <th>Total</th>
+                                <th>Paid</th>
+                                <th>Remaining</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="feeTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TEACHERS -->
+        <section id="teachers" class="page hidden">
+            <div class="panel">
+                <h2>Teachers Management</h2>
+
+                <form id="teacherForm">
+                    <input id="tName" placeholder="Teacher Name" required>
+                    <input id="tSubject" placeholder="Subject" required>
+                    <input id="tPhone" type="tel"
+                           placeholder="Contact Number" required>
+
+                    <button type="submit">Add Teacher</button>
+                </form>
+            </div>
+
+            <div class="panel">
+                <h3>Teacher Records</h3>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Subject</th>
+                                <th>Phone</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="teacherTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<footer>
+    <p>Little Orien Public School and College, Naway Kalay</p>
+    <p>Education | Discipline | Success</p>
+</footer>
+
+<script>
+// DEMO LOGIN ONLY - NOT SECURE FOR A REAL SCHOOL
+const DEMO_USER = "admin";
+const DEMO_PASS = "school123";
+
+const storageKey = "littleOrienDemoData";
+
+function loadData() {
+    try {
+        const saved = localStorage.getItem(storageKey);
+        const data = saved ? JSON.parse(saved) : {};
+
+        return {
+            results: Array.isArray(data.results) ? data.results : [],
+            attendance: Array.isArray(data.attendance) ? data.attendance : [],
+            fees: Array.isArray(data.fees) ? data.fees : [],
+            teachers: Array.isArray(data.teachers) ? data.teachers : []
+        };
+    } catch {
+        return {
+            results: [],
+            attendance: [],
+            fees: [],
+            teachers: []
+        };
+    }
+}
+
+let data = loadData();
+
+function saveData() {
+    try {
+        localStorage.setItem(storageKey, JSON.stringify(data));
+        return true;
+    } catch {
+        alert("Could not save data in this browser.");
+        return false;
+    }
+}
+
+// LOGIN
+document.getElementById("loginForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const user = document.getElementById("username").value;
+    const pass = document.getElementById("password").value;
+
+    if (user === DEMO_USER && pass === DEMO_PASS) {
+        document.getElementById("loginPage").classList.add("hidden");
+        document.getElementById("portal").classList.remove("hidden");
+        document.getElementById("loginMessage").textContent = "";
+        renderAll();
+    } else {
+        document.getElementById("loginMessage").textContent =
+            "Incorrect username or password.";
+    }
+});
+
+function logout() {
+    document.getElementById("portal").classList.add("hidden");
+    document.getElementById("loginPage").classList.remove("hidden");
+    document.getElementById("password").value = "";
+}
+
+function showPage(pageId) {
+    document.querySelectorAll(".page").forEach(page => {
+        page.classList.add("hidden");
+    });
+
+    document.getElementById(pageId).classList.remove("hidden");
+}
+
+// SAFE TABLE TEXT
+function cell(value) {
+    const td = document.createElement("td");
+    td.textContent = String(value);
+    return td;
+}
+
+function addDeleteButton(row, type, index) {
+    const td = document.createElement("td");
+    const button = document.createElement("button");
+
+    button.textContent = "Delete";
+    button.className = "small-btn danger";
+
+    button.addEventListener("click", function() {
+        if (confirm("Delete this record?")) {
+            data[type].splice(index, 1);
+            saveData();
+            renderAll();
+        }
+    });
+
+    td.appendChild(button);
+    row.appendChild(td);
+}
+
+function renderTable(id, type, makeRow) {
+    const table = document.getElementById(id);
+    table.replaceChildren();
+
+    data[type].forEach((item, index) => {
+        const row = document.createElement("tr");
+        makeRow(row, item);
+        addDeleteButton(row, type, index);
+        table.appendChild(row);
+    });
+}
+
+// ADD RESULT
+document.getElementById("resultForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const marks = Number(document.getElementById("rMarks").value);
+    const total = Number(document.getElementById("rTotal").value);
+
+    if (total <= 0 || marks < 0 || marks > total) {
+        alert("Enter valid marks. Obtained marks cannot exceed total.");
+        return;
+    }
+
+    data.results.push({
+        name: document.getElementById("rName").value.trim(),
+        className: document.getElementById("rClass").value.trim(),
+        marks,
+        total
+    });
+
+    if (saveData()) {
+        this.reset();
+        renderAll();
+    }
+});
+
+// ADD ATTENDANCE
+document.getElementById("aDate").value =
+    new Date().toLocaleDateString("en-CA");
+
+document.getElementById("attendanceForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    data.attendance.push({
+        name: document.getElementById("aName").value.trim(),
+        className: document.getElementById("aClass").value.trim(),
+        date: document.getElementById("aDate").value,
+        status: document.getElementById("aStatus").value
+    });
+
+    if (saveData()) {
+        this.reset();
+        document.getElementById("aDate").value =
+            new Date().toLocaleDateString("en-CA");
+        renderAll();
+    }
+});
+
+// ADD FEES
+document.getElementById("feeForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const total = Number(document.getElementById("fTotal").value);
+    const paid = Number(document.getElementById("fPaid").value);
+
+    if (total < 0 || paid < 0 || paid > total) {
+        alert("Paid fee must be between zero and total fee.");
+        return;
+    }
+
+    data.fees.push({
+        name: document.getElementById("fName").value.trim(),
+        className: document.getElementById("fClass").value.trim(),
+        total,
+        paid
+    });
+
+    if (saveData()) {
+        this.reset();
+        renderAll();
+    }
+});
+
+// ADD TEACHER
+document.getElementById("teacherForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    data.teachers.push({
+        name: document.getElementById("tName").value.trim(),
+        subject: document.getElementById("tSubject").value.trim(),
+        phone: document.getElementById("tPhone").value.trim()
+    });
+
+    if (saveData()) {
+        this.reset();
+        renderAll();
+    }
+});
+
+// DISPLAY ALL RECORDS
+function renderAll() {
+    renderTable("resultTable", "results", (row, item) => {
+        row.append(cell(item.name));
+        row.append(cell(item.className));
+        row.append(cell(item.marks + " / " + item.total));
+        row.append(cell((item.marks / item.total * 100).toFixed(1) + "%"));
+    });
+
+    renderTable("attendanceTable", "attendance", (row, item) => {
+        row.append(cell(item.name));
+        row.append(cell(item.className));
+        row.append(cell(item.date));
+        row.append(cell(item.status));
+    });
+
+    renderTable("feeTable", "fees", (row, item) => {
+        row.append(cell(item.name));
+        row.append(cell(item.className));
+        row.append(cell("Rs " + item.total));
+        row.append(cell("Rs " + item.paid));
+        row.append(cell("Rs " + (item.total - item.paid)));
+    });
+
+    renderTable("teacherTable", "teachers", (row, item) => {
+        row.append(cell(item.name));
+        row.append(cell(item.subject));
+        row.append(cell(item.phone));
+    });
+
+    document.getElementById("studentCount").textContent =
+        new Set([
+            ...data.results.map(x => x.name + "|" + x.className),
+            ...data.attendance.map(x => x.name + "|" + x.className),
+            ...data.fees.map(x => x.name + "|" + x.className)
+        ]).size;
+
+    document.getElementById("teacherCount").textContent =
+        data.teachers.length;
+
+    document.getElementById("attendanceCount").textContent =
+        data.attendance.length;
+
+    const remaining = data.fees.reduce(
+        (sum, item) => sum + item.total - item.paid, 0
+    );
+
+    document.getElementById("feesRemaining").textContent =
+        "Rs " + remaining.toLocaleString();
+}
+
+renderAll();
+</script>
+
+</body>
+</html>

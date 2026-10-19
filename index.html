@@ -1,670 +1,603 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Little Orien School Portal</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-}
+    <title>Little Orien Public School and College</title>
 
-body {
-    background: #f1f5f9;
-    color: #1e293b;
-}
+    <meta name="description"
+          content="Little Orien Public School and College, Naway Kalay. Quality education, discipline and success.">
 
-header {
-    background: #064e3b;
-    color: white;
-    padding: 22px;
-    text-align: center;
-}
+    <style>
+        :root {
+            --green-dark: #073b2a;
+            --green: #08794f;
+            --green-light: #e1f2e9;
+            --gold: #f4c542;
+            --white: #ffffff;
+            --text: #25352d;
+            --muted: #63736a;
+            --background: #f5f8f6;
+        }
 
-header p {
-    margin-top: 8px;
-    font-size: 14px;
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-.login-box {
-    max-width: 400px;
-    margin: 60px auto;
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 3px 15px #0001;
-}
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 90px;
+        }
 
-input, select, button {
-    padding: 11px;
-    border-radius: 6px;
-    border: 1px solid #cbd5e1;
-    width: 100%;
-    margin: 7px 0;
-    font-size: 14px;
-}
+        body {
+            font-family: Arial, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.7;
+        }
 
-button {
-    background: #047857;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
+        a {
+            text-decoration: none;
+        }
 
-button:hover {
-    background: #065f46;
-}
+        .topbar {
+            background: var(--green-dark);
+            color: white;
+            text-align: center;
+            padding: 8px 15px;
+            font-size: 13px;
+        }
 
-.layout {
-    display: flex;
-    min-height: 80vh;
-}
+        header {
+            background: white;
+            padding: 16px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            box-shadow: 0 3px 15px #0000000c;
+        }
 
-.sidebar {
-    width: 220px;
-    background: #064e3b;
-    padding: 15px;
-    flex-shrink: 0;
-}
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-.sidebar button {
-    background: transparent;
-    text-align: left;
-    color: white;
-}
+        .logo {
+            width: 55px;
+            height: 55px;
+            border-radius: 14px;
+            background: var(--green-dark);
+            color: var(--gold);
+            display: grid;
+            place-items: center;
+            font-size: 22px;
+            font-weight: bold;
+            border: 2px solid var(--gold);
+            flex-shrink: 0;
+        }
 
-.sidebar button:hover {
-    background: #047857;
-}
+        .brand h1 {
+            font-size: 19px;
+            line-height: 1.4;
+            color: var(--green-dark);
+        }
 
-main {
-    flex: 1;
-    padding: 25px;
-    min-width: 0;
-}
+        .brand p {
+            font-size: 13px;
+            color: var(--muted);
+        }
 
-.panel {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 8px #00000008;
-}
+        nav {
+            background: var(--green-dark);
+            padding: 8px 5%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
 
-.stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 15px;
-    margin: 20px 0;
-}
+        nav a {
+            color: white;
+            padding: 10px 15px;
+            border-radius: 7px;
+            font-size: 14px;
+            transition: 0.25s;
+        }
 
-.stat {
-    background: #d1fae5;
-    padding: 20px;
-    border-radius: 10px;
-}
+        nav a:hover {
+            background: var(--gold);
+            color: var(--green-dark);
+        }
 
-.stat h2 {
-    color: #065f46;
-    margin-top: 10px;
-}
+        .hero {
+            padding: 90px 7%;
+            text-align: center;
+            background:
+                radial-gradient(
+                    circle at top right,
+                    #bde9ce 0,
+                    transparent 40%
+                ),
+                linear-gradient(135deg, #e1f2e9, #ffffff);
+        }
 
-h2, h3 {
-    margin-bottom: 15px;
-}
+        .tagline {
+            display: inline-block;
+            background: white;
+            color: var(--green);
+            padding: 7px 16px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 22px;
+            border: 1px solid #cce6d7;
+        }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-    min-width: 480px;
-}
+        .hero h2 {
+            max-width: 850px;
+            margin: auto auto 18px;
+            color: var(--green-dark);
+            font-size: clamp(32px, 5vw, 52px);
+            line-height: 1.2;
+        }
 
-th, td {
-    padding: 12px;
-    border-bottom: 1px solid #e2e8f0;
-    text-align: left;
-}
+        .hero p {
+            max-width: 690px;
+            margin: 0 auto 28px;
+            color: #52645a;
+            font-size: 17px;
+        }
 
-th {
-    background: #ecfdf5;
-}
+        .btn {
+            display: inline-block;
+            padding: 12px 23px;
+            margin: 5px;
+            border-radius: 7px;
+            font-weight: bold;
+            font-size: 14px;
+            background: var(--green);
+            color: white;
+            border: 2px solid var(--green);
+            transition: 0.25s;
+        }
 
-.table-wrap {
-    overflow-x: auto;
-}
+        .btn:hover {
+            background: var(--green-dark);
+            border-color: var(--green-dark);
+            transform: translateY(-2px);
+        }
 
-.small-btn {
-    width: auto;
-    padding: 8px 12px;
-}
+        .btn-outline {
+            background: white;
+            color: var(--green-dark);
+            border-color: #b7d7c4;
+        }
 
-.danger {
-    background: #dc2626;
-}
+        .btn-outline:hover {
+            color: white;
+        }
 
-.hidden {
-    display: none !important;
-}
+        .container {
+            max-width: 1150px;
+            margin: auto;
+            padding: 65px 25px;
+        }
 
-footer {
-    text-align: center;
-    padding: 18px;
-    background: #064e3b;
-    color: white;
-}
+        .section-heading {
+            text-align: center;
+            margin-bottom: 35px;
+        }
 
-@media (max-width: 650px) {
-    .layout {
-        flex-direction: column;
-    }
+        .section-heading span {
+            color: var(--green);
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 12px;
+        }
 
-    .sidebar {
-        width: 100%;
-    }
+        .section-title {
+            color: var(--green-dark);
+            font-size: clamp(25px, 4vw, 34px);
+            margin-top: 5px;
+        }
 
-    .sidebar button {
-        width: 48%;
-    }
+        .section-description {
+            max-width: 650px;
+            margin: 8px auto 0;
+            color: var(--muted);
+        }
 
-    main {
-        padding: 12px;
-    }
-}
-</style>
+        .about-box {
+            background: white;
+            border-radius: 15px;
+            padding: 35px;
+            border: 1px solid #e4ece6;
+            box-shadow: 0 8px 25px #00000008;
+            text-align: center;
+        }
+
+        .about-box h3 {
+            color: var(--green);
+            font-size: 23px;
+            margin-bottom: 12px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 27px 21px;
+            border-radius: 13px;
+            border: 1px solid #e5ede7;
+            box-shadow: 0 5px 20px #00000008;
+            transition: 0.25s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 28px #073b2a14;
+            border-color: #b8ddc6;
+        }
+
+        .card-icon {
+            width: 52px;
+            height: 52px;
+            display: grid;
+            place-items: center;
+            background: var(--green-light);
+            border-radius: 12px;
+            font-size: 25px;
+            margin-bottom: 18px;
+        }
+
+        .card h3 {
+            color: var(--green-dark);
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .admission-section {
+            background: var(--green-light);
+            padding: 60px 20px;
+        }
+
+        .admission-box {
+            max-width: 900px;
+            margin: auto;
+            padding: 40px 25px;
+            background: white;
+            text-align: center;
+            border-radius: 16px;
+            border: 1px solid #cde4d5;
+        }
+
+        .admission-box h2 {
+            color: var(--green-dark);
+            font-size: 29px;
+            margin-bottom: 12px;
+        }
+
+        .notices {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .notice {
+            background: white;
+            padding: 23px;
+            border-radius: 10px;
+            border-left: 4px solid var(--green);
+            box-shadow: 0 4px 15px #00000008;
+        }
+
+        .notice h3 {
+            color: var(--green-dark);
+            margin-bottom: 8px;
+            font-size: 17px;
+        }
+
+        .notice p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .contact {
+            background: white;
+            text-align: center;
+            padding: 55px 20px;
+            border-top: 1px solid #e5ede7;
+        }
+
+        .contact h2 {
+            color: var(--green-dark);
+            font-size: 30px;
+            margin-bottom: 15px;
+        }
+
+        .contact p {
+            margin: 7px 0;
+            color: var(--muted);
+        }
+
+        footer {
+            background: var(--green-dark);
+            color: white;
+            text-align: center;
+            padding: 25px 15px;
+        }
+
+        footer p + p {
+            color: #c8dfd1;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 900px) {
+            .cards {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .notices {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            header {
+                justify-content: center;
+                padding: 18px 12px;
+            }
+
+            .brand h1 {
+                font-size: 16px;
+            }
+
+            nav {
+                gap: 3px;
+                padding: 8px;
+            }
+
+            nav a {
+                padding: 8px 10px;
+                font-size: 13px;
+            }
+
+            .hero {
+                padding: 65px 20px;
+            }
+
+            .hero p {
+                font-size: 15px;
+            }
+
+            .container {
+                padding: 45px 18px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .about-box {
+                padding: 25px 18px;
+            }
+
+            .admission-box h2 {
+                font-size: 25px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<header>
-    <h1>Little Orien Public School and College</h1>
-    <p>Naway Kalay | School Management Portal</p>
-</header>
+    <div class="topbar">
+        Welcome to Little Orien Public School and College | Naway Kalay
+    </div>
 
-<!-- LOGIN -->
-<section id="loginPage" class="login-box">
-    <h2>Admin Login</h2>
-    <p>Enter your demo login details.</p>
+    <header>
+        <div class="brand">
+            <div class="logo">LO</div>
+            <div>
+                <h1>Little Orien Public School and College</h1>
+                <p>Naway Kalay | Quality Education for a Bright Future</p>
+            </div>
+        </div>
+    </header>
 
-    <form id="loginForm">
-        <input id="username" placeholder="Username"
-               autocomplete="username" required>
-
-        <input id="password" type="password"
-               placeholder="Password"
-               autocomplete="current-password" required>
-
-        <button type="submit">Login</button>
-    </form>
-
-    <p id="loginMessage" role="status"></p>
-
-    <p style="margin-top:12px;font-size:13px">
-        Demo username: admin<br>
-        Demo password: school123
-    </p>
-</section>
-
-<!-- MAIN PORTAL -->
-<div id="portal" class="layout hidden">
-
-    <aside class="sidebar">
-        <button onclick="showPage('dashboard')">Dashboard</button>
-        <button onclick="showPage('results')">Student Results</button>
-        <button onclick="showPage('attendance')">Attendance</button>
-        <button onclick="showPage('fees')">Fees Management</button>
-        <button onclick="showPage('teachers')">Teachers</button>
-        <button onclick="logout()">Logout</button>
-    </aside>
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#about">About Us</a>
+        <a href="#programs">Classes</a>
+        <a href="#admission">Admissions</a>
+        <a href="#notices">Notices</a>
+        <a href="#contact">Contact</a>
+    </nav>
 
     <main>
 
-        <!-- DASHBOARD -->
-        <section id="dashboard" class="page">
-            <h2>Admin Dashboard</h2>
-            <p>Welcome to your school portal.</p>
+        <section class="hero" id="home">
+            <div class="tagline">EDUCATION • DISCIPLINE • SUCCESS</div>
 
-            <div class="stats">
-                <div class="stat">
-                    Students
-                    <h2 id="studentCount">0</h2>
-                </div>
+            <h2>Welcome to Little Orien Public School and College</h2>
 
-                <div class="stat">
-                    Teachers
-                    <h2 id="teacherCount">0</h2>
-                </div>
+            <p>
+                Naway Kalay — We are committed to quality education,
+                strong character, creativity and a brighter future
+                for every student.
+            </p>
 
-                <div class="stat">
-                    Attendance Records
-                    <h2 id="attendanceCount">0</h2>
-                </div>
+            <a href="#admission" class="btn">Admission Information</a>
+            <a href="#about" class="btn btn-outline">Discover Our School</a>
+        </section>
 
-                <div class="stat">
-                    Fees Remaining
-                    <h2 id="feesRemaining">Rs 0</h2>
-                </div>
+        <section class="container" id="about">
+            <div class="section-heading">
+                <span>Who We Are</span>
+                <h2 class="section-title">About Our School</h2>
+                <p class="section-description">
+                    Helping students learn, grow and prepare for the future.
+                </p>
             </div>
 
-            <div class="panel">
-                <h3>Important Information</h3>
-                <p>Use the menu to manage school records.</p>
-                <p style="margin-top:10px">
-                    This is a demonstration portal. Do not enter
-                    real student or financial information.
+            <div class="about-box">
+                <h3>Our Mission</h3>
+                <p>
+                    Our mission is to provide quality education,
+                    build good character, encourage creativity,
+                    and prepare students for a successful future.
+                    We aim to create a supportive learning environment
+                    where students can develop their knowledge and skills.
                 </p>
             </div>
         </section>
 
-        <!-- RESULTS -->
-        <section id="results" class="page hidden">
-            <div class="panel">
-                <h2>Student Results</h2>
-
-                <form id="resultForm">
-                    <input id="rName" placeholder="Student Name" required>
-                    <input id="rClass" placeholder="Class" required>
-                    <input id="rMarks" type="number"
-                           placeholder="Obtained Marks"
-                           min="0" required>
-                    <input id="rTotal" type="number"
-                           placeholder="Total Marks"
-                           min="1" required>
-                    <button type="submit">Add Result</button>
-                </form>
+        <section class="container" id="programs">
+            <div class="section-heading">
+                <span>Learning for Every Stage</span>
+                <h2 class="section-title">Our Classes</h2>
+                <p class="section-description">
+                    Supporting students throughout their educational journey.
+                </p>
             </div>
 
-            <div class="panel">
-                <h3>Result Records</h3>
-                <div class="table-wrap">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Class</th>
-                                <th>Marks</th>
-                                <th>Percentage</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="resultTable"></tbody>
-                    </table>
+            <div class="cards">
+                <div class="card">
+                    <div class="card-icon">📚</div>
+                    <h3>Primary Section</h3>
+                    <p>
+                        Building strong foundations in learning,
+                        reading, writing and basic education.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">✏️</div>
+                    <h3>Middle Section</h3>
+                    <p>
+                        Developing knowledge, confidence,
+                        problem-solving and learning skills.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🎓</div>
+                    <h3>High School</h3>
+                    <p>
+                        Preparing students for academic success
+                        and important examinations.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🏫</div>
+                    <h3>College Section</h3>
+                    <p>
+                        Supporting students in their higher
+                        education and future goals.
+                    </p>
                 </div>
             </div>
         </section>
 
-        <!-- ATTENDANCE -->
-        <section id="attendance" class="page hidden">
-            <div class="panel">
-                <h2>Student Attendance</h2>
+        <section class="admission-section" id="admission">
+            <div class="admission-box">
+                <div class="section-heading">
+                    <span>Join Our School</span>
+                    <h2>Admissions Information</h2>
+                </div>
 
-                <form id="attendanceForm">
-                    <input id="aName" placeholder="Student Name" required>
-                    <input id="aClass" placeholder="Class" required>
-                    <input id="aDate" type="date" required>
+                <p>
+                    Interested in joining Little Orien Public School
+                    and College? Contact our administration for
+                    admission details, required documents and fee information.
+                </p>
 
-                    <select id="aStatus">
-                        <option>Present</option>
-                        <option>Absent</option>
-                        <option>Leave</option>
-                    </select>
+                <a href="#contact" class="btn">Contact Administration</a>
+            </div>
+        </section>
 
-                    <button type="submit">Save Attendance</button>
-                </form>
+        <section class="container" id="notices">
+            <div class="section-heading">
+                <span>Stay Informed</span>
+                <h2 class="section-title">School Notices</h2>
+                <p class="section-description">
+                    Important school information and updates.
+                </p>
             </div>
 
-            <div class="panel">
-                <h3>Attendance Records</h3>
-                <div class="table-wrap">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Class</th>
-                                <th>Date</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="attendanceTable"></tbody>
-                    </table>
+            <div class="notices">
+                <div class="notice">
+                    <h3>📢 School Announcements</h3>
+                    <p>
+                        Important announcements will be published
+                        here by the school administration.
+                    </p>
+                </div>
+
+                <div class="notice">
+                    <h3>📝 Examination Updates</h3>
+                    <p>
+                        Check this section for examination schedules
+                        and result announcements.
+                    </p>
+                </div>
+
+                <div class="notice">
+                    <h3>🎒 Admissions Update</h3>
+                    <p>
+                        Contact the school office for current
+                        admission dates and availability.
+                    </p>
                 </div>
             </div>
         </section>
 
-        <!-- FEES -->
-        <section id="fees" class="page hidden">
-            <div class="panel">
-                <h2>Fees Management</h2>
+        <section class="contact" id="contact">
+            <h2>Contact Us</h2>
 
-                <form id="feeForm">
-                    <input id="fName" placeholder="Student Name" required>
-                    <input id="fClass" placeholder="Class" required>
-                    <input id="fTotal" type="number"
-                           min="0" placeholder="Total Fee" required>
-                    <input id="fPaid" type="number"
-                           min="0" placeholder="Paid Amount" required>
+            <p>
+                <strong>School:</strong>
+                Little Orien Public School and College
+            </p>
 
-                    <button type="submit">Save Fee Record</button>
-                </form>
-            </div>
-
-            <div class="panel">
-                <h3>Fee Records</h3>
-                <div class="table-wrap">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Class</th>
-                                <th>Total</th>
-                                <th>Paid</th>
-                                <th>Remaining</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="feeTable"></tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- TEACHERS -->
-        <section id="teachers" class="page hidden">
-            <div class="panel">
-                <h2>Teachers Management</h2>
-
-                <form id="teacherForm">
-                    <input id="tName" placeholder="Teacher Name" required>
-                    <input id="tSubject" placeholder="Subject" required>
-                    <input id="tPhone" type="tel"
-                           placeholder="Contact Number" required>
-
-                    <button type="submit">Add Teacher</button>
-                </form>
-            </div>
-
-            <div class="panel">
-                <h3>Teacher Records</h3>
-                <div class="table-wrap">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Subject</th>
-                                <th>Phone</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="teacherTable"></tbody>
-                    </table>
-                </div>
-            </div>
+            <p><strong>Location:</strong> Naway Kalay</p>
+            <p><strong>Phone:</strong> Add School Contact Number</p>
+            <p><strong>Email:</strong> Add School Email (if available)</p>
         </section>
 
     </main>
-</div>
 
-<footer>
-    <p>Little Orien Public School and College, Naway Kalay</p>
-    <p>Education | Discipline | Success</p>
-</footer>
+    <footer>
+        <p>
+            &copy; <span id="year"></span>
+            Little Orien Public School and College, Naway Kalay.
+        </p>
+        <p>Education | Discipline | Success</p>
+    </footer>
 
-<script>
-// DEMO LOGIN ONLY - NOT SECURE FOR A REAL SCHOOL
-const DEMO_USER = "admin";
-const DEMO_PASS = "school123";
-
-const storageKey = "littleOrienDemoData";
-
-function loadData() {
-    try {
-        const saved = localStorage.getItem(storageKey);
-        const data = saved ? JSON.parse(saved) : {};
-
-        return {
-            results: Array.isArray(data.results) ? data.results : [],
-            attendance: Array.isArray(data.attendance) ? data.attendance : [],
-            fees: Array.isArray(data.fees) ? data.fees : [],
-            teachers: Array.isArray(data.teachers) ? data.teachers : []
-        };
-    } catch {
-        return {
-            results: [],
-            attendance: [],
-            fees: [],
-            teachers: []
-        };
-    }
-}
-
-let data = loadData();
-
-function saveData() {
-    try {
-        localStorage.setItem(storageKey, JSON.stringify(data));
-        return true;
-    } catch {
-        alert("Could not save data in this browser.");
-        return false;
-    }
-}
-
-// LOGIN
-document.getElementById("loginForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-
-    const user = document.getElementById("username").value;
-    const pass = document.getElementById("password").value;
-
-    if (user === DEMO_USER && pass === DEMO_PASS) {
-        document.getElementById("loginPage").classList.add("hidden");
-        document.getElementById("portal").classList.remove("hidden");
-        document.getElementById("loginMessage").textContent = "";
-        renderAll();
-    } else {
-        document.getElementById("loginMessage").textContent =
-            "Incorrect username or password.";
-    }
-});
-
-function logout() {
-    document.getElementById("portal").classList.add("hidden");
-    document.getElementById("loginPage").classList.remove("hidden");
-    document.getElementById("password").value = "";
-}
-
-function showPage(pageId) {
-    document.querySelectorAll(".page").forEach(page => {
-        page.classList.add("hidden");
-    });
-
-    document.getElementById(pageId).classList.remove("hidden");
-}
-
-// SAFE TABLE TEXT
-function cell(value) {
-    const td = document.createElement("td");
-    td.textContent = String(value);
-    return td;
-}
-
-function addDeleteButton(row, type, index) {
-    const td = document.createElement("td");
-    const button = document.createElement("button");
-
-    button.textContent = "Delete";
-    button.className = "small-btn danger";
-
-    button.addEventListener("click", function() {
-        if (confirm("Delete this record?")) {
-            data[type].splice(index, 1);
-            saveData();
-            renderAll();
-        }
-    });
-
-    td.appendChild(button);
-    row.appendChild(td);
-}
-
-function renderTable(id, type, makeRow) {
-    const table = document.getElementById(id);
-    table.replaceChildren();
-
-    data[type].forEach((item, index) => {
-        const row = document.createElement("tr");
-        makeRow(row, item);
-        addDeleteButton(row, type, index);
-        table.appendChild(row);
-    });
-}
-
-// ADD RESULT
-document.getElementById("resultForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-
-    const marks = Number(document.getElementById("rMarks").value);
-    const total = Number(document.getElementById("rTotal").value);
-
-    if (total <= 0 || marks < 0 || marks > total) {
-        alert("Enter valid marks. Obtained marks cannot exceed total.");
-        return;
-    }
-
-    data.results.push({
-        name: document.getElementById("rName").value.trim(),
-        className: document.getElementById("rClass").value.trim(),
-        marks,
-        total
-    });
-
-    if (saveData()) {
-        this.reset();
-        renderAll();
-    }
-});
-
-// ADD ATTENDANCE
-document.getElementById("aDate").value =
-    new Date().toLocaleDateString("en-CA");
-
-document.getElementById("attendanceForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-
-    data.attendance.push({
-        name: document.getElementById("aName").value.trim(),
-        className: document.getElementById("aClass").value.trim(),
-        date: document.getElementById("aDate").value,
-        status: document.getElementById("aStatus").value
-    });
-
-    if (saveData()) {
-        this.reset();
-        document.getElementById("aDate").value =
-            new Date().toLocaleDateString("en-CA");
-        renderAll();
-    }
-});
-
-// ADD FEES
-document.getElementById("feeForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-
-    const total = Number(document.getElementById("fTotal").value);
-    const paid = Number(document.getElementById("fPaid").value);
-
-    if (total < 0 || paid < 0 || paid > total) {
-        alert("Paid fee must be between zero and total fee.");
-        return;
-    }
-
-    data.fees.push({
-        name: document.getElementById("fName").value.trim(),
-        className: document.getElementById("fClass").value.trim(),
-        total,
-        paid
-    });
-
-    if (saveData()) {
-        this.reset();
-        renderAll();
-    }
-});
-
-// ADD TEACHER
-document.getElementById("teacherForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-
-    data.teachers.push({
-        name: document.getElementById("tName").value.trim(),
-        subject: document.getElementById("tSubject").value.trim(),
-        phone: document.getElementById("tPhone").value.trim()
-    });
-
-    if (saveData()) {
-        this.reset();
-        renderAll();
-    }
-});
-
-// DISPLAY ALL RECORDS
-function renderAll() {
-    renderTable("resultTable", "results", (row, item) => {
-        row.append(cell(item.name));
-        row.append(cell(item.className));
-        row.append(cell(item.marks + " / " + item.total));
-        row.append(cell((item.marks / item.total * 100).toFixed(1) + "%"));
-    });
-
-    renderTable("attendanceTable", "attendance", (row, item) => {
-        row.append(cell(item.name));
-        row.append(cell(item.className));
-        row.append(cell(item.date));
-        row.append(cell(item.status));
-    });
-
-    renderTable("feeTable", "fees", (row, item) => {
-        row.append(cell(item.name));
-        row.append(cell(item.className));
-        row.append(cell("Rs " + item.total));
-        row.append(cell("Rs " + item.paid));
-        row.append(cell("Rs " + (item.total - item.paid)));
-    });
-
-    renderTable("teacherTable", "teachers", (row, item) => {
-        row.append(cell(item.name));
-        row.append(cell(item.subject));
-        row.append(cell(item.phone));
-    });
-
-    document.getElementById("studentCount").textContent =
-        new Set([
-            ...data.results.map(x => x.name + "|" + x.className),
-            ...data.attendance.map(x => x.name + "|" + x.className),
-            ...data.fees.map(x => x.name + "|" + x.className)
-        ]).size;
-
-    document.getElementById("teacherCount").textContent =
-        data.teachers.length;
-
-    document.getElementById("attendanceCount").textContent =
-        data.attendance.length;
-
-    const remaining = data.fees.reduce(
-        (sum, item) => sum + item.total - item.paid, 0
-    );
-
-    document.getElementById("feesRemaining").textContent =
-        "Rs " + remaining.toLocaleString();
-}
-
-renderAll();
-</script>
+    <script>
+        document.getElementById("year").textContent =
+            new Date().getFullYear();
+    </script>
 
 </body>
 </html>

@@ -648,5 +648,18 @@
   const app = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
 </script>
+    <section id="students">
+  <h2>Students</h2>
+  <p>Welcome to our school student portal.</p>
+  <button onclick="showStudents()">View Students</button>
+  <div id="studentList"></div>
+</section>
+
+<script>
+function showStudents() {
+  document.getElementById("studentList").innerHTML =
+    "Student portal is ready.";
+}
+</script>
 </body>
 </html>

@@ -688,7 +688,7 @@ const firebaseConfig = {
       const snapshot = await getDocs(collection(db, "Students"));
 
       if (snapshot.empty) {
-        status.textContent = "No student records found.";
+        status.textContent = "No Student records found.";
         return;
       }
 

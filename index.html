@@ -685,7 +685,7 @@ const firebaseConfig = {
     studentList.replaceChildren();
 
     try {
-      const snapshot = await getDocs(collection(db, "students"));
+      const snapshot = await getDocs(collection(db, "Students"));
 
       if (snapshot.empty) {
         status.textContent = "No student records found.";

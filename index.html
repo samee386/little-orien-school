@@ -625,17 +625,39 @@
         document.getElementById("year").textContent =
             new Date().getFullYear();
     </script>
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+<section id="students" class="container">
+  <div class="section-heading">
+    <span>Student Portal</span>
+    <h2 class="section-title">Students</h2>
+    <p class="section-description">
+      View student records from the school database.
+    </p>
+  </div>
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  <div class="about-box">
+    <button id="viewStudentsBtn" class="btn" type="button">
+      View Students
+    </button>
+    <p id="studentStatus" role="status">
+      Click the button to load student records.
+    </p>
+    <div id="studentList"></div>
+  </div>
+</section>
+
+<script type="module">
+  import { initializeApp } from
+    "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
+
+  import { getFirestore, collection, getDocs } from
+    "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
+
+  import { getAnalytics } from
+    "https://www.gstatic.com/firebasejs/13.0.0/firebase-analytics.js";
+
+  // Apna existing Firebase configuration yahan rakho.
   const firebaseConfig = {
-    apiKey: "AIzaSyDoOtmxvdFOyo2e-NmdNMDeSv9smiPbrTM",
+    apiKey: "YOUR_EXISTING_API_KEY",
     authDomain: "little-orien-school.firebaseapp.com",
     projectId: "little-orien-school",
     storageBucket: "little-orien-school.firebasestorage.app",
@@ -644,10 +666,68 @@
     measurementId: "G-0EN3D539FC"
   };
 
-  // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
-  const analytics = getAnalytics(app);
+
+  if (typeof window !== "undefined") {
+    try {
+      getAnalytics(app);
+    } catch (error) {
+      console.warn("Analytics is unavailable.", error);
+    }
+  }
+
+  const button = document.getElementById("viewStudentsBtn");
+  const status = document.getElementById("studentStatus");
+  const studentList = document.getElementById("studentList");
+
+  button.addEventListener("click", async () => {
+    button.disabled = true;
+    status.textContent = "Loading students...";
+    studentList.replaceChildren();
+
+    try {
+      const snapshot = await getDocs(collection(db, "students"));
+
+      if (snapshot.empty) {
+        status.textContent = "No student records found.";
+        return;
+      }
+
+      snapshot.forEach((documentSnapshot) => {
+        const card = document.createElement("div");
+        card.style.margin = "15px 0";
+        card.style.padding = "15px";
+        card.style.border = "1px solid #cde4d5";
+        card.style.borderRadius = "8px";
+
+        const heading = document.createElement("h3");
+        heading.textContent = "Student ID: " + documentSnapshot.id;
+        card.appendChild(heading);
+
+        const data = documentSnapshot.data();
+
+        Object.entries(data).forEach(([key, value]) => {
+          const line = document.createElement("p");
+          line.textContent = key + ": " +
+            (typeof value === "object" && value !== null
+              ? JSON.stringify(value)
+              : String(value));
+          card.appendChild(line);
+        });
+
+        studentList.appendChild(card);
+      });
+
+      status.textContent = "Student records loaded.";
+    } catch (error) {
+      console.error(error);
+      status.textContent =
+        "Could not load students. Check database permissions.";
+    } finally {
+      button.disabled = false;
+    }
+  });
 </script>
     <section id="students">
   <h2>Students</h2>

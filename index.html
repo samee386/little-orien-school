@@ -646,6 +646,7 @@
 
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
   const analytics = getAnalytics(app);
 </script>
     <section id="students">
@@ -660,6 +661,7 @@ function showStudents() {
   document.getElementById("studentList").innerHTML =
     "Student portal is ready.";
 }
+    const db= firebase.firestore();
 </script>
 </body>
 </html>

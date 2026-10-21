@@ -654,17 +654,15 @@
 
   import { getAnalytics } from
     "https://www.gstatic.com/firebasejs/13.0.0/firebase-analytics.js";
-
-  // Apna existing Firebase configuration yahan rakho.
-  const firebaseConfig = {
-    apiKey: "YOUR_EXISTING_API_KEY",
-    authDomain: "little-orien-school.firebaseapp.com",
-    projectId: "little-orien-school",
-    storageBucket: "little-orien-school.firebasestorage.app",
-    messagingSenderId: "920778107064",
-    appId: "1:920778107064:web:a50ee9d38e79bae6adec4d",
-    measurementId: "G-0EN3D539FC"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyDoOtmxvdFOyo2e-NmdNMDeSv9smiPbrTM",
+  authDomain: "little-orien-school.firebaseapp.com",
+  projectId: "little-orien-school",
+  storageBucket: "little-orien-school.firebasestorage.app",
+  messagingSenderId: "920778107064",
+  appId: "1:920778107064:web:a50ee9d38e79bae6adec4d",
+  measurementId: "G-0EN3D539FC"
+};  
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);

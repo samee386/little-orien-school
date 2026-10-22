@@ -3,11 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Little Orien Public School and College</title>
-
-    <meta name="description"
-          content="Little Orien Public School and College, Naway Kalay. Quality education, discipline and success.">
+    <meta name="description" content="Little Orien Public School and College, Naway Kalay. Quality education, discipline and success.">
 
     <style>
         :root {
@@ -116,74 +113,6 @@
             color: var(--green-dark);
         }
 
-        .hero {
-            padding: 90px 7%;
-            text-align: center;
-            background:
-                radial-gradient(
-                    circle at top right,
-                    #bde9ce 0,
-                    transparent 40%
-                ),
-                linear-gradient(135deg, #e1f2e9, #ffffff);
-        }
-
-        .tagline {
-            display: inline-block;
-            background: white;
-            color: var(--green);
-            padding: 7px 16px;
-            border-radius: 30px;
-            font-size: 13px;
-            font-weight: bold;
-            margin-bottom: 22px;
-            border: 1px solid #cce6d7;
-        }
-
-        .hero h2 {
-            max-width: 850px;
-            margin: auto auto 18px;
-            color: var(--green-dark);
-            font-size: clamp(32px, 5vw, 52px);
-            line-height: 1.2;
-        }
-
-        .hero p {
-            max-width: 690px;
-            margin: 0 auto 28px;
-            color: #52645a;
-            font-size: 17px;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 12px 23px;
-            margin: 5px;
-            border-radius: 7px;
-            font-weight: bold;
-            font-size: 14px;
-            background: var(--green);
-            color: white;
-            border: 2px solid var(--green);
-            transition: 0.25s;
-        }
-
-        .btn:hover {
-            background: var(--green-dark);
-            border-color: var(--green-dark);
-            transform: translateY(-2px);
-        }
-
-        .btn-outline {
-            background: white;
-            color: var(--green-dark);
-            border-color: #b7d7c4;
-        }
-
-        .btn-outline:hover {
-            color: white;
-        }
-
         .container {
             max-width: 1150px;
             margin: auto;
@@ -209,12 +138,6 @@
             margin-top: 5px;
         }
 
-        .section-description {
-            max-width: 650px;
-            margin: 8px auto 0;
-            color: var(--muted);
-        }
-
         .about-box {
             background: white;
             border-radius: 15px;
@@ -224,117 +147,53 @@
             text-align: center;
         }
 
-        .about-box h3 {
-            color: var(--green);
-            font-size: 23px;
-            margin-bottom: 12px;
-        }
-
-        .cards {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 20px;
-        }
-
-        .card {
-            background: white;
-            padding: 27px 21px;
-            border-radius: 13px;
-            border: 1px solid #e5ede7;
-            box-shadow: 0 5px 20px #00000008;
+        .btn {
+            display: inline-block;
+            padding: 12px 23px;
+            margin: 5px;
+            border-radius: 7px;
+            font-weight: bold;
+            font-size: 14px;
+            background: var(--green);
+            color: white;
+            border: 2px solid var(--green);
             transition: 0.25s;
+            cursor: pointer;
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 28px #073b2a14;
-            border-color: #b8ddc6;
+        .btn:hover {
+            background: var(--green-dark);
+            border-color: var(--green-dark);
+            transform: translateY(-2px);
         }
 
-        .card-icon {
-            width: 52px;
-            height: 52px;
-            display: grid;
-            place-items: center;
-            background: var(--green-light);
-            border-radius: 12px;
-            font-size: 25px;
-            margin-bottom: 18px;
+        .btn-danger {
+            background: #d9534f;
+            border-color: #d9534f;
         }
 
-        .card h3 {
-            color: var(--green-dark);
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-
-        .card p {
-            color: var(--muted);
-            font-size: 14px;
-        }
-
-        .admission-section {
-            background: var(--green-light);
-            padding: 60px 20px;
-        }
-
-        .admission-box {
-            max-width: 900px;
-            margin: auto;
-            padding: 40px 25px;
-            background: white;
-            text-align: center;
-            border-radius: 16px;
-            border: 1px solid #cde4d5;
-        }
-
-        .admission-box h2 {
-            color: var(--green-dark);
-            font-size: 29px;
-            margin-bottom: 12px;
-        }
-
-        .notices {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 20px;
-        }
-
-        .notice {
-            background: white;
-            padding: 23px;
-            border-radius: 10px;
-            border-left: 4px solid var(--green);
-            box-shadow: 0 4px 15px #00000008;
-        }
-
-        .notice h3 {
-            color: var(--green-dark);
-            margin-bottom: 8px;
-            font-size: 17px;
-        }
-
-        .notice p {
-            color: var(--muted);
-            font-size: 14px;
-        }
-
-        .contact {
-            background: white;
-            text-align: center;
-            padding: 55px 20px;
-            border-top: 1px solid #e5ede7;
-        }
-
-        .contact h2 {
-            color: var(--green-dark);
-            font-size: 30px;
+        .form-group {
             margin-bottom: 15px;
+            text-align: left;
         }
 
-        .contact p {
-            margin: 7px 0;
-            color: var(--muted);
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cde4d5;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .hidden {
+            display: none !important;
         }
 
         footer {
@@ -342,71 +201,10 @@
             color: white;
             text-align: center;
             padding: 25px 15px;
-        }
-
-        footer p + p {
-            color: #c8dfd1;
-            font-size: 13px;
-            margin-top: 5px;
-        }
-
-        @media (max-width: 900px) {
-            .cards {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-
-            .notices {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 600px) {
-            header {
-                justify-content: center;
-                padding: 18px 12px;
-            }
-
-            .brand h1 {
-                font-size: 16px;
-            }
-
-            nav {
-                gap: 3px;
-                padding: 8px;
-            }
-
-            nav a {
-                padding: 8px 10px;
-                font-size: 13px;
-            }
-
-            .hero {
-                padding: 65px 20px;
-            }
-
-            .hero p {
-                font-size: 15px;
-            }
-
-            .container {
-                padding: 45px 18px;
-            }
-
-            .cards {
-                grid-template-columns: 1fr;
-            }
-
-            .about-box {
-                padding: 25px 18px;
-            }
-
-            .admission-box h2 {
-                font-size: 25px;
-            }
+            margin-top: 50px;
         }
     </style>
 </head>
-
 <body>
 
     <div class="topbar">
@@ -426,320 +224,225 @@
     <nav>
         <a href="#home">Home</a>
         <a href="#about">About Us</a>
-        <a href="#principal">Principal's Message</a>
-        <a href="#gallery">School Gallery</a>
-        <a href="#programs">Classes</a>
         <a href="#notices">Notices</a>
+        <a href="#portal">School Portal</a>
         <a href="#contact">Contact</a>
     </nav>
 
     <main>
-
-        <section class="hero" id="home">
-            <div class="tagline">EDUCATION • DISCIPLINE • SUCCESS</div>
-
-            <h2>Welcome to Little Orien Public School and College</h2>
-
-            <p>
-                Naway Kalay — We are committed to quality education,
-                strong character, creativity and a brighter future
-                for every student.
-            </p>
-
-            <a href="#about" class="btn btn-outline">Discover Our School</a>
-        </section>
-
-        <section class="container" id="about">
+        <section id="portal" class="container">
             <div class="section-heading">
-                <span>Who We Are</span>
-                <h2 class="section-title">About Our School</h2>
-                <p class="section-description">
-                    Helping students learn, grow and prepare for the future.
-                </p>
+                <span>Management System</span>
+                <h2 class="section-title">School Portal</h2>
             </div>
 
-            <div class="about-box">
-                <h3>Our Mission</h3>
-                <p>
-                    Our mission is to provide quality education,
-                    build good character, encourage creativity,
-                    and prepare students for a successful future.
-                    We aim to create a supportive learning environment
-                    where students can develop their knowledge and skills.
-                </p>
-            </div>
-        </section>
-        <section class="container" id="principal">
-    <div class="section-heading">
-        <span>Message from Leadership</span>
-        <h2 class="section-title">Principal's Message</h2>
-    </div>
-
-    <div class="about-box">
-        <div class="card-icon" style="margin: 0 auto 18px;">
-            🎓
-        </div>
-
-        <h3>Welcome to Our School</h3>
-
-        <p>
-            At Little Orien Public School and College,
-            we believe that every student has the potential
-            to learn, grow and succeed. Our aim is to provide
-            quality education, develop good character and
-            prepare students for a bright future.
-        </p>
-
-        <p style="margin-top: 18px;">
-            <strong>Principal</strong><br>
-                 Dr Munair Khan
-        </p>
-    </div>
-</section>
-        <section class="container" id="gallery">
-    <div class="section-heading">
-        <span>Our School</span>
-        <h2 class="section-title">School Gallery</h2>
-    </div>
-
-    <div class="about-box">
-        <h3>Learning, Growing and Achieving</h3>
-        <p>
-            Our school provides a friendly learning environment
-            where students develop knowledge, skills and confidence.
-        </p>
-        <p>
-            School photos and activity pictures will be added here soon.
-        </p>
-    </div>
-</section>
-
-        <section class="container" id="programs">
-            <div class="section-heading">
-                <span>Learning for Every Stage</span>
-                <h2 class="section-title">Our Classes</h2>
-                <p class="section-description">
-                    Supporting students throughout their educational journey.
-                </p>
+            <!-- LOGIN SECTION -->
+            <div id="loginSection" class="about-box" style="max-width: 450px; margin: 0 auto;">
+                <h3>Sign In</h3>
+                <p style="margin-bottom: 20px; font-size: 13px; color: var(--muted);">Access your dashboard</p>
+                
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label>Email Address / Username</label>
+                        <input type="email" id="loginEmail" required placeholder="user@school.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="loginPassword" required placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="btn" style="width: 100%;">Login</button>
+                </form>
+                <p id="loginStatus" style="margin-top: 15px; font-size: 14px; color: red;"></p>
             </div>
 
-            <div class="cards">
-                <div class="card">
-                    <div class="card-icon">📚</div>
-                    <h3>Primary Section</h3>
-                    <p>
-                        Building strong foundations in learning,
-                        reading, writing and basic education.
-                    </p>
+            <!-- DASHBOARD SECTION -->
+            <div id="dashboardSection" class="about-box hidden">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px;">
+                    <h3 id="userGreeting" style="margin: 0;">Welcome Dashboard</h3>
+                    <button id="logoutBtn" class="btn btn-danger">Logout</button>
                 </div>
 
-                <div class="card">
-                    <div class="card-icon">✏️</div>
-                    <h3>Middle Section</h3>
-                    <p>
-                        Developing knowledge, confidence,
-                        problem-solving and learning skills.
-                    </p>
+                <!-- ADMIN VIEW -->
+                <div id="adminView" class="hidden">
+                    <h4 style="margin-bottom: 15px;">Admin Controls: Manage Portal</h4>
+                    <p>Welcome Admin! You have full access to manage students, teachers, and system roles.</p>
                 </div>
 
-                <div class="card">
-                    <div class="card-icon">🎓</div>
-                    <h3>High School</h3>
-                    <p>
-                        Preparing students for academic success
-                        and important examinations.
-                    </p>
+                <!-- TEACHER VIEW -->
+                <div id="teacherView" class="hidden">
+                    <h4 style="margin-bottom: 15px;">Teacher Dashboard: Mark Attendance & Upload Tests</h4>
+                    <p id="teacherStatus">Loading students list...</p>
+                    <div id="attendanceStudentList" style="text-align: left; margin-top: 20px;"></div>
                 </div>
 
-                <div class="card">
-                    <div class="card-icon">🏫</div>
-                    <h3>College Section</h3>
-                    <p>
-                        Supporting students in their higher
-                        education and future goals.
-                    </p>
+                <!-- STUDENT VIEW -->
+                <div id="studentView" class="hidden">
+                    <h4 style="margin-bottom: 15px;">Student Portal</h4>
+                    <div id="studentDataCard" style="text-align: left; padding: 15px; border: 1px solid #cde4d5; border-radius: 8px;">
+                        Loading your record...
+                    </div>
+                </div>
+
+                <!-- PRINCIPAL VIEW -->
+                <div id="principalView" class="hidden">
+                    <h4 style="margin-bottom: 15px;">Principal Overview</h4>
+                    <p>Total control & activity metrics will appear here.</p>
                 </div>
             </div>
         </section>
-
-        <section class="container" id="notices">
-            <div class="section-heading">
-                <span>Stay Informed</span>
-                <h2 class="section-title">School Notices</h2>
-                <p class="section-description">
-                    Important school information and updates.
-                </p>
-            </div>
-
-            <div class="notices">
-                <div class="notice">
-                    <h3>📢 School Announcements</h3>
-                    <p>
-                        Important announcements will be published
-                        here by the school administration.
-                    </p>
-                </div>
-
-                <div class="notice">
-                    <h3>📝 Examination Updates</h3>
-                    <p>
-                        Check this section for examination schedules
-                        and result announcements.
-                    </p>
-                </div>
-
-                <div class="notice">
-                    <h3>🎒 Admissions Update</h3>
-                    <p>
-                        Contact the school office for current
-                        admission dates and availability.
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <section class="contact" id="contact">
-            <h2>Contact Us</h2>
-
-            <p>
-                <strong>School:</strong>
-                Little Orien Public School and College
-            </p>
-
-            <p><strong>Location:</strong> Naway Kalay</p>
-            <p><strong>Phone:</strong> Add School Contact Number</p>
-            <p><strong>Email:</strong> Add School Email (if available)</p>
-        </section>
-
     </main>
 
     <footer>
-        <p>
-            &copy; <span id="year"></span>
-            Little Orien Public School and College, Naway Kalay.
-        </p>
-        <p>Education | Discipline | Success</p>
+        <p>&copy; <span id="year"></span> Little Orien Public School and College, Naway Kalay.</p>
     </footer>
 
     <script>
-        document.getElementById("year").textContent =
-            new Date().getFullYear();
+        document.getElementById("year").textContent = new Date().getFullYear();
     </script>
-<section id="students" class="container">
-  <div class="section-heading">
-    <span>Student Portal</span>
-    <h2 class="section-title">Students</h2>
-    <p class="section-description">
-      View student records from the school database.
-    </p>
-  </div>
 
-  <div class="about-box">
-    <button id="viewStudentsBtn" class="btn" type="button">
-      View Students
-    </button>
-    <p id="studentStatus" role="status">
-      Click the button to load student records.
-    </p>
-    <div id="studentList"></div>
-  </div>
-</section>
+    <!-- FIREBASE MODULES -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
+        import { getFirestore, doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 
-<script type="module">
-  import { initializeApp } from
-    "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDoOtmxvdFOyo2e-NmdNMDeSv9smiPbrTM",
+            authDomain: "little-orien-school.firebaseapp.com",
+            projectId: "little-orien-school",
+            storageBucket: "little-orien-school.firebasestorage.app",
+            messagingSenderId: "920778107064",
+            appId: "1:920778107064:web:a50ee9d38e79bae6adec4d"
+        };
 
-  import { getFirestore, collection, getDocs } from
-    "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
 
-  import { getAnalytics } from
-    "https://www.gstatic.com/firebasejs/13.0.0/firebase-analytics.js";
-const firebaseConfig = {
-  apiKey: "AIzaSyDoOtmxvdFOyo2e-NmdNMDeSv9smiPbrTM",
-  authDomain: "little-orien-school.firebaseapp.com",
-  projectId: "little-orien-school",
-  storageBucket: "little-orien-school.firebasestorage.app",
-  messagingSenderId: "920778107064",
-  appId: "1:920778107064:web:a50ee9d38e79bae6adec4d",
-  measurementId: "G-0EN3D539FC"
-};  
+        const loginSection = document.getElementById("loginSection");
+        const dashboardSection = document.getElementById("dashboardSection");
+        const loginForm = document.getElementById("loginForm");
+        const loginStatus = document.getElementById("loginStatus");
+        const userGreeting = document.getElementById("userGreeting");
+        const logoutBtn = document.getElementById("logoutBtn");
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+        const adminView = document.getElementById("adminView");
+        const teacherView = document.getElementById("teacherView");
+        const studentView = document.getElementById("studentView");
+        const principalView = document.getElementById("principalView");
 
-  if (typeof window !== "undefined") {
-    try {
-      getAnalytics(app);
-    } catch (error) {
-      console.warn("Analytics is unavailable.", error);
-    }
-  }
+        // LOGIN PROCESS
+        loginForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const email = document.getElementById("loginEmail").value;
+            const password = document.getElementById("loginPassword").value;
+            loginStatus.style.color = "black";
+            loginStatus.textContent = "Logging in...";
 
-  const button = document.getElementById("viewStudentsBtn");
-  const status = document.getElementById("studentStatus");
-  const studentList = document.getElementById("studentList");
-
-  button.addEventListener("click", async () => {
-    button.disabled = true;
-    status.textContent = "Loading students...";
-    studentList.replaceChildren();
-
-    try {
-      const snapshot = await getDocs(collection(db, "Students"));
-
-      if (snapshot.empty) {
-        status.textContent = "No Student records found.";
-        return;
-      }
-
-      snapshot.forEach((documentSnapshot) => {
-        const card = document.createElement("div");
-        card.style.margin = "15px 0";
-        card.style.padding = "15px";
-        card.style.border = "1px solid #cde4d5";
-        card.style.borderRadius = "8px";
-
-        const heading = document.createElement("h3");
-        heading.textContent = "Student ID: " + documentSnapshot.id;
-        card.appendChild(heading);
-
-        const data = documentSnapshot.data();
-
-        Object.entries(data).forEach(([key, value]) => {
-          const line = document.createElement("p");
-          line.textContent = key + ": " +
-            (typeof value === "object" && value !== null
-              ? JSON.stringify(value)
-              : String(value));
-          card.appendChild(line);
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                loginStatus.textContent = "";
+            } catch (error) {
+                loginStatus.style.color = "red";
+                loginStatus.textContent = "Invalid email or password!";
+            }
         });
 
-        studentList.appendChild(card);
-      });
+        // LOGOUT PROCESS
+        logoutBtn.addEventListener("click", () => {
+            signOut(auth);
+        });
 
-      status.textContent = "Student records loaded.";
-    } catch (error) {
-      console.error(error);
-      status.textContent =
-        "Could not load students. Check database permissions.";
-    } finally {
-      button.disabled = false;
-    }
-  });
-</script>
-    <section id="students">
-  <h2>Students</h2>
-  <p>Welcome to our school student portal.</p>
-  <button onclick="showStudents()">View Students</button>
-  <div id="studentList"></div>
-</section>
+        // MONITOR AUTH STATE & USER ROLES
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                loginSection.classList.add("hidden");
+                dashboardSection.classList.remove("hidden");
 
-<script>
-function showStudents() {
-  document.getElementById("studentList").innerHTML =
-    "Student portal is ready.";
-}
-    const db= firebase.firestore();
-</script>
+                // Get user role from Firestore 'users' collection
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
+                    userGreeting.textContent = `Welcome, ${userData.name} (${userData.role.toUpperCase()})`;
+
+                    adminView.classList.add("hidden");
+                    teacherView.classList.add("hidden");
+                    studentView.classList.add("hidden");
+                    principalView.classList.add("hidden");
+
+                    if (userData.role === "admin") {
+                        adminView.classList.remove("hidden");
+                    } else if (userData.role === "teacher") {
+                        teacherView.classList.remove("hidden");
+                        loadTeacherView();
+                    } else if (userData.role === "student") {
+                        studentView.classList.remove("hidden");
+                        loadStudentView();
+                    } else if (userData.role === "principal") {
+                        principalView.classList.remove("hidden");
+                    }
+                } else {
+                    userGreeting.textContent = `Welcome, ${user.email}`;
+                }
+            } else {
+                loginSection.classList.remove("hidden");
+                dashboardSection.classList.add("hidden");
+            }
+        });
+
+        // LOAD STUDENT VIEW
+        async function loadStudentView() {
+            const studentCard = document.getElementById("studentDataCard");
+            try {
+                const snapshot = await getDocs(collection(db, "Students"));
+                if (snapshot.empty) {
+                    studentCard.textContent = "No records found.";
+                    return;
+                }
+                studentCard.replaceChildren();
+                snapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    const p = document.createElement("p");
+                    p.innerHTML = `<strong>Name:</strong> ${data.Name || 'N/A'}<br><strong>Class:</strong> ${data.Class || 'N/A'}<br><strong>Roll No:</strong> ${data['roll no'] || 'N/A'}`;
+                    studentCard.appendChild(p);
+                });
+            } catch (err) {
+                studentCard.textContent = "Failed to fetch student record.";
+            }
+        }
+
+        // LOAD TEACHER VIEW
+        async function loadTeacherView() {
+            const status = document.getElementById("teacherStatus");
+            const list = document.getElementById("attendanceStudentList");
+            try {
+                const snapshot = await getDocs(collection(db, "Students"));
+                status.textContent = "Student List for Daily Attendance:";
+                list.replaceChildren();
+
+                snapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    const div = document.createElement("div");
+                    div.style.padding = "10px";
+                    div.style.borderBottom = "1px solid #eee";
+                    div.style.display = "flex";
+                    div.style.justifyContent = "space-between";
+                    div.style.alignItems = "center";
+
+                    div.innerHTML = `
+                        <span><strong>${data.Name}</strong> (Class: ${data.Class}, Roll: ${data['roll no']})</span>
+                        <div>
+                            <button class="btn" style="padding: 5px 10px; font-size: 12px;">Present</button>
+                            <button class="btn btn-danger" style="padding: 5px 10px; font-size: 12px;">Absent</button>
+                        </div>
+                    `;
+                    list.appendChild(div);
+                });
+            } catch (err) {
+                status.textContent = "Could not load students for attendance.";
+            }
+        }
+    </script>
 </body>
 </html>

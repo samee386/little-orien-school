@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Little Orien Public School and College</title>
-    <meta name="description" content="Little Orien Public School and College, Naway Kalay. Quality education, discipline and success.">
-
     <style>
         :root {
             --green-dark: #073b2a;
@@ -17,332 +15,137 @@
             --muted: #63736a;
             --background: #f5f8f6;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-            scroll-padding-top: 90px;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background: var(--background);
-            color: var(--text);
-            line-height: 1.7;
-        }
-
-        a {
-            text-decoration: none;
-        }
-
-        .topbar {
-            background: var(--green-dark);
-            color: white;
-            text-align: center;
-            padding: 8px 15px;
-            font-size: 13px;
-        }
-
-        header {
-            background: white;
-            padding: 16px 6%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            box-shadow: 0 3px 15px #0000000c;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo {
-            width: 55px;
-            height: 55px;
-            border-radius: 14px;
-            background: var(--green-dark);
-            color: var(--gold);
-            display: grid;
-            place-items: center;
-            font-size: 22px;
-            font-weight: bold;
-            border: 2px solid var(--gold);
-            flex-shrink: 0;
-        }
-
-        .brand h1 {
-            font-size: 19px;
-            line-height: 1.4;
-            color: var(--green-dark);
-        }
-
-        .brand p {
-            font-size: 13px;
-            color: var(--muted);
-        }
-
-        nav {
-            background: var(--green-dark);
-            padding: 8px 5%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 5px;
-        }
-
-        nav a {
-            color: white;
-            padding: 10px 15px;
-            border-radius: 7px;
-            font-size: 14px;
-            transition: 0.25s;
-        }
-
-        nav a:hover {
-            background: var(--gold);
-            color: var(--green-dark);
-        }
-
-        .container {
-            max-width: 1150px;
-            margin: auto;
-            padding: 65px 25px;
-        }
-
-        .section-heading {
-            text-align: center;
-            margin-bottom: 35px;
-        }
-
-        .section-heading span {
-            color: var(--green);
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 12px;
-        }
-
-        .section-title {
-            color: var(--green-dark);
-            font-size: clamp(25px, 4vw, 34px);
-            margin-top: 5px;
-        }
-
-        .about-box {
-            background: white;
-            border-radius: 15px;
-            padding: 35px;
-            border: 1px solid #e4ece6;
-            box-shadow: 0 8px 25px #00000008;
-            text-align: left;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            margin: 5px 0;
-            border-radius: 7px;
-            font-weight: bold;
-            font-size: 14px;
-            background: var(--green);
-            color: white;
-            border: 2px solid var(--green);
-            transition: 0.25s;
-            cursor: pointer;
-        }
-
-        .btn:hover {
-            background: var(--green-dark);
-            border-color: var(--green-dark);
-        }
-
-        .btn-danger {
-            background: #d9534f;
-            border-color: #d9534f;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            font-size: 14px;
-        }
-
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #cde4d5;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        footer {
-            background: var(--green-dark);
-            color: white;
-            text-align: center;
-            padding: 25px 15px;
-            margin-top: 50px;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background: var(--background); color: var(--text); line-height: 1.6; }
+        .topbar { background: var(--green-dark); color: white; text-align: center; padding: 8px; font-size: 13px; }
+        header { background: white; padding: 15px 6%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 3px 10px rgba(0,0,0,0.05); }
+        .brand { display: flex; align-items: center; gap: 12px; }
+        .logo { width: 50px; height: 50px; border-radius: 10px; background: var(--green-dark); color: var(--gold); display: grid; place-items: center; font-weight: bold; font-size: 20px; border: 2px solid var(--gold); }
+        .container { max-width: 1000px; margin: 40px auto; padding: 20px; }
+        .box { background: white; border-radius: 12px; padding: 30px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .btn { display: inline-block; padding: 10px 20px; border-radius: 6px; font-weight: bold; background: var(--green); color: white; border: none; cursor: pointer; transition: 0.2s; }
+        .btn:hover { background: var(--green-dark); }
+        .btn-danger { background: #d9534f; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
+        .hidden { display: none !important; }
+        footer { background: var(--green-dark); color: white; text-align: center; padding: 20px; margin-top: 50px; }
     </style>
 </head>
 <body>
 
-    <div class="topbar">
-        Welcome to Little Orien Public School and College | Naway Kalay
-    </div>
+    <div class="topbar">Little Orien Public School and College | Naway Kalay</div>
 
     <header>
         <div class="brand">
             <div class="logo">LO</div>
             <div>
-                <h1>Little Orien Public School and College</h1>
-                <p>Naway Kalay | Quality Education for a Bright Future</p>
+                <h2>Little Orien School</h2>
+                <p style="font-size: 12px; color: var(--muted);">Management Portal</p>
             </div>
         </div>
     </header>
 
-    <nav>
-        <a href="#portal">School Portal</a>
-    </nav>
+    <div class="container">
+        <!-- LOGIN SECTION -->
+        <div id="loginSection" class="box" style="max-width: 400px; margin: auto; text-align: center;">
+            <h3 style="margin-bottom: 20px; color: var(--green-dark);">Portal Login</h3>
+            <form id="loginForm">
+                <div class="form-group" style="text-align: left;">
+                    <label>Email Address</label>
+                    <input type="email" id="loginEmail" required placeholder="admin@school.com">
+                </div>
+                <div class="form-group" style="text-align: left;">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn" style="width: 100%;">Login</button>
+            </form>
+            <p id="loginStatus" style="margin-top: 15px; font-size: 14px; color: red;"></p>
+        </div>
 
-    <main>
-        <section id="portal" class="container">
-            <div class="section-heading">
-                <span>Management System</span>
-                <h2 class="section-title">School Portal</h2>
+        <!-- DASHBOARD SECTION -->
+        <div id="dashboardSection" class="box hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px;">
+                <h3 id="userGreeting" style="color: var(--green-dark);">Welcome</h3>
+                <button id="logoutBtn" class="btn btn-danger">Logout</button>
             </div>
 
-            <!-- LOGIN SECTION -->
-            <div id="loginSection" class="about-box" style="max-width: 450px; margin: 0 auto; text-align: center;">
-                <h3>Sign In</h3>
-                <p style="margin-bottom: 20px; font-size: 13px; color: var(--muted);">Access your dashboard</p>
-                
-                <form id="loginForm">
-                    <div class="form-group" style="text-align: left;">
-                        <label>Email Address</label>
-                        <input type="email" id="loginEmail" required placeholder="user@school.com">
+            <!-- ADMIN VIEW -->
+            <div id="adminView" class="hidden">
+                <h4 style="margin-bottom: 15px; color: var(--green);">Admin: Create New User</h4>
+                <form id="createUserForm" style="max-width: 450px;">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="newUserName" required placeholder="Ali Khan">
                     </div>
-                    <div class="form-group" style="text-align: left;">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="newUserEmail" required placeholder="user@school.com">
+                    </div>
+                    <div class="form-group">
                         <label>Password</label>
-                        <input type="password" id="loginPassword" required placeholder="••••••••">
+                        <input type="password" id="newUserPassword" required placeholder="Min 6 characters">
                     </div>
-                    <button type="submit" class="btn" style="width: 100%;">Login</button>
+                    <div class="form-group">
+                        <label>Role</label>
+                        <select id="newUserRole">
+                            <option value="student">Student</option>
+                            <option value="teacher">Teacher</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Class / Info</label>
+                        <input type="text" id="newUserClass" placeholder="e.g. 10th Class">
+                    </div>
+                    <button type="submit" class="btn">Create Account</button>
                 </form>
-                <p id="loginStatus" style="margin-top: 15px; font-size: 14px; color: red;"></p>
+                <p id="adminStatus" style="margin-top: 10px; font-weight: bold;"></p>
             </div>
 
-            <!-- DASHBOARD SECTION -->
-            <div id="dashboardSection" class="about-box hidden">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px;">
-                    <h3 id="userGreeting" style="margin: 0;">Welcome Dashboard</h3>
-                    <button id="logoutBtn" class="btn btn-danger">Logout</button>
-                </div>
-
-                <!-- ADMIN VIEW -->
-                <div id="adminView" class="hidden">
-                    <h4 style="margin-bottom: 15px; color: var(--green-dark);">Admin Controls: Create New User Account</h4>
-                    <form id="createUserForm" style="max-width: 500px;">
-                        <div class="form-group">
-                            <label>Full Name</label>
-                            <input type="text" id="newUserName" required placeholder="Ahmad Khan">
-                        </div>
-                        <div class="form-group">
-                            <label>Email Address</label>
-                            <input type="email" id="newUserEmail" required placeholder="student@school.com">
-                        </div>
-                        <div class="form-group">
-                            <label>Password</label>
-                            <input type="password" id="newUserPassword" required minlength="6" placeholder="At least 6 characters">
-                        </div>
-                        <div class="form-group">
-                            <label>Role</label>
-                            <select id="newUserRole">
-                                <option value="student">Student</option>
-                                <option value="teacher">Teacher</option>
-                                <option value="principal">Principal</option>
-                                <option value="admin">Admin</option>
-                            </select>
-                        </div>
-                        <div class="form-group" id="classDiv">
-                            <label>Class / Roll No (Optional)</label>
-                            <input type="text" id="newUserClass" placeholder="e.g. 10th / Roll-12">
-                        </div>
-                        <button type="submit" class="btn">Create Account</button>
-                    </form>
-                    <p id="adminStatus" style="margin-top: 15px; font-weight: bold;"></p>
-                </div>
-
-                <!-- TEACHER VIEW -->
-                <div id="teacherView" class="hidden">
-                    <h4 style="margin-bottom: 15px; color: var(--green-dark);">Teacher Dashboard: Upload Test / Assignment</h4>
-                    <form id="uploadTestForm" style="max-width: 500px; margin-bottom: 30px; background: var(--green-light); padding: 20px; border-radius: 8px;">
-                        <div class="form-group">
-                            <label>Test Title / Subject</label>
-                            <input type="text" id="testTitle" required placeholder="Mathematics Quiz 1">
-                        </div>
-                        <div class="form-group">
-                            <label>Class</label>
-                            <input type="text" id="testClass" required placeholder="10th">
-                        </div>
-                        <div class="form-group">
-                            <label>Test Details / Questions / Link</label>
-                            <input type="text" id="testDetails" required placeholder="Enter link or details">
-                        </div>
-                        <button type="submit" class="btn">Upload Test</button>
-                    </form>
-                    <p id="teacherStatusMsg" style="font-weight: bold; margin-bottom: 15px;"></p>
-                </div>
-
-                <!-- STUDENT VIEW -->
-                <div id="studentView" class="hidden">
-                    <h4 style="margin-bottom: 15px; color: var(--green-dark);">Student Portal</h4>
-                    <div id="studentDataCard" style="padding: 15px; border: 1px solid #cde4d5; border-radius: 8px; background: white;">
-                        Loading your record...
+            <!-- TEACHER VIEW -->
+            <div id="teacherView" class="hidden">
+                <h4 style="margin-bottom: 15px; color: var(--green);">Teacher Dashboard: Upload Test</h4>
+                <form id="uploadTestForm" style="max-width: 450px; background: var(--green-light); padding: 15px; border-radius: 8px;">
+                    <div class="form-group">
+                        <label>Test Title</label>
+                        <input type="text" id="testTitle" required placeholder="Maths Quiz">
                     </div>
-                </div>
+                    <div class="form-group">
+                        <label>Class</label>
+                        <input type="text" id="testClass" required placeholder="10th">
+                    </div>
+                    <div class="form-group">
+                        <label>Details / Link</label>
+                        <input type="text" id="testDetails" required placeholder="Details...">
+                    </div>
+                    <button type="submit" class="btn">Upload Test</button>
+                </form>
+                <p id="teacherStatusMsg" style="margin-top: 10px; font-weight: bold;"></p>
+            </div>
 
-                <!-- PRINCIPAL VIEW -->
-                <div id="principalView" class="hidden">
-                    <h4 style="margin-bottom: 15px; color: var(--green-dark);">Principal Overview</h4>
-                    <p>Total control & activity metrics will appear here.</p>
+            <!-- STUDENT VIEW -->
+            <div id="studentView" class="hidden">
+                <h4 style="margin-bottom: 15px; color: var(--green);">Student Portal</h4>
+                <div id="studentDataCard" style="padding: 15px; background: var(--green-light); border-radius: 8px;">
+                    Loading data...
                 </div>
             </div>
-        </section>
-    </main>
+        </div>
+    </div>
 
     <footer>
-        <p>&copy; <span id="year"></span> Little Orien Public School and College, Naway Kalay.</p>
+        <p>&copy; Little Orien Public School and College, Naway Kalay</p>
     </footer>
 
-    <script>
-        document.getElementById("year").textContent = new Date().getFullYear();
-    </script>
-
-    <!-- FIREBASE MODULES -->
+    <!-- FIREBASE SCRIPT -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
-        import { getFirestore, doc, getDoc, setDoc, collection, getDocs, addFromServer } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 
-        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDoOtmxvdFOyo2e-NmdNMDeSv9smiPbrTM",
             authDomain: "little-orien-school.firebaseapp.com",
@@ -366,9 +169,8 @@
         const adminView = document.getElementById("adminView");
         const teacherView = document.getElementById("teacherView");
         const studentView = document.getElementById("studentView");
-        const principalView = document.getElementById("principalView");
 
-        // LOGIN PROCESS
+        // Login Logic
         loginForm.addEventListener("submit", async (e) => {
             e.preventDefault();
             const email = document.getElementById("loginEmail").value;
@@ -381,43 +183,43 @@
                 loginStatus.textContent = "";
             } catch (error) {
                 loginStatus.style.color = "red";
-                loginStatus.textContent = "Invalid email or password!";
+                loginStatus.textContent = "Error: " + error.message;
             }
         });
 
-        // LOGOUT PROCESS
         logoutBtn.addEventListener("click", () => {
             signOut(auth);
         });
 
-        // MONITOR AUTH STATE & USER ROLES
+        // Auth State Handler
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 loginSection.classList.add("hidden");
                 dashboardSection.classList.remove("hidden");
 
-                const userDoc = await getDoc(doc(db, "users", user.uid));
-                if (userDoc.exists()) {
-                    const userData = userDoc.data();
-                    userGreeting.textContent = `Welcome, ${userData.name} (${userData.role.toUpperCase()})`;
+                try {
+                    const userDoc = await getDoc(doc(db, "users", user.uid));
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
+                        userGreeting.textContent = `Welcome, ${userData.name} (${userData.role.toUpperCase()})`;
 
-                    adminView.classList.add("hidden");
-                    teacherView.classList.add("hidden");
-                    studentView.classList.add("hidden");
-                    principalView.classList.add("hidden");
+                        adminView.classList.add("hidden");
+                        teacherView.classList.add("hidden");
+                        studentView.classList.add("hidden");
 
-                    if (userData.role === "admin") {
-                        adminView.classList.remove("hidden");
-                    } else if (userData.role === "teacher") {
-                        teacherView.classList.remove("hidden");
-                    } else if (userData.role === "student") {
-                        studentView.classList.remove("hidden");
-                        loadStudentView(userData);
-                    } else if (userData.role === "principal") {
-                        principalView.classList.remove("hidden");
+                        if (userData.role === "admin") {
+                            adminView.classList.remove("hidden");
+                        } else if (userData.role === "teacher") {
+                            teacherView.classList.remove("hidden");
+                        } else if (userData.role === "student") {
+                            studentView.classList.remove("hidden");
+                            loadStudentData(userData);
+                        }
+                    } else {
+                        userGreeting.textContent = `Welcome, ${user.email} (Role not assigned)`;
                     }
-                } else {
-                    userGreeting.textContent = `Welcome, ${user.email}`;
+                } catch (err) {
+                    console.error(err);
                 }
             } else {
                 loginSection.classList.remove("hidden");
@@ -425,7 +227,7 @@
             }
         });
 
-        // ADMIN: CREATE NEW USER ACCOUNT
+        // Admin Create User
         const createUserForm = document.getElementById("createUserForm");
         const adminStatus = document.getElementById("adminStatus");
 
@@ -438,35 +240,22 @@
             const classInfo = document.getElementById("newUserClass").value;
 
             adminStatus.style.color = "black";
-            adminStatus.textContent = "Creating account...";
+            adminStatus.textContent = "Creating...";
 
             try {
-                // Secondary app to create user without logging out the admin
                 const secondaryApp = initializeApp(firebaseConfig, "SecondaryApp" + Math.random());
                 const secondaryAuth = getAuth(secondaryApp);
+                const cred = await createUserWithEmailAndPassword(secondaryAuth, email, password);
                 
-                const userCredential = await createUserWithEmailAndPassword(secondaryAuth, email, password);
-                const newUid = userCredential.user.uid;
-
-                // Save user role in Firestore 'users' collection
-                await setDoc(doc(db, "users", newUid), {
+                await setDoc(doc(db, "users", cred.user.uid), {
                     name: name,
                     email: email,
                     role: role,
                     class: classInfo
                 });
 
-                // If user is a student, also add to 'Students' collection
-                if (role === "student") {
-                    await setDoc(doc(db, "Students", newUid), {
-                        Name: name,
-                        Class: classInfo,
-                        'roll no': newUid.slice(0, 6)
-                    });
-                }
-
                 adminStatus.style.color = "green";
-                adminStatus.textContent = `Successfully created ${role} account for ${name}!`;
+                adminStatus.textContent = `Account created for ${name}!`;
                 createUserForm.reset();
             } catch (err) {
                 adminStatus.style.color = "red";
@@ -474,24 +263,23 @@
             }
         });
 
-        // TEACHER: UPLOAD TEST
+        // Teacher Upload Test
         const uploadTestForm = document.getElementById("uploadTestForm");
         const teacherStatusMsg = document.getElementById("teacherStatusMsg");
 
         uploadTestForm.addEventListener("submit", async (e) => {
             e.preventDefault();
             const title = document.getElementById("testTitle").value;
-            const testClass = document.getElementById("testClass").value;
+            const tClass = document.getElementById("testClass").value;
             const details = document.getElementById("testDetails").value;
 
             teacherStatusMsg.style.color = "black";
-            teacherStatusMsg.textContent = "Uploading test...";
+            teacherStatusMsg.textContent = "Uploading...";
 
             try {
-                const testRef = collection(db, "Tests");
-                await setDoc(doc(testRef), {
+                await setDoc(doc(collection(db, "Tests")), {
                     title: title,
-                    class: testClass,
+                    class: tClass,
                     details: details,
                     date: new Date().toLocaleDateString()
                 });
@@ -500,33 +288,27 @@
                 uploadTestForm.reset();
             } catch (err) {
                 teacherStatusMsg.style.color = "red";
-                teacherStatusMsg.textContent = "Failed to upload test.";
+                teacherStatusMsg.textContent = "Failed to upload.";
             }
         });
 
-        // STUDENT VIEW
-        async function loadStudentView(userData) {
-            const studentCard = document.getElementById("studentDataCard");
-            studentCard.innerHTML = `<p><strong>Name:</strong> ${userData.name}</p><p><strong>Email:</strong> ${userData.email}</p><p><strong>Class:</strong> ${userData.class || 'N/A'}</p><hr style="margin: 10px 0;"><h5 style="color: var(--green);">Available Tests & Assignments:</h5>`;
+        // Student Data Loader
+        async function loadStudentData(userData) {
+            const card = document.getElementById("studentDataCard");
+            card.innerHTML = `<p><strong>Name:</strong> ${userData.name}</p><p><strong>Class:</strong> ${userData.class || 'N/A'}</p><hr style="margin: 10px 0;"><strong>Uploaded Tests:</strong>`;
             
             try {
-                const testSnap = await getDocs(collection(db, "Tests"));
-                if (testSnap.empty) {
-                    studentCard.innerHTML += `<p style="color: var(--muted); margin-top: 5px;">No tests uploaded yet.</p>`;
+                const snap = await getDocs(collection(db, "Tests"));
+                if (snap.empty) {
+                    card.innerHTML += `<p style="color: gray;">No tests found.</p>`;
                     return;
                 }
-                testSnap.forEach((tDoc) => {
-                    const tData = tDoc.data();
-                    const div = document.createElement("div");
-                    div.style.padding = "8px";
-                    div.style.marginTop = "5px";
-                    div.style.background = "var(--green-light)";
-                    div.style.borderRadius = "5px";
-                    div.innerHTML = `<strong>${tData.title}</strong> (Class: ${tData.class})<br>Details: ${tData.details}`;
-                    studentCard.appendChild(div);
+                snap.forEach((d) => {
+                    const data = d.data();
+                    card.innerHTML += `<div style="background: white; padding: 8px; margin-top: 5px; border-radius: 5px;"><strong>${data.title}</strong> (Class: ${data.class})<br>${data.details}</div>`;
                 });
-            } catch (err) {
-                studentCard.innerHTML += `<p>Could not load tests.</p>`;
+            } catch (e) {
+                card.innerHTML += `<p>Could not load tests.</p>`;
             }
         }
     </script>

@@ -266,6 +266,16 @@
                 <div id="studentDataCard" class="data-card">
                     Loading profile...
                 </div>
+                <!-- Student Password Change Box -->
+<div style="margin-top: 15px; background: white; padding: 15px; border-radius: 8px;">
+    <h5 style="color: var(--green-dark); margin-bottom: 10px;">Change Your Password</h5>
+    <div class="form-group">
+        <label>New Password</label>
+        <input type="password" id="studentNewPassword" placeholder="Min 6 characters">
+    </div>
+    <button type="button" id="changeStudentPwdBtn" class="btn">Update Password</button>
+    <p id="pwdUpdateStatus" style="margin-top: 5px; font-weight: bold; font-size: 13px;"></p>
+</div>
                 <div id="studentAttendanceCard" class="data-card" style="background: #eef7f2;">
                     Loading attendance record...
                 </div>
@@ -682,6 +692,38 @@
                 attCard.innerHTML += `<p>Could not load attendance.</p>`;
             }
         }
-    </script>
+    // Student Password Change Logic
+document.addEventListener("click", async (e) => {
+    if (e.target && e.target.id === "changeStudentPwdBtn") {
+        const newPass = document.getElementById("studentNewPassword").value;
+        const statusMsg = document.getElementById("pwdUpdateStatus");
+
+        if (!newPass || newPass.length < 6) {
+            statusMsg.style.color = "red";
+            statusMsg.textContent = "Password must be at least 6 characters.";
+            return;
+        }
+
+        statusMsg.style.color = "black";
+        statusMsg.textContent = "Updating password...";
+
+        try {
+            const user = auth.currentUser;
+            if (user) {
+                await updatePassword(user, newPass);
+                statusMsg.style.color = "green";
+                statusMsg.textContent = "Password updated successfully!";
+                document.getElementById("studentNewPassword").value = "";
+            } else {
+                statusMsg.style.color = "red";
+                statusMsg.textContent = "No user logged in.";
+            }
+        } catch (err) {
+            statusMsg.style.color = "red";
+            statusMsg.textContent = "Error: Please re-login and try again.";
+        }
+    }
+});
+        </script>
 </body>
 </html>

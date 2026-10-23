@@ -22,7 +22,6 @@
         .brand { display: flex; align-items: center; gap: 12px; }
         .logo { width: 50px; height: 50px; border-radius: 10px; background: var(--green-dark); color: var(--gold); display: grid; place-items: center; font-weight: bold; font-size: 20px; border: 2px solid var(--gold); }
         
-        /* HERO & PUBLIC FRONT PAGE STYLES */
         .hero { background: linear-gradient(135deg, var(--green-dark), var(--green)); color: white; padding: 60px 20px; text-align: center; border-radius: 0 0 20px 20px; }
         .hero h1 { font-size: 2.2rem; margin-bottom: 10px; color: var(--gold); }
         .hero p { max-width: 600px; margin: 0 auto 20px auto; font-size: 1.1rem; opacity: 0.9; }
@@ -46,9 +45,9 @@
         .data-card { background: var(--green-light); padding: 15px; border-radius: 8px; margin-bottom: 15px; }
         .data-item { background: white; padding: 10px; margin-top: 8px; border-radius: 6px; font-size: 14px; border-left: 4px solid var(--green); display: flex; justify-content: space-between; align-items: center; }
         .radio-group { display: flex; gap: 15px; align-items: center; }
-        .radio-group label { font-weight: normal; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .radio-group label { font-weight: normal; cursor: pointer; display: flex; align- items: center; gap: 5px; }
         
-        footer { background: var(--green-dark); color: white; text-align: center; padding: 20px; margin-top: 50px; }
+        footer { background: var(--green-dark); color: white; text-align: center; padding: 25px 20px; margin-top: 50px; }
     </style>
 </head>
 <body>
@@ -64,7 +63,7 @@
             </div>
         </div>
         <div>
-           <button id="navPortalBtn" class="btn btn-gold" onclick="document.getElementById('frontPageSection').classList.add('hidden'); document.getElementById('loginSection').classList.remove('hidden');">Login to Portal</button>
+           <button id="navPortalBtn" class="btn btn-gold">Login to Portal</button>
         </div>
     </header>
 
@@ -73,7 +72,7 @@
         <div class="hero">
             <h1>Welcome to Little Orien Public School & College</h1>
             <p>Empowering the leaders of tomorrow through quality education, modern technology, and Islamic values.</p>
-            <button id="heroPortalBtn" class="btn btn-gold" style="font-size: 16px; padding: 12px 25px;" onclick="document.getElementById('frontPageSection').classList.add('hidden'); document.getElementById('loginSection').classList.remove('hidden');">Go to Portal Login</button>
+            <button id="heroPortalBtn" class="btn btn-gold" style="font-size: 16px; padding: 12px 25px;">Go to Portal Login</button>
         </div>
 
         <div class="container">
@@ -178,23 +177,24 @@
                     <p id="adminStatus" style="margin-top: 10px; font-weight: bold;"></p>
                 </form>
 
-               <!-- Mark Teacher Attendance Section -->
-<div class="data-card" style="background: #eef7f2;">
-    <h5 style="margin-bottom: 10px; color: var(--green-dark);">Mark Teachers Attendance Today</h5>
-    <div id="teacherAttendanceList">Loading teachers...</div>
-    
-    <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
-        <button type="button" id="saveAllTeachersAttBtn" class="btn">Save All Teachers Attendance</button>
-        <button type="button" id="viewTeacherAttHistoryBtn" class="btn btn-gold">View Attendance History</button>
-    </div>
-    <p id="teacherAttSaveStatus" style="margin-top: 10px; font-weight: bold; font-size: 14px;"></p>
+                <!-- Mark Teacher Attendance Section -->
+                <div class="data-card" style="background: #eef7f2;">
+                    <h5 style="margin-bottom: 10px; color: var(--green-dark);">Mark Teachers Attendance Today</h5>
+                    <div id="teacherAttendanceList">Loading teachers...</div>
+                    
+                    <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button type="button" id="saveAllTeachersAttBtn" class="btn">Save All Teachers Attendance</button>
+                        <button type="button" id="viewTeacherAttHistoryBtn" class="btn btn-gold">View Attendance History</button>
+                    </div>
+                    <p id="teacherAttSaveStatus" style="margin-top: 10px; font-weight: bold; font-size: 14px;"></p>
 
-    <!-- Attendance History Logs -->
-    <div id="teacherAttHistoryBox" class="hidden" style="margin-top: 15px; background: white; padding: 12px; border-radius: 6px;">
-        <h6 style="color: var(--green-dark); margin-bottom: 8px;">Teacher Attendance Logs:</h6>
-        <div id="teacherAttHistoryLogs">Loading logs...</div>
-    </div>
-</div>
+                    <!-- Attendance History Logs -->
+                    <div id="teacherAttHistoryBox" class="hidden" style="margin-top: 15px; background: white; padding: 12px; border-radius: 6px;">
+                        <h6 style="color: var(--green-dark); margin-bottom: 8px;">Teacher Attendance Logs:</h6>
+                        <div id="teacherAttHistoryLogs">Loading logs...</div>
+                    </div>
+                </div>
+
                 <!-- Full System Overview -->
                 <hr style="margin: 20px 0;">
                 <h4 style="color: var(--green-dark); margin-bottom: 15px;">System Data Overview</h4>
@@ -205,7 +205,7 @@
                 </div>
             </div>
 
-           <!-- TEACHER VIEW -->
+            <!-- TEACHER VIEW -->
             <div id="teacherView" class="hidden">
                 <h4 style="margin-bottom: 15px; color: var(--green);">Teacher Attendance & Test Portal</h4>
                 
@@ -228,7 +228,18 @@
                     <!-- STEP 2: Select Subject -->
                     <div class="form-group hidden" id="stepSubjectBox">
                         <label>2. Select Subject</label>
-                        <input type="text" id="stepSubjectInput" placeholder="e.g. Mathematics / Biology">
+                        <select id="stepSubjectInput" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;">
+                            <option value="" disabled selected>-- Choose Subject --</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="Biology">Biology</option>
+                            <option value="Physics">Physics</option>
+                            <option value="Chemistry">Chemistry</option>
+                            <option value="English">English</option>
+                            <option value="Urdu">Urdu</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Islamiat">Islamiat</option>
+                            <option value="Pakistan Studies">Pakistan Studies</option>
+                        </select>
                     </div>
 
                     <!-- STEP 3: Enter Teacher Code -->
@@ -277,17 +288,19 @@
                 <div id="studentDataCard" class="data-card">
                     Loading profile...
                 </div>
+                
                 <!-- Student Password Change Box -->
-<div style="margin-top: 15px; background: white; padding: 15px; border-radius: 8px;">
-    <h5 style="color: var(--green-dark); margin-bottom: 10px;">Change Your Password</h5>
-    <div class="form-group">
-        <label>New Password</label>
-        <input type="password" id="studentNewPassword" placeholder="Min 6 characters">
-    </div>
-    <button type="button" id="changeStudentPwdBtn" class="btn">Update Password</button>
-    <p id="pwdUpdateStatus" style="margin-top: 5px; font-weight: bold; font-size: 13px;"></p>
-</div>
-                <div id="studentAttendanceCard" class="data-card" style="background: #eef7f2;">
+                <div style="margin-top: 15px; background: white; padding: 15px; border-radius: 8px;">
+                    <h5 style="color: var(--green-dark); margin-bottom: 10px;">Change Your Password</h5>
+                    <div class="form-group">
+                        <label>New Password</label>
+                        <input type="password" id="studentNewPassword" placeholder="Min 6 characters">
+                    </div>
+                    <button type="button" id="changeStudentPwdBtn" class="btn">Update Password</button>
+                    <p id="pwdUpdateStatus" style="margin-top: 5px; font-weight: bold; font-size: 13px;"></p>
+                </div>
+
+                <div id="studentAttendanceCard" class="data-card" style="background: #eef7f2; margin-top: 15px;">
                     Loading attendance record...
                 </div>
             </div>
@@ -295,9 +308,6 @@
     </div>
 
     <footer>
-        <p>&copy; Little Orien Public School and College, Naway Kalay</p>
-    </footer>
-    <footer style="background: var(--green-dark); color: white; text-align: center; padding: 25px 20px; margin-top: 50px;">
         <div style="max-width: 800px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-around; gap: 20px; margin-bottom: 15px; text-align: left; font-size: 14px;">
             <div>
                 <h4 style="color: var(--gold); margin-bottom: 8px;">📍 School Address</h4>
@@ -316,11 +326,11 @@
         <p style="font-size: 13px;">&copy; Little Orien Public School and College, Naway Kalay. All Rights Reserved.</p>
     </footer>
 
-   <!-- FIREBASE SCRIPT -->
+    <!-- FIREBASE SCRIPT -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.x.x/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, setPersistence, browserSessionPersistence, updatePassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDoOtmxvdFOyo2e-NmdNMDeSv9smiPbrTM",
@@ -335,7 +345,7 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        // Page Navigation
+        // Page Navigation Logic
         const frontPageSection = document.getElementById("frontPageSection");
         const portalMainContainer = document.getElementById("portalMainContainer");
         const navPortalBtn = document.getElementById("navPortalBtn");
@@ -356,7 +366,7 @@
         if (heroPortalBtn) heroPortalBtn.addEventListener("click", showPortal);
         if (backToHomeBtn) backToHomeBtn.addEventListener("click", showHome);
 
-        // Elements
+        // UI Elements
         const loginSection = document.getElementById("loginSection");
         const dashboardSection = document.getElementById("dashboardSection");
         const loginForm = document.getElementById("loginForm");
@@ -407,19 +417,7 @@
                     if (userDoc.exists()) {
                         const userData = userDoc.data();
                         const userRole = (userData.role || "").toLowerCase();
-                        if (userRole === "teacher") {
-        const teacherClass = userData.class || userData.assignedClass;
-        
-        // 1. Dropdown lock kar dein taake doosri class select na ho sakay
-        const classSelect = document.getElementById("stepClassSelect");
-        if (classSelect && teacherClass) {
-            classSelect.value = teacherClass;
-            classSelect.disabled = true; 
-        }
 
-        // 2. Sirf is teacher ki class ke students load karein
-        loadTeacherAssignedStudents(teacherClass);
-    }
                         if (userGreeting) userGreeting.textContent = `Welcome, ${userData.name} (${userRole.toUpperCase()})`;
 
                         if (adminView) adminView.classList.add("hidden");
@@ -432,6 +430,13 @@
                             loadAllUsersList();
                         } else if (userRole === "teacher") {
                             if (teacherView) teacherView.classList.remove("hidden");
+                            const teacherClass = userData.class || userData.assignedClass;
+                            const classSelect = document.getElementById("stepClassSelect");
+                            if (classSelect && teacherClass) {
+                                classSelect.value = teacherClass;
+                                classSelect.disabled = true; 
+                            }
+                            loadTeacherAssignedStudents(teacherClass);
                         } else if (userRole === "student") {
                             if (studentView) studentView.classList.remove("hidden");
                             loadStudentData(userData, user.email);
@@ -447,6 +452,48 @@
                 if (dashboardSection) dashboardSection.classList.add("hidden");
             }
         });
+
+        // Function to load students ONLY for assigned class
+        async function loadTeacherAssignedStudents(teacherClass) {
+            const studentsContainer = document.getElementById("studentsListContainer"); 
+            if (!studentsContainer) return;
+
+            if (!teacherClass) {
+                studentsContainer.innerHTML = "<p style='color: red;'>آپ کو کوئی کلاس اسائن نہیں کی گئی۔ ایڈمن سے رابطہ کریں۔</p>";
+                return;
+            }
+
+            try {
+                const q = query(
+                    collection(db, "users"),
+                    where("role", "==", "student"),
+                    where("class", "==", teacherClass)
+                );
+
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    studentsContainer.innerHTML = `<p>Class ${teacherClass} میں کوئی اسٹوڈنٹ موجود نہیں ہے۔</p>`;
+                    return;
+                }
+
+                let html = `<h5>Students List - Class ${teacherClass}</h5><ul style="list-style: none; padding: 0;">`;
+                querySnapshot.forEach((docSnap) => {
+                    const student = docSnap.data();
+                    html += `
+                        <li style="padding: 10px; border: 1px solid #ddd; margin-bottom: 5px; border-radius: 5px; display: flex; justify-content: space-between;">
+                            <span><strong>${student.name || 'Student'}</strong> (${student.email || 'N/A'})</span>
+                        </li>
+                    `;
+                });
+                html += `</ul>`;
+                studentsContainer.innerHTML = html;
+
+            } catch (error) {
+                console.error("Error loading class students:", error);
+                studentsContainer.innerHTML = "<p style='color: red;'>Data load کرنے میں مسئلہ ہوا ہے۔</p>";
+            }
+        }
 
         // Admin Create User
         const createUserForm = document.getElementById("createUserForm");
@@ -481,7 +528,7 @@
                     adminStatus.style.color = "green";
                     adminStatus.textContent = `Account created for ${name}!`;
                     createUserForm.reset();
-                    loadAdminTeachersList();
+                    loadAdminTeachersList("admin");
                     loadAllUsersList();
                 } catch (err) {
                     adminStatus.style.color = "red";
@@ -490,7 +537,7 @@
             });
         }
 
-       // Load Teachers List (Admin & Principal can mark and save attendance)
+        // Load Teachers List for Admin / Principal
         async function loadAdminTeachersList(userRole) {
             const container = document.getElementById("teacherAttendanceList");
             if (!container) return;
@@ -509,8 +556,6 @@
                 snap.forEach((d) => {
                     const t = d.data();
                     const tId = d.id;
-
-                    // Allow Admin and Principal to mark attendance
                     const canMark = (userRole === "admin" || userRole === "principal");
                     const controlsHtml = canMark ? `
                         <div class="radio-group">
@@ -530,23 +575,12 @@
                     `;
                 });
 
-                // Show Save Attendance Button for Admin and Principal, but keep Create User Form only for Admin
-                const createUserCard = document.getElementById("createUserForm")?.parentElement;
-                const saveAttBtn = document.getElementById("saveAllTeachersAttBtn");
-
-                if (userRole === "principal") {
-                    if (createUserCard) createUserCard.style.display = "none"; // Principal cannot create users
-                    if (saveAttBtn) saveAttBtn.style.display = "inline-block"; // Principal can save teacher attendance
-                } else if (userRole === "admin") {
-                    if (createUserCard) createUserCard.style.display = "block";
-                    if (saveAttBtn) saveAttBtn.style.display = "inline-block";
-                }
-
             } catch (e) {
                 container.innerHTML = "<p>Error loading teachers.</p>";
             }
         }
-       // Load All Users Grouped by Roles for Admin
+
+        // Load All Users List
         async function loadAllUsersList() {
             const list = document.getElementById("allUsersList");
             if (!list) return;
@@ -561,28 +595,15 @@
                 let teachersHtml = "<h6 style='color: var(--green-dark); margin-top: 10px;'>👨‍🏫 Teachers</h6>";
                 let studentsHtml = "<h6 style='color: var(--green-dark); margin-top: 10px;'>👨‍🎓 Students</h6>";
 
-                let adminCount = 0, teacherCount = 0, studentCount = 0;
-
                 snap.forEach((d) => {
                     const u = d.data();
                     const role = (u.role || "").toLowerCase();
-                    const itemHtml = `<div class="data-item"><div><strong>${u.name}</strong> (${u.email})</div><div>Class: ${u.class || 'N/A'} | Subject/Info: ${u.subject || 'N/A'}</div></div>`;
+                    const itemHtml = `<div class="data-item"><div><strong>${u.name}</strong> (${u.email})</div><div>Class: ${u.class || 'N/A'}</div></div>`;
 
-                    if (role === "admin" || role === "principal") {
-                        adminsHtml += itemHtml;
-                        adminCount++;
-                    } else if (role === "teacher") {
-                        teachersHtml += itemHtml;
-                        teacherCount++;
-                    } else if (role === "student") {
-                        studentsHtml += itemHtml;
-                        studentCount++;
-                    }
+                    if (role === "admin" || role === "principal") adminsHtml += itemHtml;
+                    else if (role === "teacher") teachersHtml += itemHtml;
+                    else if (role === "student") studentsHtml += itemHtml;
                 });
-
-                if (adminCount === 0) adminsHtml += "<p style='color: gray; font-size: 13px;'>No admins/principals found.</p>";
-                if (teacherCount === 0) teachersHtml += "<p style='color: gray; font-size: 13px;'>No teachers found.</p>";
-                if (studentCount === 0) studentsHtml += "<p style='color: gray; font-size: 13px;'>No students found.</p>";
 
                 list.innerHTML = adminsHtml + "<hr style='margin: 15px 0;'>" + teachersHtml + "<hr style='margin: 15px 0;'>" + studentsHtml;
             } catch (e) {
@@ -590,106 +611,7 @@
             }
         }
 
-        // Global Click Handlers (Save All Attendance & View History)
-        document.addEventListener("click", async (e) => {
-            // Save All Teachers Attendance
-            if (e.target && e.target.id === "saveAllTeachersAttBtn") {
-                const statusMsg = document.getElementById("teacherAttSaveStatus");
-                const todayDate = new Date().toLocaleDateString();
-                statusMsg.style.color = "black";
-                statusMsg.textContent = "Saving attendance...";
-
-                try {
-                    const items = document.querySelectorAll("#teacherAttendanceList .data-item");
-                    if (items.length === 0) {
-                        statusMsg.style.color = "red";
-                        statusMsg.textContent = "No teachers to save.";
-                        return;
-                    }
-
-                    for (let item of items) {
-                        const tId = item.getAttribute("data-teacher-id");
-                        const tName = item.getAttribute("data-teacher-name");
-                        const radios = document.getElementsByName(`t_att_${tId}`);
-                        let status = "Present";
-                        for (let r of radios) {
-                            if (r.checked) status = r.value;
-                        }
-
-                        await setDoc(doc(db, "TeacherAttendance", `${tId}_${todayDate.replace(/\//g, '-')}`), {
-                            teacherName: tName,
-                            status: status,
-                            date: todayDate
-                        });
-                    }
-
-                    statusMsg.style.color = "green";
-                    statusMsg.textContent = `Attendance saved successfully for ${todayDate}!`;
-                } catch (err) {
-                    statusMsg.style.color = "red";
-                    statusMsg.textContent = "Error saving attendance: " + err.message;
-                }
-            }
-
-            // View Teacher Attendance History Logs
-            if (e.target && e.target.id === "viewTeacherAttHistoryBtn") {
-                const historyBox = document.getElementById("teacherAttHistoryBox");
-                const historyLogs = document.getElementById("teacherAttHistoryLogs");
-                
-                historyBox.classList.toggle("hidden");
-                if (!historyBox.classList.contains("hidden")) {
-                    historyLogs.innerHTML = "Loading history...";
-                    try {
-                        const snap = await getDocs(collection(db, "TeacherAttendance"));
-                        if (snap.empty) {
-                            historyLogs.innerHTML = "<p style='color: gray;'>No logs recorded yet.</p>";
-                            return;
-                        }
-                        historyLogs.innerHTML = "";
-                        snap.forEach((d) => {
-                            const log = d.data();
-                            let color = log.status === "Present" ? "green" : "red";
-                            historyLogs.innerHTML += `<div style="font-size: 13px; margin-bottom: 5px; border-bottom: 1px #eee solid; padding-bottom: 3px;">Date: <strong>${log.date}</strong> | Teacher: <strong>${log.teacherName}</strong> | Status: <span style="color:${color}; font-weight:bold;">${log.status}</span></div>`;
-                        });
-                    } catch (err) {
-                        historyLogs.innerHTML = "<p style='color: red;'>Failed to load logs.</p>";
-                    }
-                }
-            }
-
-            // Student Password Change
-            if (e.target && e.target.id === "changeStudentPwdBtn") {
-                const newPass = document.getElementById("studentNewPassword").value;
-                const statusMsg = document.getElementById("pwdUpdateStatus");
-
-                if (!newPass || newPass.length < 6) {
-                    statusMsg.style.color = "red";
-                    statusMsg.textContent = "Password must be at least 6 characters.";
-                    return;
-                }
-
-                statusMsg.style.color = "black";
-                statusMsg.textContent = "Updating password...";
-
-                try {
-                    const user = auth.currentUser;
-                    if (user) {
-                        await updatePassword(user, newPass);
-                        statusMsg.style.color = "green";
-                        statusMsg.textContent = "Password updated successfully!";
-                        document.getElementById("studentNewPassword").value = "";
-                    } else {
-                        statusMsg.style.color = "red";
-                        statusMsg.textContent = "No user logged in.";
-                    }
-                } catch (err) {
-                    statusMsg.style.color = "red";
-                    statusMsg.textContent = "Error: Please re-login and try again.";
-                }
-            }
-        });
-
-        // TEACHER WORKFLOW HANDLERS
+        // Teacher Workflow UI Logic
         const stepClassSelect = document.getElementById("stepClassSelect");
         const stepSubjectBox = document.getElementById("stepSubjectBox");
         const stepCodeBox = document.getElementById("stepCodeBox");
@@ -709,8 +631,8 @@
 
         const stepSubInput = document.getElementById("stepSubjectInput");
         if (stepSubInput) {
-            stepSubInput.addEventListener("input", (e) => {
-                if (e.target.value.trim().length > 0) {
+            stepSubInput.addEventListener("change", (e) => {
+                if (e.target.value) {
                     if (stepCodeBox) stepCodeBox.classList.remove("hidden");
                 } else {
                     if (stepCodeBox) stepCodeBox.classList.add("hidden");
@@ -728,25 +650,21 @@
                 container.innerHTML = "Loading students for class " + selectedClass + "...";
 
                 try {
-                    const q = query(collection(db, "users"), where("role", "==", "student"));
+                    const q = query(collection(db, "users"), where("role", "==", "student"), where("class", "==", selectedClass));
                     const snap = await getDocs(q);
 
                     if (snap.empty) {
-                        container.innerHTML = "<p style='color: gray;'>No students registered yet.</p>";
+                        container.innerHTML = "<p style='color: gray;'>No students found for this class.</p>";
                         return;
                     }
 
                     container.innerHTML = "";
-                    let count = 0;
                     snap.forEach((d) => {
                         const st = d.data();
                         const sId = d.id;
-                        count++;
                         container.innerHTML += `
                             <div class="data-item">
-                                <div>
-                                    <strong>${st.name}</strong> (${st.email}) - Class: ${st.class || 'N/A'}
-                                </div>
+                                <div><strong>${st.name}</strong> (${st.email})</div>
                                 <div class="radio-group">
                                     <label><input type="radio" name="st_att_${sId}" value="Present" checked> Present</label>
                                     <label><input type="radio" name="st_att_${sId}" value="Absent"> Absent</label>
@@ -754,216 +672,19 @@
                             </div>
                         `;
                     });
-
-                    if (count === 0) {
-                        container.innerHTML = "<p style='color: gray;'>No students found for this class.</p>";
-                    }
                 } catch (e) {
                     container.innerHTML = "<p>Error loading students list.</p>";
                 }
             });
         }
-        // Function to load students ONLY belonging to the logged-in Teacher's assigned class
-async function loadTeacherAssignedStudents(teacherClass) {
-    const studentsContainer = document.getElementById("studentsListContainer"); 
-    
-    if (!studentsContainer) return;
 
-    if (!teacherClass) {
-        studentsContainer.innerHTML = "<p style='color: red;'>آپ کو کوئی کلاس اسائن نہیں کی گئی۔ ایڈمن سے رابطہ کریں۔</p>";
-        return;
-    }
-
-    try {
-        const q = query(
-            collection(db, "users"),
-            where("role", "==", "student"),
-            where("class", "==", teacherClass)
-        );
-
-        const querySnapshot = await getDocs(q);
-
-        if (querySnapshot.empty) {
-            studentsContainer.innerHTML = `<p>Class ${teacherClass} میں کوئی اسٹوڈنٹ موجود نہیں ہے۔</p>`;
-            return;
-        }
-
-        let html = `<h5>Students List - Class ${teacherClass}</h5><ul style="list-style: none; padding: 0;">`;
-
-        querySnapshot.forEach((docSnap) => {
-            const student = docSnap.data();
-            html += `
-                <li style="padding: 10px; border: 1px solid #ddd; margin-bottom: 5px; border-radius: 5px; display: flex; justify-content: space-between;">
-                    <span><strong>${student.name || 'Student'}</strong> (Roll No: ${student.rollNo || 'N/A'})</span>
-                </li>
-            `;
-        });
-
-        html += `</ul>`;
-        studentsContainer.innerHTML = html;
-
-    } catch (error) {
-        console.error("Error loading class students:", error);
-        studentsContainer.innerHTML = "<p style='color: red;'>Data load کرنے میں مسئلہ ہوا ہے۔</p>";
-    }
-}
-     // Save Student Attendance by Teacher (with One-Time Lock Check)
-        const saveStudentsAttBtn = document.getElementById("saveStudentsAttBtn");
-        if (saveStudentsAttBtn) {
-            saveStudentsAttBtn.addEventListener("click", async () => {
-                const statusMsg = document.getElementById("teacherAttSaveStatus");
-                const selectedClass = stepClassSelect.value;
-                const subject = document.getElementById("stepSubjectInput").value;
-                const todayDate = new Date().toLocaleDateString().replace(/\//g, '-');
-
-                if (!selectedClass || !subject) {
-                    statusMsg.style.color = "red";
-                    statusMsg.textContent = "Please select class and enter subject first.";
-                    return;
-                }
-
-                statusMsg.style.color = "black";
-                statusMsg.textContent = "Checking attendance status...";
-
-                try {
-                    // Check if attendance for this class, subject & date already exists
-                    const attDocId = `${selectedClass}_${subject}_${todayDate}`;
-                    const existingAtt = await getDoc(doc(db, "AttendanceLocks", attDocId));
-
-                    if (existingAtt.exists()) {
-                        statusMsg.style.color = "red";
-                        statusMsg.textContent = `⚠️ Attendance for Class ${selectedClass} (${subject}) is already marked and locked for today!`;
-                        return;
-                    }
-
-                    statusMsg.textContent = "Saving attendance...";
-                    const q = query(collection(db, "users"), where("role", "==", "student"), where("class", "==", selectedClass));
-                    const snap = await getDocs(q);
-
-                    if (snap.empty) {
-                        statusMsg.style.color = "red";
-                        statusMsg.textContent = "No students found in this specific class.";
-                        return;
-                    }
-
-                    // Save each student's attendance
-                    for (let d of snap.docs) {
-                        const sId = d.id;
-                        const st = d.data();
-                        const radios = document.getElementsByName(`st_att_${sId}`);
-                        let status = "Present";
-                        if (radios) {
-                            for (let r of radios) {
-                                if (r.checked) status = r.value;
-                            }
-                        }
-
-                        await setDoc(doc(collection(db, "Attendance")), {
-                            studentName: st.name,
-                            studentEmail: st.email,
-                            class: selectedClass,
-                            subject: subject,
-                            status: status,
-                            date: new Date().toLocaleDateString()
-                        });
-                    }
-
-                    // Lock attendance for today so nobody can overwrite it
-                    await setDoc(doc(db, "AttendanceLocks", attDocId), {
-                        class: selectedClass,
-                        subject: subject,
-                        date: new Date().toLocaleDateString(),
-                        markedBy: auth.currentUser.email
-                    });
-
-                    statusMsg.style.color = "green";
-                    statusMsg.textContent = `✅ Attendance successfully saved and locked for Class ${selectedClass} (${subject})!`;
-                } catch (e) {
-                    statusMsg.style.color = "red";
-                    statusMsg.textContent = "Failed to save attendance: " + e.message;
-                }
-            });
-        }
-        // Teacher Upload Test Logic
-        const uploadTestForm = document.getElementById("uploadTestForm");
-        const teacherStatusMsg = document.getElementById("teacherStatusMsg");
-
-        if (uploadTestForm) {
-            uploadTestForm.addEventListener("submit", async (e) => {
-                e.preventDefault();
-                const title = document.getElementById("testTitle").value;
-                const tClass = document.getElementById("testClass").value;
-                const details = document.getElementById("testDetails").value;
-                const imgUrl = document.getElementById("testImgUrl").value;
-
-                teacherStatusMsg.style.color = "black";
-                teacherStatusMsg.textContent = "Uploading...";
-
-                try {
-                    await setDoc(doc(collection(db, "Tests")), {
-                        title: title,
-                        class: tClass,
-                        details: details,
-                        imgUrl: imgUrl || "",
-                        date: new Date().toLocaleDateString()
-                    });
-                    teacherStatusMsg.style.color = "green";
-                    teacherStatusMsg.textContent = "Test uploaded successfully!";
-                    uploadTestForm.reset();
-                } catch (err) {
-                    teacherStatusMsg.style.color = "red";
-                    teacherStatusMsg.textContent = "Failed to upload.";
-                }
-            });
-        }
-
-        // Student Data & Attendance Loader
+        // Student Profile Loader
         async function loadStudentData(userData, userEmail) {
             const card = document.getElementById("studentDataCard");
-            const attCard = document.getElementById("studentAttendanceCard");
-
             if (card) {
-                card.innerHTML = `<p><strong>Name:</strong> ${userData.name}</p><p><strong>Class:</strong> ${userData.class || 'N/A'}</p><hr style="margin: 10px 0;"><strong>Uploaded Tests & Assignments:</strong>`;
-                
-                try {
-                    const snap = await getDocs(collection(db, "Tests"));
-                    if (snap.empty) {
-                        card.innerHTML += `<p style="color: gray; font-size: 13px;">No tests found.</p>`;
-                    } else {
-                        snap.forEach((d) => {
-                            const data = d.data();
-                            let imgHtml = data.imgUrl ? `<br><a href="${data.imgUrl}" target="_blank" style="color: blue; text-decoration: underline;">🔗 View Attached Picture / Link</a>` : '';
-                            card.innerHTML += `<div class="data-item"><div><strong>${data.title}</strong> (Class: ${data.class})<br>${data.details}${imgHtml}</div></div>`;
-                        });
-                    }
-                } catch (e) {
-                    card.innerHTML += `<p>Could not load tests.</p>`;
-                }
-            }
-
-            // Load Attendance
-            if (attCard) {
-                attCard.innerHTML = `<strong>Your Attendance Record:</strong>`;
-                try {
-                    const attSnap = await getDocs(collection(db, "Attendance"));
-                    let found = false;
-                    attSnap.forEach((d) => {
-                        const att = d.data();
-                        if ((att.studentEmail || "").toLowerCase() === userEmail.toLowerCase() || (att.class || "").toLowerCase() === (userData.class || "").toLowerCase()) {
-                            found = true;
-                            let badgeColor = att.status === "Present" ? "green" : "red";
-                            attCard.innerHTML += `<div class="data-item"><div>Date: ${att.date} | Class: ${att.class} | Subject: ${att.subject || 'N/A'}</div><div>Status: <span style="color: ${badgeColor}; font-weight: bold;">${att.status}</span></div></div>`;
-                        }
-                    });
-                    if (!found) {
-                        attCard.innerHTML += `<p style="color: gray; font-size: 13px;">No attendance record found yet.</p>`;
-                    }
-                } catch (err) {
-                    attCard.innerHTML += `<p>Could not load attendance.</p>`;
-                }
+                card.innerHTML = `<p><strong>Name:</strong> ${userData.name}</p><p><strong>Class:</strong> ${userData.class || 'N/A'}</p>`;
             }
         }
-     
     </script>
-  </body>
+</body>
 </html>

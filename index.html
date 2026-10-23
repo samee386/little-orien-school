@@ -430,13 +430,27 @@
                             loadAllUsersList();
                         } else if (userRole === "teacher") {
                             if (teacherView) teacherView.classList.remove("hidden");
-                            const teacherClass = userData.class || userData.assignedClass;
+                            const teacherClass = userData.class || userData.assignedClass || "";
                             const classSelect = document.getElementById("stepClassSelect");
+                            
                             if (classSelect && teacherClass) {
-                                classSelect.value = teacherClass;
+                                // Flexible match taake spelling ya "Class" ke lafz ka masla na ho
+                                const cleanTC = teacherClass.toLowerCase().replace(/class/g, "").trim();
+                                for (let option of classSelect.options) {
+                                    const optVal = option.value.toLowerCase().replace(/class/g, "").trim();
+                                    if (optVal === cleanTC) {
+                                        classSelect.value = option.value;
+                                        break;
+                                    }
+                                }
+                                // Agar aap chahte hain ke teacher apni class khud change na kar sakay, toh yeh line uncomment rakhein:
                                 classSelect.disabled = true; 
                             }
-                            loadTeacherAssignedStudents(teacherClass);
+                            
+                            if (teacherClass) {
+                                loadTeacherAssignedStudents(teacherClass);
+                            }
+                        }
                         } else if (userRole === "student") {
                             if (studentView) studentView.classList.remove("hidden");
                             loadStudentData(userData, user.email);

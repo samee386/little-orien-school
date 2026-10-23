@@ -320,7 +320,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword, updatePassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.x.x/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDoOtmxvdFOyo2e-NmdNMDeSv9smiPbrTM",
@@ -378,6 +378,7 @@
                 loginStatus.textContent = "Logging in...";
 
                 try {
+                    await setPersistence(auth, browserSessionPersistence);
                     await signInWithEmailAndPassword(auth, email, password);
                     loginStatus.textContent = "";
                 } catch (error) {

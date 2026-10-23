@@ -453,47 +453,56 @@
             }
         });
 
-        // Function to load students ONLY for assigned class
-        async function loadTeacherAssignedStudents(teacherClass) {
-            const studentsContainer = document.getElementById("studentsListContainer"); 
-            if (!studentsContainer) return;
+        // 1. Flexible Teacher Assigned Students Loader
+async function loadTeacherAssignedStudents(teacherClass) {
+    const studentsContainer = document.getElementById("studentsListContainer"); 
+    if (!studentsContainer) return;
 
-            if (!teacherClass) {
-                studentsContainer.innerHTML = "<p style='color: red;'>آپ کو کوئی کلاس اسائن نہیں کی گئی۔ ایڈمن سے رابطہ کریں۔</p>";
-                return;
+    if (!teacherClass) {
+        studentsContainer.innerHTML = "<p style='color: red;'>آپ کو کوئی کلاس اسائن نہیں کی گئی۔ ایڈمن سے رابطہ کریں۔</p>";
+        return;
+    }
+
+    try {
+        // Saare students fetch karein taake hum flexible match kar sakein
+        const q = query(collection(db, "users"), where("role", "==", "student"));
+        const querySnapshot = await getDocs(q);
+
+        // Teacher ki class ko clean aur lowercase kar lein (misal: "10th Class" -> "10th")
+        const cleanTeacherClass = teacherClass.toLowerCase().replace(/class/g, "").trim();
+
+        let matchedStudents = [];
+        querySnapshot.forEach((docSnap) => {
+            const student = docSnap.data();
+            const studentClass = (student.class || "").toLowerCase().replace(/class/g, "").trim();
+            
+            // Agar class match ho jaye (chota ya bara farq ignore ho kar)
+            if (studentClass === cleanTeacherClass) {
+                matchedStudents.push(student);
             }
+        });
 
-            try {
-                const q = query(
-                    collection(db, "users"),
-                    where("role", "==", "student"),
-                    where("class", "==", teacherClass)
-                );
-
-                const querySnapshot = await getDocs(q);
-
-                if (querySnapshot.empty) {
-                    studentsContainer.innerHTML = `<p>Class ${teacherClass} میں کوئی اسٹوڈنٹ موجود نہیں ہے۔</p>`;
-                    return;
-                }
-
-                let html = `<h5>Students List - Class ${teacherClass}</h5><ul style="list-style: none; padding: 0;">`;
-                querySnapshot.forEach((docSnap) => {
-                    const student = docSnap.data();
-                    html += `
-                        <li style="padding: 10px; border: 1px solid #ddd; margin-bottom: 5px; border-radius: 5px; display: flex; justify-content: space-between;">
-                            <span><strong>${student.name || 'Student'}</strong> (${student.email || 'N/A'})</span>
-                        </li>
-                    `;
-                });
-                html += `</ul>`;
-                studentsContainer.innerHTML = html;
-
-            } catch (error) {
-                console.error("Error loading class students:", error);
-                studentsContainer.innerHTML = "<p style='color: red;'>Data load کرنے میں مسئلہ ہوا ہے۔</p>";
-            }
+        if (matchedStudents.length === 0) {
+            studentsContainer.innerHTML = `<p>Class ${teacherClass} میں کوئی اسٹوڈنٹ موجود نہیں ہے۔</p>`;
+            return;
         }
+
+        let html = `<h5>Students List - Class ${teacherClass}</h5><ul style="list-style: none; padding: 0;">`;
+        matchedStudents.forEach((student) => {
+            html += `
+                <li style="padding: 10px; border: 1px solid #ddd; margin-bottom: 5px; border-radius: 5px; display: flex; justify-content: space-between;">
+                    <span><strong>${student.name || 'Student'}</strong> (${student.email || 'N/A'})</span>
+                </li>
+            `;
+        });
+        html += `</ul>`;
+        studentsContainer.innerHTML = html;
+
+    } catch (error) {
+        console.error("Error loading class students:", error);
+        studentsContainer.innerHTML = "<p style='color: red;'>Data load کرنے میں مسئلہ ہوا ہے۔</p>";
+    }
+}
 
         // Admin Create User
         const createUserForm = document.getElementById("createUserForm");
@@ -641,6 +650,7 @@
             });
         }
 
+        // Teacher Workflow: Load Students for Selected Class (Flexible Matching)
         const loadStudentsBtn = document.getElementById("loadStudentsBtn");
         if (loadStudentsBtn) {
             loadStudentsBtn.addEventListener("click", async () => {
@@ -650,34 +660,133 @@
                 container.innerHTML = "Loading students for class " + selectedClass + "...";
 
                 try {
-                    const q = query(collection(db, "users"), where("role", "==", "student"), where("class", "==", selectedClass));
+                    const q = query(collection(db, "users"), where("role", "==", "student"));
                     const snap = await getDocs(q);
 
                     if (snap.empty) {
-                        container.innerHTML = "<p style='color: gray;'>No students found for this class.</p>";
+                        container.innerHTML = "<p style='color: gray;'>No students found.</p>";
                         return;
                     }
 
+                    // Class name normalize karein (e.g., "10th Class" ya "10th" -> "10th")
+                    const cleanSelectedClass = selectedClass.toLowerCase().replace(/class/g, "").trim();
+
                     container.innerHTML = "";
+                    let count = 0;
                     snap.forEach((d) => {
                         const st = d.data();
                         const sId = d.id;
-                        container.innerHTML += `
-                            <div class="data-item">
-                                <div><strong>${st.name}</strong> (${st.email})</div>
-                                <div class="radio-group">
-                                    <label><input type="radio" name="st_att_${sId}" value="Present" checked> Present</label>
-                                    <label><input type="radio" name="st_att_${sId}" value="Absent"> Absent</label>
+                        const stClass = (st.class || "").toLowerCase().replace(/class/g, "").trim();
+
+                        if (stClass === cleanSelectedClass) {
+                            count++;
+                            container.innerHTML += `
+                                <div class="data-item">
+                                    <div><strong>${st.name}</strong> (${st.email})</div>
+                                    <div class="radio-group">
+                                        <label><input type="radio" name="st_att_${sId}" value="Present" checked> Present</label>
+                                        <label><input type="radio" name="st_att_${sId}" value="Absent"> Absent</label>
+                                    </div>
                                 </div>
-                            </div>
-                        `;
+                            `;
+                        }
                     });
+
+                    if (count === 0) {
+                        container.innerHTML = "<p style='color: gray;'>No students found for this class.</p>";
+                    }
                 } catch (e) {
                     container.innerHTML = "<p>Error loading students list.</p>";
                 }
             });
         }
 
+        // Teacher Workflow: Save Student Attendance (Flexible Matching & Lock)
+        const saveStudentsAttBtn = document.getElementById("saveStudentsAttBtn");
+        if (saveStudentsAttBtn) {
+            saveStudentsAttBtn.addEventListener("click", async () => {
+                const statusMsg = document.getElementById("teacherAttSaveStatus");
+                const selectedClass = stepClassSelect.value;
+                const subject = document.getElementById("stepSubjectInput").value;
+                const todayDate = new Date().toLocaleDateString().replace(/\//g, '-');
+
+                if (!selectedClass || !subject) {
+                    statusMsg.style.color = "red";
+                    statusMsg.textContent = "Please select class and enter subject first.";
+                    return;
+                }
+
+                statusMsg.style.color = "black";
+                statusMsg.textContent = "Checking attendance status...";
+
+                try {
+                    const attDocId = `${selectedClass}_${subject}_${todayDate}`;
+                    const existingAtt = await getDoc(doc(db, "AttendanceLocks", attDocId));
+
+                    if (existingAtt.exists()) {
+                        statusMsg.style.color = "red";
+                        statusMsg.textContent = `⚠️ Attendance for Class ${selectedClass} (${subject}) is already marked and locked for today!`;
+                        return;
+                    }
+
+                    statusMsg.textContent = "Saving attendance...";
+                    const q = query(collection(db, "users"), where("role", "==", "student"));
+                    const snap = await getDocs(q);
+
+                    const cleanSelectedClass = selectedClass.toLowerCase().replace(/class/g, "").trim();
+                    let classStudents = [];
+                    snap.forEach((d) => {
+                        const st = d.data();
+                        const stClass = (st.class || "").toLowerCase().replace(/class/g, "").trim();
+                        if (stClass === cleanSelectedClass) {
+                            classStudents.push({ id: d.id, data: st });
+                        }
+                    });
+
+                    if (classStudents.length === 0) {
+                        statusMsg.style.color = "red";
+                        statusMsg.textContent = "No students found in this specific class.";
+                        return;
+                    }
+
+                    // Save attendance for each student
+                    for (let s of classStudents) {
+                        const sId = s.id;
+                        const st = s.data;
+                        const radios = document.getElementsByName(`st_att_${sId}`);
+                        let status = "Present";
+                        if (radios) {
+                            for (let r of radios) {
+                                if (r.checked) status = r.value;
+                            }
+                        }
+
+                        await setDoc(doc(collection(db, "Attendance")), {
+                            studentName: st.name,
+                            studentEmail: st.email,
+                            class: selectedClass,
+                            subject: subject,
+                            status: status,
+                            date: new Date().toLocaleDateString()
+                        });
+                    }
+
+                    // Lock attendance for today
+                    await setDoc(doc(db, "AttendanceLocks", attDocId), {
+                        class: selectedClass,
+                        subject: subject,
+                        date: new Date().toLocaleDateString(),
+                        markedBy: auth.currentUser.email
+                    });
+
+                    statusMsg.style.color = "green";
+                    statusMsg.textContent = `✅ Attendance successfully saved and locked for Class ${selectedClass} (${subject})!`;
+                } catch (e) {
+                    statusMsg.style.color = "red";
+                    statusMsg.textContent = "Failed to save attendance: " + e.message;
+                }
+            });
+        }
         // Student Profile Loader
         async function loadStudentData(userData, userEmail) {
             const card = document.getElementById("studentDataCard");

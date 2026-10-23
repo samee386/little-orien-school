@@ -414,7 +414,7 @@
 
                         if (userRole === "admin" || userRole === "principal") {
                             if (adminView) adminView.classList.remove("hidden");
-                            loadAdminTeachersList();
+                            loadAdminTeachersList(userRole);
                             loadAllUsersList();
                         } else if (userRole === "teacher") {
                             if (teacherView) teacherView.classList.remove("hidden");
@@ -476,8 +476,8 @@
             });
         }
 
-        // Load Teachers List (Name Only - No Email)
-        async function loadAdminTeachersList() {
+       // Load Teachers List (Admin & Principal can mark and save attendance)
+        async function loadAdminTeachersList(userRole) {
             const container = document.getElementById("teacherAttendanceList");
             if (!container) return;
             container.innerHTML = "Loading teachers...";
@@ -496,25 +496,43 @@
                     const t = d.data();
                     const tId = d.id;
 
+                    // Allow Admin and Principal to mark attendance
+                    const canMark = (userRole === "admin" || userRole === "principal");
+                    const controlsHtml = canMark ? `
+                        <div class="radio-group">
+                            <label><input type="radio" name="t_att_${tId}" value="Present" checked> Present</label>
+                            <label><input type="radio" name="t_att_${tId}" value="Absent"> Absent</label>
+                        </div>
+                    ` : `<span style="color: var(--green-dark); font-weight: bold; font-size: 13px;">👁️ View Mode</span>`;
+
                     container.innerHTML += `
                         <div class="data-item" data-teacher-id="${tId}" data-teacher-name="${t.name}">
                             <div>
                                 <strong>${t.name}</strong><br>
                                 <small style="color: var(--muted);">Assigned Class: ${t.class || 'N/A'} | Subject/Code: ${t.subject || 'N/A'}</small>
                             </div>
-                            <div class="radio-group">
-                                <label><input type="radio" name="t_att_${tId}" value="Present" checked> Present</label>
-                                <label><input type="radio" name="t_att_${tId}" value="Absent"> Absent</label>
-                            </div>
+                            ${controlsHtml}
                         </div>
                     `;
                 });
+
+                // Show Save Attendance Button for Admin and Principal, but keep Create User Form only for Admin
+                const createUserCard = document.getElementById("createUserForm")?.parentElement;
+                const saveAttBtn = document.getElementById("saveAllTeachersAttBtn");
+
+                if (userRole === "principal") {
+                    if (createUserCard) createUserCard.style.display = "none"; // Principal cannot create users
+                    if (saveAttBtn) saveAttBtn.style.display = "inline-block"; // Principal can save teacher attendance
+                } else if (userRole === "admin") {
+                    if (createUserCard) createUserCard.style.display = "block";
+                    if (saveAttBtn) saveAttBtn.style.display = "inline-block";
+                }
+
             } catch (e) {
                 container.innerHTML = "<p>Error loading teachers.</p>";
             }
         }
-
-        // Load All Users for Admin
+       // Load All Users Grouped by Roles for Admin
         async function loadAllUsersList() {
             const list = document.getElementById("allUsersList");
             if (!list) return;
@@ -524,11 +542,35 @@
                     list.innerHTML = "<p style='color: gray;'>No users found.</p>";
                     return;
                 }
-                list.innerHTML = "";
+
+                let adminsHtml = "<h6 style='color: var(--green-dark); margin-top: 10px;'>👑 Admins & Principals</h6>";
+                let teachersHtml = "<h6 style='color: var(--green-dark); margin-top: 10px;'>👨‍🏫 Teachers</h6>";
+                let studentsHtml = "<h6 style='color: var(--green-dark); margin-top: 10px;'>👨‍🎓 Students</h6>";
+
+                let adminCount = 0, teacherCount = 0, studentCount = 0;
+
                 snap.forEach((d) => {
                     const u = d.data();
-                    list.innerHTML += `<div class="data-item"><div><strong>${u.name}</strong> (${u.email}) - <span style="text-transform: uppercase; font-weight: bold; color: var(--green);">${u.role}</span></div><div>Class: ${u.class || 'N/A'} | Info: ${u.subject || 'N/A'}</div></div>`;
+                    const role = (u.role || "").toLowerCase();
+                    const itemHtml = `<div class="data-item"><div><strong>${u.name}</strong> (${u.email})</div><div>Class: ${u.class || 'N/A'} | Subject/Info: ${u.subject || 'N/A'}</div></div>`;
+
+                    if (role === "admin" || role === "principal") {
+                        adminsHtml += itemHtml;
+                        adminCount++;
+                    } else if (role === "teacher") {
+                        teachersHtml += itemHtml;
+                        teacherCount++;
+                    } else if (role === "student") {
+                        studentsHtml += itemHtml;
+                        studentCount++;
+                    }
                 });
+
+                if (adminCount === 0) adminsHtml += "<p style='color: gray; font-size: 13px;'>No admins/principals found.</p>";
+                if (teacherCount === 0) teachersHtml += "<p style='color: gray; font-size: 13px;'>No teachers found.</p>";
+                if (studentCount === 0) studentsHtml += "<p style='color: gray; font-size: 13px;'>No students found.</p>";
+
+                list.innerHTML = adminsHtml + "<hr style='margin: 15px 0;'>" + teachersHtml + "<hr style='margin: 15px 0;'>" + studentsHtml;
             } catch (e) {
                 list.innerHTML = "<p>Error loading users.</p>";
             }
@@ -708,29 +750,55 @@
             });
         }
 
-        // Save Student Attendance by Teacher
+     // Save Student Attendance by Teacher (with One-Time Lock Check)
         const saveStudentsAttBtn = document.getElementById("saveStudentsAttBtn");
         if (saveStudentsAttBtn) {
             saveStudentsAttBtn.addEventListener("click", async () => {
                 const statusMsg = document.getElementById("teacherAttSaveStatus");
                 const selectedClass = stepClassSelect.value;
                 const subject = document.getElementById("stepSubjectInput").value;
-                const todayDate = new Date().toLocaleDateString();
+                const todayDate = new Date().toLocaleDateString().replace(/\//g, '-');
+
+                if (!selectedClass || !subject) {
+                    statusMsg.style.color = "red";
+                    statusMsg.textContent = "Please select class and enter subject first.";
+                    return;
+                }
 
                 statusMsg.style.color = "black";
-                statusMsg.textContent = "Saving attendance...";
+                statusMsg.textContent = "Checking attendance status...";
 
                 try {
-                    const q = query(collection(db, "users"), where("role", "==", "student"));
+                    // Check if attendance for this class, subject & date already exists
+                    const attDocId = `${selectedClass}_${subject}_${todayDate}`;
+                    const existingAtt = await getDoc(doc(db, "AttendanceLocks", attDocId));
+
+                    if (existingAtt.exists()) {
+                        statusMsg.style.color = "red";
+                        statusMsg.textContent = `⚠️ Attendance for Class ${selectedClass} (${subject}) is already marked and locked for today!`;
+                        return;
+                    }
+
+                    statusMsg.textContent = "Saving attendance...";
+                    const q = query(collection(db, "users"), where("role", "==", "student"), where("class", "==", selectedClass));
                     const snap = await getDocs(q);
 
-                    snap.forEach(async (d) => {
+                    if (snap.empty) {
+                        statusMsg.style.color = "red";
+                        statusMsg.textContent = "No students found in this specific class.";
+                        return;
+                    }
+
+                    // Save each student's attendance
+                    for (let d of snap.docs) {
                         const sId = d.id;
                         const st = d.data();
                         const radios = document.getElementsByName(`st_att_${sId}`);
                         let status = "Present";
-                        for (let r of radios) {
-                            if (r.checked) status = r.value;
+                        if (radios) {
+                            for (let r of radios) {
+                                if (r.checked) status = r.value;
+                            }
                         }
 
                         await setDoc(doc(collection(db, "Attendance")), {
@@ -739,19 +807,26 @@
                             class: selectedClass,
                             subject: subject,
                             status: status,
-                            date: todayDate
+                            date: new Date().toLocaleDateString()
                         });
+                    }
+
+                    // Lock attendance for today so nobody can overwrite it
+                    await setDoc(doc(db, "AttendanceLocks", attDocId), {
+                        class: selectedClass,
+                        subject: subject,
+                        date: new Date().toLocaleDateString(),
+                        markedBy: auth.currentUser.email
                     });
 
                     statusMsg.style.color = "green";
-                    statusMsg.textContent = "Attendance saved successfully for Class " + selectedClass + "!";
+                    statusMsg.textContent = `✅ Attendance successfully saved and locked for Class ${selectedClass} (${subject})!`;
                 } catch (e) {
                     statusMsg.style.color = "red";
-                    statusMsg.textContent = "Failed to save attendance.";
+                    statusMsg.textContent = "Failed to save attendance: " + e.message;
                 }
             });
         }
-
         // Teacher Upload Test Logic
         const uploadTestForm = document.getElementById("uploadTestForm");
         const teacherStatusMsg = document.getElementById("teacherStatusMsg");

@@ -212,7 +212,33 @@
                 <!-- STEP-BY-STEP WORKFLOW FORM FOR TEACHER -->
                 <div style="background: var(--green-light); padding: 20px; border-radius: 8px; margin-bottom: 20px;">
                     <h5 style="margin-bottom: 15px; color: var(--green-dark);">Mark Students Attendance Workflow</h5>
-                    
+                    <h4 style="margin-bottom: 15px; color: var(--green);">Teacher Attendance & Test Portal</h4>
+
+    <!-- Subject Selection Dropdown -->
+    <div class="form-group" style="margin-bottom: 15px;">
+        <label for="marksSubjectSelect"><strong>Select Subject:</strong></label>
+        <select id="marksSubjectSelect" class="form-control" style="padding: 8px; width: 100%; border-radius: 5px; border: 1px solid #ccc;">
+            <option value="" disabled selected>-- Choose Subject --</option>
+            <option value="Mathematics">Mathematics</option>
+            <option value="Biology">Biology</option>
+            <option value="Physics">Physics</option>
+            <option value="Chemistry">Chemistry</option>
+            <option value="English">English</option>
+            <option value="Urdu">Urdu</option>
+            <option value="Computer Science">Computer Science</option>
+            <option value="Islamiat">Islamiat</option>
+            <option value="Pakistan Studies">Pakistan Studies</option>
+        </select>
+    </div>
+
+    <!-- STEP-BY-STEP WORKFLOW FORM FOR TEACHER -->
+    <div style="background: var(--green-light); padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+        <h5 style="margin-bottom: 15px; color: var(--green-dark);">Mark Students Attendance Workflow</h5>
+
+        <!-- STEP 1: Select Class -->
+        <div class="form-group">
+            <label>1. Select Class</label>
+            <select id="stepClassSelect">
                     <!-- STEP 1: Select Class -->
                     <div class="form-group">
                         <label>1. Select Class</label>
@@ -407,6 +433,19 @@
                     if (userDoc.exists()) {
                         const userData = userDoc.data();
                         const userRole = (userData.role || "").toLowerCase();
+                        if (userRole === "teacher") {
+        const teacherClass = userData.class || userData.assignedClass;
+        
+        // 1. Dropdown lock kar dein taake doosri class select na ho sakay
+        const classSelect = document.getElementById("stepClassSelect");
+        if (classSelect && teacherClass) {
+            classSelect.value = teacherClass;
+            classSelect.disabled = true; 
+        }
+
+        // 2. Sirf is teacher ki class ke students load karein
+        loadTeacherAssignedStudents(teacherClass);
+    }
                         if (userGreeting) userGreeting.textContent = `Welcome, ${userData.name} (${userRole.toUpperCase()})`;
 
                         if (adminView) adminView.classList.add("hidden");
@@ -750,7 +789,50 @@
                 }
             });
         }
+        // Function to load students ONLY belonging to the logged-in Teacher's assigned class
+async function loadTeacherAssignedStudents(teacherClass) {
+    const studentsContainer = document.getElementById("studentsListContainer"); 
+    
+    if (!studentsContainer) return;
 
+    if (!teacherClass) {
+        studentsContainer.innerHTML = "<p style='color: red;'>آپ کو کوئی کلاس اسائن نہیں کی گئی۔ ایڈمن سے رابطہ کریں۔</p>";
+        return;
+    }
+
+    try {
+        const q = query(
+            collection(db, "users"),
+            where("role", "==", "student"),
+            where("class", "==", teacherClass)
+        );
+
+        const querySnapshot = await getDocs(q);
+
+        if (querySnapshot.empty) {
+            studentsContainer.innerHTML = `<p>Class ${teacherClass} میں کوئی اسٹوڈنٹ موجود نہیں ہے۔</p>`;
+            return;
+        }
+
+        let html = `<h5>Students List - Class ${teacherClass}</h5><ul style="list-style: none; padding: 0;">`;
+
+        querySnapshot.forEach((docSnap) => {
+            const student = docSnap.data();
+            html += `
+                <li style="padding: 10px; border: 1px solid #ddd; margin-bottom: 5px; border-radius: 5px; display: flex; justify-content: space-between;">
+                    <span><strong>${student.name || 'Student'}</strong> (Roll No: ${student.rollNo || 'N/A'})</span>
+                </li>
+            `;
+        });
+
+        html += `</ul>`;
+        studentsContainer.innerHTML = html;
+
+    } catch (error) {
+        console.error("Error loading class students:", error);
+        studentsContainer.innerHTML = "<p style='color: red;'>Data load کرنے میں مسئلہ ہوا ہے۔</p>";
+    }
+}
      // Save Student Attendance by Teacher (with One-Time Lock Check)
         const saveStudentsAttBtn = document.getElementById("saveStudentsAttBtn");
         if (saveStudentsAttBtn) {

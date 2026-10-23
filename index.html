@@ -547,4 +547,264 @@
                         subject: subjectInfo
                     });
 
-                    admin
+                    adminStatus.style.color = "green";
+                    adminStatus.textContent = `Account created for ${name}!`;
+                    createUserForm.reset();
+                    loadAdminTeachersList("admin");
+                    loadAllUsersList();
+                } catch (err) {
+                    adminStatus.style.color = "red";
+                    adminStatus.textContent = "Error: " + err.message;
+                }
+            });
+        }
+
+        // Load Teachers List for Admin / Principal
+        async function loadAdminTeachersList(userRole) {
+            const container = document.getElementById("teacherAttendanceList");
+            if (!container) return;
+            container.innerHTML = "Loading teachers...";
+
+            try {
+                const q = query(collection(db, "users"), where("role", "==", "teacher"));
+                const snap = await getDocs(q);
+
+                if (snap.empty) {
+                    container.innerHTML = "<p style='color: gray;'>No teachers registered yet.</p>";
+                    return;
+                }
+
+                container.innerHTML = "";
+                snap.forEach((d) => {
+                    const t = d.data();
+                    const tId = d.id;
+                    const canMark = (userRole === "admin" || userRole === "principal");
+                    const controlsHtml = canMark ? `
+                        <div class="radio-group">
+                            <label><input type="radio" name="t_att_${tId}" value="Present" checked> Present</label>
+                            <label><input type="radio" name="t_att_${tId}" value="Absent"> Absent</label>
+                        </div>
+                    ` : `<span style="color: var(--green-dark); font-weight: bold; font-size: 13px;">👁️ View Mode</span>`;
+
+                    container.innerHTML += `
+                        <div class="data-item" data-teacher-id="${tId}" data-teacher-name="${t.name}">
+                            <div>
+                                <strong>${t.name}</strong><br>
+                                <small style="color: var(--muted);">Assigned Class: ${t.class || 'N/A'} | Subject/Code: ${t.subject || 'N/A'}</small>
+                            </div>
+                            ${controlsHtml}
+                        </div>
+                    `;
+                });
+
+            } catch (e) {
+                container.innerHTML = "<p>Error loading teachers.</p>";
+            }
+        }
+
+        // Load All Users List
+        async function loadAllUsersList() {
+            const list = document.getElementById("allUsersList");
+            if (!list) return;
+            try {
+                const snap = await getDocs(collection(db, "users"));
+                if (snap.empty) {
+                    list.innerHTML = "<p style='color: gray;'>No users found.</p>";
+                    return;
+                }
+
+                let adminsHtml = "<h6 style='color: var(--green-dark); margin-top: 10px;'>👑 Admins & Principals</h6>";
+                let teachersHtml = "<h6 style='color: var(--green-dark); margin-top: 10px;'>👨‍🏫 Teachers</h6>";
+                let studentsHtml = "<h6 style='color: var(--green-dark); margin-top: 10px;'>👨‍🎓 Students</h6>";
+
+                snap.forEach((d) => {
+                    const u = d.data();
+                    const role = (u.role || "").toLowerCase();
+                    const itemHtml = `<div class="data-item"><div><strong>${u.name}</strong> (${u.email})</div><div>Class: ${u.class || 'N/A'}</div></div>`;
+
+                    if (role === "admin" || role === "principal") adminsHtml += itemHtml;
+                    else if (role === "teacher") teachersHtml += itemHtml;
+                    else if (role === "student") studentsHtml += itemHtml;
+                });
+
+                list.innerHTML = adminsHtml + "<hr style='margin: 15px 0;'>" + teachersHtml + "<hr style='margin: 15px 0;'>" + studentsHtml;
+            } catch (e) {
+                list.innerHTML = "<p>Error loading users.</p>";
+            }
+        }
+
+        // Teacher Workflow UI Logic
+        const stepClassSelect = document.getElementById("stepClassSelect");
+        const stepSubjectBox = document.getElementById("stepSubjectBox");
+        const stepCodeBox = document.getElementById("stepCodeBox");
+        const stepStudentsBox = document.getElementById("stepStudentsBox");
+
+        if (stepClassSelect) {
+            stepClassSelect.addEventListener("change", () => {
+                if (stepClassSelect.value) {
+                    if (stepSubjectBox) stepSubjectBox.classList.remove("hidden");
+                } else {
+                    if (stepSubjectBox) stepSubjectBox.classList.add("hidden");
+                    if (stepCodeBox) stepCodeBox.classList.add("hidden");
+                    if (stepStudentsBox) stepStudentsBox.classList.add("hidden");
+                }
+            });
+        }
+
+        const stepSubInput = document.getElementById("stepSubjectInput");
+        if (stepSubInput) {
+            stepSubInput.addEventListener("change", (e) => {
+                if (e.target.value) {
+                    if (stepCodeBox) stepCodeBox.classList.remove("hidden");
+                } else {
+                    if (stepCodeBox) stepCodeBox.classList.add("hidden");
+                    if (stepStudentsBox) stepStudentsBox.classList.add("hidden");
+                }
+            });
+        }
+
+        // Teacher Workflow: Load Students for Selected Class (Flexible Matching)
+        const loadStudentsBtn = document.getElementById("loadStudentsBtn");
+        if (loadStudentsBtn) {
+            loadStudentsBtn.addEventListener("click", async () => {
+                const selectedClass = stepClassSelect.value;
+                const container = document.getElementById("studentsListContainer");
+                if (stepStudentsBox) stepStudentsBox.classList.remove("hidden");
+                container.innerHTML = "Loading students for class " + selectedClass + "...";
+
+                try {
+                    const q = query(collection(db, "users"), where("role", "==", "student"));
+                    const snap = await getDocs(q);
+
+                    if (snap.empty) {
+                        container.innerHTML = "<p style='color: gray;'>No students found.</p>";
+                        return;
+                    }
+
+                    const cleanSelectedClass = selectedClass.toLowerCase().replace(/class/g, "").trim();
+
+                    container.innerHTML = "";
+                    let count = 0;
+                    snap.forEach((d) => {
+                        const st = d.data();
+                        const sId = d.id;
+                        const stClass = (st.class || "").toLowerCase().replace(/class/g, "").trim();
+
+                        if (stClass === cleanSelectedClass) {
+                            count++;
+                            container.innerHTML += `
+                                <div class="data-item">
+                                    <div><strong>${st.name}</strong> (${st.email})</div>
+                                    <div class="radio-group">
+                                        <label><input type="radio" name="st_att_${sId}" value="Present" checked> Present</label>
+                                        <label><input type="radio" name="st_att_${sId}" value="Absent"> Absent</label>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    });
+
+                    if (count === 0) {
+                        container.innerHTML = "<p style='color: gray;'>No students found for this class.</p>";
+                    }
+                } catch (e) {
+                    container.innerHTML = "<p>Error loading students list.</p>";
+                }
+            });
+        }
+
+        // Teacher Workflow: Save Student Attendance (Flexible Matching & Lock)
+        const saveStudentsAttBtn = document.getElementById("saveStudentsAttBtn");
+        if (saveStudentsAttBtn) {
+            saveStudentsAttBtn.addEventListener("click", async () => {
+                const statusMsg = document.getElementById("teacherAttSaveStatus");
+                const selectedClass = stepClassSelect.value;
+                const subject = document.getElementById("stepSubjectInput").value;
+                const todayDate = new Date().toLocaleDateString().replace(/\//g, '-');
+
+                if (!selectedClass || !subject) {
+                    statusMsg.style.color = "red";
+                    statusMsg.textContent = "Please select class and enter subject first.";
+                    return;
+                }
+
+                statusMsg.style.color = "black";
+                statusMsg.textContent = "Checking attendance status...";
+
+                try {
+                    const attDocId = `${selectedClass}_${subject}_${todayDate}`;
+                    const existingAtt = await getDoc(doc(db, "AttendanceLocks", attDocId));
+
+                    if (existingAtt.exists()) {
+                        statusMsg.style.color = "red";
+                        statusMsg.textContent = `⚠️ Attendance for Class ${selectedClass} (${subject}) is already marked and locked for today!`;
+                        return;
+                    }
+
+                    statusMsg.textContent = "Saving attendance...";
+                    const q = query(collection(db, "users"), where("role", "==", "student"));
+                    const snap = await getDocs(q);
+
+                    const cleanSelectedClass = selectedClass.toLowerCase().replace(/class/g, "").trim();
+                    let classStudents = [];
+                    snap.forEach((d) => {
+                        const st = d.data();
+                        const stClass = (st.class || "").toLowerCase().replace(/class/g, "").trim();
+                        if (stClass === cleanSelectedClass) {
+                            classStudents.push({ id: d.id, data: st });
+                        }
+                    });
+
+                    if (classStudents.length === 0) {
+                        statusMsg.style.color = "red";
+                        statusMsg.textContent = "No students found in this specific class.";
+                        return;
+                    }
+
+                    for (let s of classStudents) {
+                        const sId = s.id;
+                        const st = s.data;
+                        const radios = document.getElementsByName(`st_att_${sId}`);
+                        let status = "Present";
+                        if (radios) {
+                            for (let r of radios) {
+                                if (r.checked) status = r.value;
+                            }
+                        }
+
+                        await setDoc(doc(collection(db, "Attendance")), {
+                            studentName: st.name,
+                            studentEmail: st.email,
+                            class: selectedClass,
+                            subject: subject,
+                            status: status,
+                            date: new Date().toLocaleDateString()
+                        });
+                    }
+
+                    await setDoc(doc(db, "AttendanceLocks", attDocId), {
+                        class: selectedClass,
+                        subject: subject,
+                        date: new Date().toLocaleDateString(),
+                        markedBy: auth.currentUser.email
+                    });
+
+                    statusMsg.style.color = "green";
+                    statusMsg.textContent = `✅ Attendance successfully saved and locked for Class ${selectedClass} (${subject})!`;
+                } catch (e) {
+                    statusMsg.style.color = "red";
+                    statusMsg.textContent = "Failed to save attendance: " + e.message;
+                }
+            });
+        }
+
+        // Student Profile Loader
+        async function loadStudentData(userData, userEmail) {
+            const card = document.getElementById("studentDataCard");
+            if (card) {
+                card.innerHTML = `<p><strong>Name:</strong> ${userData.name}</p><p><strong>Class:</strong> ${userData.class || 'N/A'}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>

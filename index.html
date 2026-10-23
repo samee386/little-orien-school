@@ -447,7 +447,7 @@
                                         break;
                                     }
                                 }
-                                classSelect.disabled = true; 
+                                classSelect.disabled = false; 
                             }
                             
                             if (teacherClass) {
@@ -469,17 +469,22 @@
             }
         });
 
-        // 1. Flexible Teacher Assigned Students Loader
+      // Flexible Teacher Assigned Students Loader
         async function loadTeacherAssignedStudents(teacherClass) {
             const studentsContainer = document.getElementById("studentsListContainer"); 
+            const stepStudentsBox = document.getElementById("stepStudentsBox");
             if (!studentsContainer) return;
 
             if (!teacherClass) {
-                studentsContainer.innerHTML = "<p style='color: red;'>آپ کو کوئی کلاس اسائن نہیں کی گئی۔ ایڈمن سے رابطہ کریں۔</p>";
+                studentsContainer.innerHTML = "<p style='color: red;'>Aap ko koi class assign nahi ki gayi. Admin se rabta karein.</p>";
                 return;
             }
 
             try {
+                // Students container box ko unhide karein
+                if (stepStudentsBox) stepStudentsBox.classList.remove("hidden");
+                studentsContainer.innerHTML = "Loading students list...";
+
                 const q = query(collection(db, "users"), where("role", "==", "student"));
                 const querySnapshot = await getDocs(q);
 
@@ -488,35 +493,38 @@
                 let matchedStudents = [];
                 querySnapshot.forEach((docSnap) => {
                     const student = docSnap.data();
+                    const studentId = docSnap.id;
                     const studentClass = (student.class || "").toLowerCase().replace(/class/g, "").trim();
                     
                     if (studentClass === cleanTeacherClass) {
-                        matchedStudents.push(student);
+                        matchedStudents.push({ id: studentId, ...student });
                     }
                 });
 
                 if (matchedStudents.length === 0) {
-                    studentsContainer.innerHTML = `<p>Class ${teacherClass} میں کوئی اسٹوڈنٹ موجود نہیں ہے۔</p>`;
+                    studentsContainer.innerHTML = `<p>Class ${teacherClass} mein koi student mojood nahi hai.</p>`;
                     return;
                 }
 
-                let html = `<h5>Students List - Class ${teacherClass}</h5><ul style="list-style: none; padding: 0;">`;
+                let html = `<h5>Students List - Class ${teacherClass}</h5>`;
                 matchedStudents.forEach((student) => {
                     html += `
-                        <li style="padding: 10px; border: 1px solid #ddd; margin-bottom: 5px; border-radius: 5px; display: flex; justify-content: space-between;">
-                            <span><strong>${student.name || 'Student'}</strong> (${student.email || 'N/A'})</span>
-                        </li>
+                        <div class="data-item">
+                            <div><strong>${student.name || 'Student'}</strong> (${student.email || 'N/A'})</div>
+                            <div class="radio-group">
+                                <label><input type="radio" name="st_att_${student.id}" value="Present" checked> Present</label>
+                                <label><input type="radio" name="st_att_${student.id}" value="Absent"> Absent</label>
+                            </div>
+                        </div>
                     `;
                 });
-                html += `</ul>`;
                 studentsContainer.innerHTML = html;
 
             } catch (error) {
                 console.error("Error loading class students:", error);
-                studentsContainer.innerHTML = "<p style='color: red;'>Data load کرنے میں مسئلہ ہوا ہے۔</p>";
+                studentsContainer.innerHTML = "<p style='color: red;'>Data load karne mein masla hua hai.</p>";
             }
         }
-
         // Admin Create User
         const createUserForm = document.getElementById("createUserForm");
         const adminStatus = document.getElementById("adminStatus");
@@ -639,10 +647,13 @@
         const stepCodeBox = document.getElementById("stepCodeBox");
         const stepStudentsBox = document.getElementById("stepStudentsBox");
 
-        if (stepClassSelect) {
+     if (stepClassSelect) {
             stepClassSelect.addEventListener("change", () => {
-                if (stepClassSelect.value) {
+                const selectedClass = stepClassSelect.value;
+                if (selectedClass) {
                     if (stepSubjectBox) stepSubjectBox.classList.remove("hidden");
+                    // Class change hote hi students auto-load honge
+                    loadTeacherAssignedStudents(selectedClass);
                 } else {
                     if (stepSubjectBox) stepSubjectBox.classList.add("hidden");
                     if (stepCodeBox) stepCodeBox.classList.add("hidden");

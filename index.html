@@ -64,7 +64,7 @@
             </div>
         </div>
         <div>
-            <button id="navPortalBtn" class="btn btn-gold">Login to Portal</button>
+           <button id="navPortalBtn" class="btn btn-gold" onclick="openLoginSection()">Login to Portal</button>
         </div>
     </header>
 
@@ -73,7 +73,7 @@
         <div class="hero">
             <h1>Welcome to Little Orien Public School & College</h1>
             <p>Empowering the leaders of tomorrow through quality education, modern technology, and Islamic values.</p>
-            <button id="heroPortalBtn" class="btn btn-gold" style="font-size: 16px; padding: 12px 25px;">Go to Portal Login</button>
+            <button id="heroPortalBtn" class="btn btn-gold" style="font-size: 16px; padding: 12px 25px;" onclick="openLoginSection()">Go to Portal Login</button>
         </div>
 
         <div class="container">
@@ -989,6 +989,26 @@ async function loadTeacherAssignedStudents(teacherClass) {
                 }
             }
         }
+        // Function to show Login Section when Portal Buttons are clicked
+function openLoginSection() {
+    const frontPage = document.getElementById("frontPageSection");
+    const loginSection = document.getElementById("loginSection");
+
+    if (frontPage) frontPage.classList.add("hidden");
+    if (loginSection) loginSection.classList.remove("hidden");
+}
+
+// Nav Portal Button Click Handler
+const navPortalBtn = document.getElementById("navPortalBtn");
+if (navPortalBtn) {
+    navPortalBtn.addEventListener("click", openLoginSection);
+}
+
+// Hero Portal Button Click Handler
+const heroPortalBtn = document.getElementById("heroPortalBtn");
+if (heroPortalBtn) {
+    heroPortalBtn.addEventListener("click", openLoginSection);
+}
     </script>
-</body>
+  </body>
 </html>

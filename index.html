@@ -97,8 +97,8 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Class / Info</label>
-                        <input type="text" id="newUserClass" placeholder="e.g. 10th Class">
+                        <label>Class / Info (e.g. 10th)</label>
+                        <input type="text" id="newUserClass" placeholder="e.g. 10th">
                     </div>
                     <button type="submit" class="btn">Create Account</button>
                 </form>
@@ -107,8 +107,11 @@
 
             <!-- TEACHER VIEW -->
             <div id="teacherView" class="hidden">
-                <h4 style="margin-bottom: 15px; color: var(--green);">Teacher Dashboard: Upload Test</h4>
-                <form id="uploadTestForm" style="max-width: 450px; background: var(--green-light); padding: 15px; border-radius: 8px;">
+                <h4 style="margin-bottom: 15px; color: var(--green);">Teacher Dashboard</h4>
+                
+                <!-- Upload Test / Assignment with Image Link -->
+                <form id="uploadTestForm" style="max-width: 450px; background: var(--green-light); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                    <h5 style="margin-bottom: 10px; color: var(--green-dark);">Upload Test / Assignment & Picture Link</h5>
                     <div class="form-group">
                         <label>Test Title</label>
                         <input type="text" id="testTitle" required placeholder="Maths Quiz">
@@ -118,19 +121,48 @@
                         <input type="text" id="testClass" required placeholder="10th">
                     </div>
                     <div class="form-group">
-                        <label>Details / Link</label>
-                        <input type="text" id="testDetails" required placeholder="Details...">
+                        <label>Details / Instructions</label>
+                        <input type="text" id="testDetails" required placeholder="Syllabus details...">
+                    </div>
+                    <div class="form-group">
+                        <label>Picture / Question Image Link (Optional)</label>
+                        <input type="url" id="testImgUrl" placeholder="https://imgur.com/... or Google Drive link">
                     </div>
                     <button type="submit" class="btn">Upload Test</button>
                 </form>
-                <p id="teacherStatusMsg" style="margin-top: 10px; font-weight: bold;"></p>
+                <p id="teacherStatusMsg" style="margin-top: 5px; font-weight: bold;"></p>
+
+                <!-- Mark Attendance Form -->
+                <form id="uploadAttendanceForm" style="max-width: 450px; background: #eef7f2; padding: 15px; border-radius: 8px;">
+                    <h5 style="margin-bottom: 10px; color: var(--green-dark);">Mark Class Attendance</h5>
+                    <div class="form-group">
+                        <label>Student Email / Name</label>
+                        <input type="text" id="attStudent" required placeholder="student@school.com or Ali">
+                    </div>
+                    <div class="form-group">
+                        <label>Class</label>
+                        <input type="text" id="attClass" required placeholder="10th">
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="attStatus">
+                            <option value="Present">Present (حاضر)</option>
+                            <option value="Absent">Absent (غیر حاضر)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn">Save Attendance</button>
+                </form>
+                <p id="attStatusMsg" style="margin-top: 5px; font-weight: bold;"></p>
             </div>
 
             <!-- STUDENT VIEW -->
             <div id="studentView" class="hidden">
                 <h4 style="margin-bottom: 15px; color: var(--green);">Student Portal</h4>
-                <div id="studentDataCard" style="padding: 15px; background: var(--green-light); border-radius: 8px;">
-                    Loading data...
+                <div id="studentDataCard" style="padding: 15px; background: var(--green-light); border-radius: 8px; margin-bottom: 15px;">
+                    Loading profile...
+                </div>
+                <div id="studentAttendanceCard" style="padding: 15px; background: #eef7f2; border-radius: 8px;">
+                    Loading attendance record...
                 </div>
             </div>
         </div>
@@ -143,7 +175,7 @@
     <!-- FIREBASE SCRIPT -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, getDoc, setDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
@@ -213,7 +245,7 @@
                             teacherView.classList.remove("hidden");
                         } else if (userData.role === "student") {
                             studentView.classList.remove("hidden");
-                            loadStudentData(userData);
+                            loadStudentData(userData, user.email);
                         }
                     } else {
                         userGreeting.textContent = `Welcome, ${user.email} (Role not assigned)`;
@@ -263,7 +295,7 @@
             }
         });
 
-        // Teacher Upload Test
+        // Teacher Upload Test with Image Link
         const uploadTestForm = document.getElementById("uploadTestForm");
         const teacherStatusMsg = document.getElementById("teacherStatusMsg");
 
@@ -272,6 +304,7 @@
             const title = document.getElementById("testTitle").value;
             const tClass = document.getElementById("testClass").value;
             const details = document.getElementById("testDetails").value;
+            const imgUrl = document.getElementById("testImgUrl").value;
 
             teacherStatusMsg.style.color = "black";
             teacherStatusMsg.textContent = "Uploading...";
@@ -281,6 +314,7 @@
                     title: title,
                     class: tClass,
                     details: details,
+                    imgUrl: imgUrl || "",
                     date: new Date().toLocaleDateString()
                 });
                 teacherStatusMsg.style.color = "green";
@@ -292,23 +326,75 @@
             }
         });
 
-        // Student Data Loader
-        async function loadStudentData(userData) {
+        // Teacher Mark Attendance
+        const uploadAttendanceForm = document.getElementById("uploadAttendanceForm");
+        const attStatusMsg = document.getElementById("attStatusMsg");
+
+        uploadAttendanceForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const student = document.getElementById("attStudent").value;
+            const aClass = document.getElementById("attClass").value;
+            const status = document.getElementById("attStatus").value;
+
+            attStatusMsg.style.color = "black";
+            attStatusMsg.textContent = "Saving attendance...";
+
+            try {
+                await setDoc(doc(collection(db, "Attendance")), {
+                    student: student,
+                    class: aClass,
+                    status: status,
+                    date: new Date().toLocaleDateString()
+                });
+                attStatusMsg.style.color = "green";
+                attStatusMsg.textContent = "Attendance saved!";
+                uploadAttendanceForm.reset();
+            } catch (err) {
+                attStatusMsg.style.color = "red";
+                attStatusMsg.textContent = "Failed to save attendance.";
+            }
+        });
+
+        // Student Data & Attendance Loader
+        async function loadStudentData(userData, userEmail) {
             const card = document.getElementById("studentDataCard");
-            card.innerHTML = `<p><strong>Name:</strong> ${userData.name}</p><p><strong>Class:</strong> ${userData.class || 'N/A'}</p><hr style="margin: 10px 0;"><strong>Uploaded Tests:</strong>`;
+            const attCard = document.getElementById("studentAttendanceCard");
+
+            card.innerHTML = `<p><strong>Name:</strong> ${userData.name}</p><p><strong>Class:</strong> ${userData.class || 'N/A'}</p><hr style="margin: 10px 0;"><strong>Uploaded Tests & Assignments:</strong>`;
             
             try {
                 const snap = await getDocs(collection(db, "Tests"));
                 if (snap.empty) {
-                    card.innerHTML += `<p style="color: gray;">No tests found.</p>`;
-                    return;
+                    card.innerHTML += `<p style="color: gray; font-size: 13px;">No tests found.</p>`;
+                } else {
+                    snap.forEach((d) => {
+                        const data = d.data();
+                        let imgHtml = data.imgUrl ? `<br><a href="${data.imgUrl}" target="_blank" style="color: blue; text-decoration: underline;">🔗 View Attached Picture / Link</a>` : '';
+                        card.innerHTML += `<div style="background: white; padding: 8px; margin-top: 5px; border-radius: 5px; font-size: 14px;"><strong>${data.title}</strong> (Class: ${data.class})<br>${data.details}${imgHtml}</div>`;
+                    });
                 }
-                snap.forEach((d) => {
-                    const data = d.data();
-                    card.innerHTML += `<div style="background: white; padding: 8px; margin-top: 5px; border-radius: 5px;"><strong>${data.title}</strong> (Class: ${data.class})<br>${data.details}</div>`;
-                });
             } catch (e) {
                 card.innerHTML += `<p>Could not load tests.</p>`;
+            }
+
+            // Load Attendance
+            attCard.innerHTML = `<strong>Your Attendance Record:</strong>`;
+            try {
+                const attSnap = await getDocs(collection(db, "Attendance"));
+                let found = false;
+                attSnap.forEach((d) => {
+                    const att = d.data();
+                    if (att.student.toLowerCase() === userEmail.toLowerCase() || att.class.toLowerCase() === (userData.class || "").toLowerCase()) {
+                        found = true;
+                        let badgeColor = att.status === "Present" ? "green" : "red";
+                        attCard.innerHTML += `<div style="background: white; padding: 6px; margin-top: 5px; border-radius: 5px; font-size: 13px;">Date: ${att.date} | Class: ${att.class} | Status: <span style="color: ${badgeColor}; font-weight: bold;">${att.status}</span></div>`;
+                    }
+                });
+                if (!found) {
+                    attCard.innerHTML += `<p style="color: gray; font-size: 13px;">No attendance record found yet.</p>`;
+                }
+            } catch (err) {
+                attCard.innerHTML += `<p>Could not load attendance.</p>`;
             }
         }
     </script>

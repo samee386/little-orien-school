@@ -141,7 +141,7 @@
             <div id="adminView" class="hidden">
                 <h4 style="margin-bottom: 15px; color: var(--green);">Admin / Principal Dashboard</h4>
                 
-                <!-- Create User Form -->
+                <!-- Create User Form (Only for Admin) -->
                 <form id="createUserForm" style="max-width: 450px; margin-bottom: 25px; background: #f8f9fa; padding: 15px; border-radius: 8px;">
                     <h5 style="margin-bottom: 10px; color: var(--green-dark);">Create New User Account</h5>
                     <div class="form-group">
@@ -288,22 +288,23 @@
                 <div id="studentDataCard" class="data-card">
                     Loading profile...
                 </div>
-                
-                <!-- Student Password Change Box -->
-                <div style="margin-top: 15px; background: white; padding: 15px; border-radius: 8px;">
-                    <h5 style="color: var(--green-dark); margin-bottom: 10px;">Change Your Password</h5>
-                    <div class="form-group">
-                        <label>New Password</label>
-                        <input type="password" id="studentNewPassword" placeholder="Min 6 characters">
-                    </div>
-                    <button type="button" id="changeStudentPwdBtn" class="btn">Update Password</button>
-                    <p id="pwdUpdateStatus" style="margin-top: 5px; font-weight: bold; font-size: 13px;"></p>
-                </div>
 
                 <div id="studentAttendanceCard" class="data-card" style="background: #eef7f2; margin-top: 15px;">
                     Loading attendance record...
                 </div>
             </div>
+
+            <!-- UNIVERSAL CHANGE PASSWORD SECTION FOR ALL ROLES -->
+            <div style="margin-top: 25px; background: white; padding: 20px; border-radius: 8px; border-left: 4px solid var(--gold); box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                <h5 style="color: var(--green-dark); margin-bottom: 10px;">🔒 Change Your Password</h5>
+                <div class="form-group" style="max-width: 350px;">
+                    <label>New Password (Min 6 characters)</label>
+                    <input type="password" id="globalNewPassword" placeholder="••••••••">
+                </div>
+                <button type="button" id="globalChangePwdBtn" class="btn">Update Password</button>
+                <p id="globalPwdStatus" style="margin-top: 8px; font-weight: bold; font-size: 13px;"></p>
+            </div>
+
         </div>
     </div>
 
@@ -378,7 +379,7 @@
         const teacherView = document.getElementById("teacherView");
         const studentView = document.getElementById("studentView");
 
-        // Login Logic (Fixed loginStatus variable)
+        // Login Logic
         if (loginForm) {
             loginForm.addEventListener("submit", async (e) => {
                 e.preventDefault();
@@ -410,7 +411,7 @@
             });
         }
 
-        // Auth State Handler (Fixed bracket scopes)
+        // Auth State Handler with Strict Role Security
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 showPortal();
@@ -429,19 +430,22 @@
                         if (teacherView) teacherView.classList.add("hidden");
                         if (studentView) studentView.classList.add("hidden");
 
-                       if (userRole === "admin") {
-    // Admin: Sab kuch dekh sakta hai aur users manage kar sakta hai
-    if (adminView) adminView.classList.remove("hidden");
-    loadAdminTeachersList(userRole);
-    loadAllUsersList();
-} 
-else if (userRole === "principal") {
-    // Principal: Sirf attendance / monitoring dekh sakta hai, user add nahi kar sakta
-    if (adminView) adminView.classList.remove("hidden"); // View dikhane ke liye
-    loadAdminTeachersList(userRole);
-    // loadAllUsersList(); <- Isko hata diya taake principal users add/manage na kar sake
-}
-                        } else if (userRole === "teacher") {
+                        const createUserForm = document.getElementById("createUserForm");
+
+                        if (userRole === "admin") {
+                            // Admin: Full Access
+                            if (adminView) adminView.classList.remove("hidden");
+                            if (createUserForm) createUserForm.classList.remove("hidden");
+                            loadAdminTeachersList(userRole);
+                            loadAllUsersList();
+                        } 
+                        else if (userRole === "principal") {
+                            // Principal: Attendance/Monitoring View, Cannot Add Users
+                            if (adminView) adminView.classList.remove("hidden");
+                            if (createUserForm) createUserForm.classList.add("hidden");
+                            loadAdminTeachersList(userRole);
+                        } 
+                        else if (userRole === "teacher") {
                             if (teacherView) teacherView.classList.remove("hidden");
                             const teacherClass = userData.class || userData.assignedClass || "";
                             const classSelect = document.getElementById("stepClassSelect");
@@ -461,7 +465,8 @@ else if (userRole === "principal") {
                             if (teacherClass) {
                                 loadTeacherAssignedStudents(teacherClass);
                             }
-                        } else if (userRole === "student") {
+                        } 
+                        else if (userRole === "student") {
                             if (studentView) studentView.classList.remove("hidden");
                             loadStudentData(userData, user.email);
                         }
@@ -477,7 +482,42 @@ else if (userRole === "principal") {
             }
         });
 
-      // Flexible Teacher Assigned Students Loader
+        // Universal Password Change Handler for All Logged-in Users
+        const globalChangePwdBtn = document.getElementById("globalChangePwdBtn");
+        if (globalChangePwdBtn) {
+            globalChangePwdBtn.addEventListener("click", async () => {
+                const newPwd = document.getElementById("globalNewPassword").value;
+                const statusMsg = document.getElementById("globalPwdStatus");
+
+                if (!newPwd || newPwd.length < 6) {
+                    statusMsg.style.color = "red";
+                    statusMsg.textContent = "Password kam az kam 6 characters ka hona chahiye.";
+                    return;
+                }
+
+                const currentUser = auth.currentUser;
+                if (!currentUser) {
+                    statusMsg.style.color = "red";
+                    statusMsg.textContent = "Pehle login karein.";
+                    return;
+                }
+
+                statusMsg.style.color = "black";
+                statusMsg.textContent = "Updating password...";
+
+                try {
+                    await updatePassword(currentUser, newPwd);
+                    statusMsg.style.color = "green";
+                    statusMsg.textContent = "✅ Aapka password kamyabi se update ho gaya hai!";
+                    document.getElementById("globalNewPassword").value = "";
+                } catch (error) {
+                    statusMsg.style.color = "red";
+                    statusMsg.textContent = "Error: " + error.message;
+                }
+            });
+        }
+
+        // Flexible Teacher Assigned Students Loader
         async function loadTeacherAssignedStudents(teacherClass) {
             const studentsContainer = document.getElementById("studentsListContainer"); 
             const stepStudentsBox = document.getElementById("stepStudentsBox");
@@ -489,7 +529,6 @@ else if (userRole === "principal") {
             }
 
             try {
-                // Students container box ko unhide karein
                 if (stepStudentsBox) stepStudentsBox.classList.remove("hidden");
                 studentsContainer.innerHTML = "Loading students list...";
 
@@ -533,6 +572,7 @@ else if (userRole === "principal") {
                 studentsContainer.innerHTML = "<p style='color: red;'>Data load karne mein masla hua hai.</p>";
             }
         }
+
         // Admin Create User
         const createUserForm = document.getElementById("createUserForm");
         const adminStatus = document.getElementById("adminStatus");
@@ -655,12 +695,11 @@ else if (userRole === "principal") {
         const stepCodeBox = document.getElementById("stepCodeBox");
         const stepStudentsBox = document.getElementById("stepStudentsBox");
 
-     if (stepClassSelect) {
+        if (stepClassSelect) {
             stepClassSelect.addEventListener("change", () => {
                 const selectedClass = stepClassSelect.value;
                 if (selectedClass) {
                     if (stepSubjectBox) stepSubjectBox.classList.remove("hidden");
-                    // Class change hote hi students auto-load honge
                     loadTeacherAssignedStudents(selectedClass);
                 } else {
                     if (stepSubjectBox) stepSubjectBox.classList.add("hidden");
@@ -678,141 +717,6 @@ else if (userRole === "principal") {
                 } else {
                     if (stepCodeBox) stepCodeBox.classList.add("hidden");
                     if (stepStudentsBox) stepStudentsBox.classList.add("hidden");
-                }
-            });
-        }
-
-        // Teacher Workflow: Load Students for Selected Class (Flexible Matching)
-        const loadStudentsBtn = document.getElementById("loadStudentsBtn");
-        if (loadStudentsBtn) {
-            loadStudentsBtn.addEventListener("click", async () => {
-                const selectedClass = stepClassSelect.value;
-                const container = document.getElementById("studentsListContainer");
-                if (stepStudentsBox) stepStudentsBox.classList.remove("hidden");
-                container.innerHTML = "Loading students for class " + selectedClass + "...";
-
-                try {
-                    const q = query(collection(db, "users"), where("role", "==", "student"));
-                    const snap = await getDocs(q);
-
-                    if (snap.empty) {
-                        container.innerHTML = "<p style='color: gray;'>No students found.</p>";
-                        return;
-                    }
-
-                    const cleanSelectedClass = selectedClass.toLowerCase().replace(/class/g, "").trim();
-
-                    container.innerHTML = "";
-                    let count = 0;
-                    snap.forEach((d) => {
-                        const st = d.data();
-                        const sId = d.id;
-                        const stClass = (st.class || "").toLowerCase().replace(/class/g, "").trim();
-
-                        if (stClass === cleanSelectedClass) {
-                            count++;
-                            container.innerHTML += `
-                                <div class="data-item">
-                                    <div><strong>${st.name}</strong> (${st.email})</div>
-                                    <div class="radio-group">
-                                        <label><input type="radio" name="st_att_${sId}" value="Present" checked> Present</label>
-                                        <label><input type="radio" name="st_att_${sId}" value="Absent"> Absent</label>
-                                    </div>
-                                </div>
-                            `;
-                        }
-                    });
-
-                    if (count === 0) {
-                        container.innerHTML = "<p style='color: gray;'>No students found for this class.</p>";
-                    }
-                } catch (e) {
-                    container.innerHTML = "<p>Error loading students list.</p>";
-                }
-            });
-        }
-
-        // Teacher Workflow: Save Student Attendance (Flexible Matching & Lock)
-        const saveStudentsAttBtn = document.getElementById("saveStudentsAttBtn");
-        if (saveStudentsAttBtn) {
-            saveStudentsAttBtn.addEventListener("click", async () => {
-                const statusMsg = document.getElementById("teacherAttSaveStatus");
-                const selectedClass = stepClassSelect.value;
-                const subject = document.getElementById("stepSubjectInput").value;
-                const todayDate = new Date().toLocaleDateString().replace(/\//g, '-');
-
-                if (!selectedClass || !subject) {
-                    statusMsg.style.color = "red";
-                    statusMsg.textContent = "Please select class and enter subject first.";
-                    return;
-                }
-
-                statusMsg.style.color = "black";
-                statusMsg.textContent = "Checking attendance status...";
-
-                try {
-                    const attDocId = `${selectedClass}_${subject}_${todayDate}`;
-                    const existingAtt = await getDoc(doc(db, "AttendanceLocks", attDocId));
-
-                    if (existingAtt.exists()) {
-                        statusMsg.style.color = "red";
-                        statusMsg.textContent = `⚠️ Attendance for Class ${selectedClass} (${subject}) is already marked and locked for today!`;
-                        return;
-                    }
-
-                    statusMsg.textContent = "Saving attendance...";
-                    const q = query(collection(db, "users"), where("role", "==", "student"));
-                    const snap = await getDocs(q);
-
-                    const cleanSelectedClass = selectedClass.toLowerCase().replace(/class/g, "").trim();
-                    let classStudents = [];
-                    snap.forEach((d) => {
-                        const st = d.data();
-                        const stClass = (st.class || "").toLowerCase().replace(/class/g, "").trim();
-                        if (stClass === cleanSelectedClass) {
-                            classStudents.push({ id: d.id, data: st });
-                        }
-                    });
-
-                    if (classStudents.length === 0) {
-                        statusMsg.style.color = "red";
-                        statusMsg.textContent = "No students found in this specific class.";
-                        return;
-                    }
-
-                    for (let s of classStudents) {
-                        const sId = s.id;
-                        const st = s.data;
-                        const radios = document.getElementsByName(`st_att_${sId}`);
-                        let status = "Present";
-                        if (radios) {
-                            for (let r of radios) {
-                                if (r.checked) status = r.value;
-                            }
-                        }
-
-                        await setDoc(doc(collection(db, "Attendance")), {
-                            studentName: st.name,
-                            studentEmail: st.email,
-                            class: selectedClass,
-                            subject: subject,
-                            status: status,
-                            date: new Date().toLocaleDateString()
-                        });
-                    }
-
-                    await setDoc(doc(db, "AttendanceLocks", attDocId), {
-                        class: selectedClass,
-                        subject: subject,
-                        date: new Date().toLocaleDateString(),
-                        markedBy: auth.currentUser.email
-                    });
-
-                    statusMsg.style.color = "green";
-                    statusMsg.textContent = `✅ Attendance successfully saved and locked for Class ${selectedClass} (${subject})!`;
-                } catch (e) {
-                    statusMsg.style.color = "red";
-                    statusMsg.textContent = "Failed to save attendance: " + e.message;
                 }
             });
         }

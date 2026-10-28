@@ -429,10 +429,18 @@
                         if (teacherView) teacherView.classList.add("hidden");
                         if (studentView) studentView.classList.add("hidden");
 
-                        if (userRole === "admin" || userRole === "principal") {
-                            if (adminView) adminView.classList.remove("hidden");
-                            loadAdminTeachersList(userRole);
-                            loadAllUsersList();
+                       if (userRole === "admin") {
+    // Admin: Sab kuch dekh sakta hai aur users manage kar sakta hai
+    if (adminView) adminView.classList.remove("hidden");
+    loadAdminTeachersList(userRole);
+    loadAllUsersList();
+} 
+else if (userRole === "principal") {
+    // Principal: Sirf attendance / monitoring dekh sakta hai, user add nahi kar sakta
+    if (adminView) adminView.classList.remove("hidden"); // View dikhane ke liye
+    loadAdminTeachersList(userRole);
+    // loadAllUsersList(); <- Isko hata diya taake principal users add/manage na kar sake
+}
                         } else if (userRole === "teacher") {
                             if (teacherView) teacherView.classList.remove("hidden");
                             const teacherClass = userData.class || userData.assignedClass || "";

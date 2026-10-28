@@ -47,6 +47,10 @@
         .radio-group { display: flex; gap: 15px; align-items: center; }
         .radio-group label { font-weight: normal; cursor: pointer; display: flex; align-items: center; gap: 5px; }
         
+        /* Modal Popup Styling */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: white; padding: 25px; border-radius: 10px; width: 100%; max-width: 400px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+
         footer { background: var(--green-dark); color: white; text-align: center; padding: 25px 20px; margin-top: 50px; }
     </style>
 </head>
@@ -132,16 +136,19 @@
 
         <!-- DASHBOARD SECTION -->
         <div id="dashboardSection" class="box hidden">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
                 <h3 id="userGreeting" style="color: var(--green-dark);">Welcome</h3>
-                <button id="logoutBtn" class="btn btn-danger">Logout</button>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <button id="openPwdModalBtn" class="btn btn-gold" style="font-size: 13px; padding: 6px 12px;">🔑 Change Password</button>
+                    <button id="logoutBtn" class="btn btn-danger">Logout</button>
+                </div>
             </div>
 
             <!-- ADMIN / PRINCIPAL VIEW -->
             <div id="adminView" class="hidden">
                 <h4 style="margin-bottom: 15px; color: var(--green);">Admin / Principal Dashboard</h4>
                 
-                <!-- Create User Form (Only for Admin) -->
+                <!-- Create User Form -->
                 <form id="createUserForm" style="max-width: 450px; margin-bottom: 25px; background: #f8f9fa; padding: 15px; border-radius: 8px;">
                     <h5 style="margin-bottom: 10px; color: var(--green-dark);">Create New User Account</h5>
                     <div class="form-group">
@@ -181,18 +188,6 @@
                 <div class="data-card" style="background: #eef7f2;">
                     <h5 style="margin-bottom: 10px; color: var(--green-dark);">Mark Teachers Attendance Today</h5>
                     <div id="teacherAttendanceList">Loading teachers...</div>
-                    
-                    <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
-                        <button type="button" id="saveAllTeachersAttBtn" class="btn">Save All Teachers Attendance</button>
-                        <button type="button" id="viewTeacherAttHistoryBtn" class="btn btn-gold">View Attendance History</button>
-                    </div>
-                    <p id="teacherAttSaveStatus" style="margin-top: 10px; font-weight: bold; font-size: 14px;"></p>
-
-                    <!-- Attendance History Logs -->
-                    <div id="teacherAttHistoryBox" class="hidden" style="margin-top: 15px; background: white; padding: 12px; border-radius: 6px;">
-                        <h6 style="color: var(--green-dark); margin-bottom: 8px;">Teacher Attendance Logs:</h6>
-                        <div id="teacherAttHistoryLogs">Loading logs...</div>
-                    </div>
                 </div>
 
                 <!-- Full System Overview -->
@@ -209,11 +204,9 @@
             <div id="teacherView" class="hidden">
                 <h4 style="margin-bottom: 15px; color: var(--green);">Teacher Attendance & Test Portal</h4>
                 
-                <!-- STEP-BY-STEP WORKFLOW FORM FOR TEACHER -->
                 <div style="background: var(--green-light); padding: 20px; border-radius: 8px; margin-bottom: 20px;">
                     <h5 style="margin-bottom: 15px; color: var(--green-dark);">Mark Students Attendance Workflow</h5>
 
-                    <!-- STEP 1: Select Class -->
                     <div class="form-group">
                         <label>1. Select Class</label>
                         <select id="stepClassSelect">
@@ -225,7 +218,6 @@
                         </select>
                     </div>
 
-                    <!-- STEP 2: Select Subject -->
                     <div class="form-group hidden" id="stepSubjectBox">
                         <label>2. Select Subject</label>
                         <select id="stepSubjectInput" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;">
@@ -242,44 +234,13 @@
                         </select>
                     </div>
 
-                    <!-- STEP 3: Enter Teacher Code -->
-                    <div class="form-group hidden" id="stepCodeBox">
-                        <label>3. Enter Your Teacher Code</label>
-                        <input type="text" id="stepCodeInput" placeholder="e.g. T-101">
-                        <button type="button" id="loadStudentsBtn" class="btn" style="margin-top: 10px;">Load Students List</button>
-                    </div>
-
-                    <!-- STEP 4: Students List with Present / Absent Checkboxes -->
                     <div class="hidden" id="stepStudentsBox" style="margin-top: 20px; background: white; padding: 15px; border-radius: 8px;">
-                        <h5 style="color: var(--green-dark); margin-bottom: 10px;">4. Students Attendance List</h5>
+                        <h5 style="color: var(--green-dark); margin-bottom: 10px;">3. Students Attendance List</h5>
                         <div id="studentsListContainer">Loading students...</div>
                         <button type="button" id="saveStudentsAttBtn" class="btn" style="margin-top: 15px;">Save Attendance</button>
                         <p id="teacherAttSaveStatus" style="margin-top: 10px; font-weight: bold;"></p>
                     </div>
                 </div>
-
-                <!-- Upload Test Form -->
-                <form id="uploadTestForm" style="max-width: 450px; background: #f8f9fa; padding: 15px; border-radius: 8px;">
-                    <h5 style="margin-bottom: 10px; color: var(--green-dark);">Upload Test / Assignment</h5>
-                    <div class="form-group">
-                        <label>Test Title</label>
-                        <input type="text" id="testTitle" required placeholder="Maths Quiz">
-                    </div>
-                    <div class="form-group">
-                        <label>Class</label>
-                        <input type="text" id="testClass" required placeholder="10th">
-                    </div>
-                    <div class="form-group">
-                        <label>Details / Instructions</label>
-                        <input type="text" id="testDetails" required placeholder="Syllabus details...">
-                    </div>
-                    <div class="form-group">
-                        <label>Picture / Question Image Link (Optional)</label>
-                        <input type="url" id="testImgUrl" placeholder="https://drive.google.com/... or image link">
-                    </div>
-                    <button type="submit" class="btn">Upload Test</button>
-                    <p id="teacherStatusMsg" style="margin-top: 5px; font-weight: bold;"></p>
-                </form>
             </div>
 
             <!-- STUDENT VIEW -->
@@ -288,23 +249,32 @@
                 <div id="studentDataCard" class="data-card">
                     Loading profile...
                 </div>
-
-                <div id="studentAttendanceCard" class="data-card" style="background: #eef7f2; margin-top: 15px;">
-                    Loading attendance record...
-                </div>
             </div>
 
-            <!-- UNIVERSAL CHANGE PASSWORD SECTION FOR ALL ROLES -->
-            <div style="margin-top: 25px; background: white; padding: 20px; border-radius: 8px; border-left: 4px solid var(--gold); box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-                <h5 style="color: var(--green-dark); margin-bottom: 10px;">🔒 Change Your Password</h5>
-                <div class="form-group" style="max-width: 350px;">
-                    <label>New Password (Min 6 characters)</label>
-                    <input type="password" id="globalNewPassword" placeholder="••••••••">
-                </div>
-                <button type="button" id="globalChangePwdBtn" class="btn">Update Password</button>
-                <p id="globalPwdStatus" style="margin-top: 8px; font-weight: bold; font-size: 13px;"></p>
-            </div>
+        </div>
+    </div>
 
+    <!-- CHANGE PASSWORD MODAL (POPUP) -->
+    <div id="pwdModal" class="modal hidden">
+        <div class="modal-content">
+            <h4 style="color: var(--green-dark); margin-bottom: 15px; border-bottom: 2px solid var(--gold); padding-bottom: 5px;">Change Password</h4>
+            <div class="form-group">
+                <label>Current Password</label>
+                <input type="password" id="currentPassword" placeholder="••••••••">
+            </div>
+            <div class="form-group">
+                <label>New Password (Min 6 chars)</label>
+                <input type="password" id="newPassword" placeholder="••••••••">
+            </div>
+            <div class="form-group">
+                <label>Confirm New Password</label>
+                <input type="password" id="confirmPassword" placeholder="••••••••">
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                <button type="button" id="closePwdModalBtn" class="btn btn-danger" style="background: #6c757d;">Cancel</button>
+                <button type="button" id="submitNewPwdBtn" class="btn">Update Password</button>
+            </div>
+            <p id="pwdModalStatus" style="margin-top: 10px; font-weight: bold; font-size: 13px;"></p>
         </div>
     </div>
 
@@ -331,7 +301,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, setPersistence, browserSessionPersistence, updatePassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, setPersistence, browserSessionPersistence, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDoOtmxvdFOyo2e-NmdNMDeSv9smiPbrTM",
@@ -433,14 +403,12 @@
                         const createUserForm = document.getElementById("createUserForm");
 
                         if (userRole === "admin") {
-                            // Admin: Full Access
                             if (adminView) adminView.classList.remove("hidden");
                             if (createUserForm) createUserForm.classList.remove("hidden");
                             loadAdminTeachersList(userRole);
                             loadAllUsersList();
                         } 
                         else if (userRole === "principal") {
-                            // Principal: Attendance/Monitoring View, Cannot Add Users
                             if (adminView) adminView.classList.remove("hidden");
                             if (createUserForm) createUserForm.classList.add("hidden");
                             loadAdminTeachersList(userRole);
@@ -468,7 +436,7 @@
                         } 
                         else if (userRole === "student") {
                             if (studentView) studentView.classList.remove("hidden");
-                            loadStudentData(userData, user.email);
+                            loadStudentData(userData);
                         }
                     } else {
                         if (userGreeting) userGreeting.textContent = `Welcome, ${user.email} (Role not assigned)`;
@@ -482,37 +450,80 @@
             }
         });
 
-        // Universal Password Change Handler for All Logged-in Users
-        const globalChangePwdBtn = document.getElementById("globalChangePwdBtn");
-        if (globalChangePwdBtn) {
-            globalChangePwdBtn.addEventListener("click", async () => {
-                const newPwd = document.getElementById("globalNewPassword").value;
-                const statusMsg = document.getElementById("globalPwdStatus");
+        // Modal Open/Close Logic
+        const pwdModal = document.getElementById("pwdModal");
+        const openPwdModalBtn = document.getElementById("openPwdModalBtn");
+        const closePwdModalBtn = document.getElementById("closePwdModalBtn");
 
-                if (!newPwd || newPwd.length < 6) {
+        if (openPwdModalBtn) {
+            openPwdModalBtn.addEventListener("click", () => {
+                pwdModal.classList.remove("hidden");
+                document.getElementById("currentPassword").value = "";
+                document.getElementById("newPassword").value = "";
+                document.getElementById("confirmPassword").value = "";
+                document.getElementById("pwdModalStatus").textContent = "";
+            });
+        }
+
+        if (closePwdModalBtn) {
+            closePwdModalBtn.addEventListener("click", () => {
+                pwdModal.classList.add("hidden");
+            });
+        }
+
+        // Submit Password Change with Old, New, Confirm Validation
+        const submitNewPwdBtn = document.getElementById("submitNewPwdBtn");
+        if (submitNewPwdBtn) {
+            submitNewPwdBtn.addEventListener("click", async () => {
+                const currentPwd = document.getElementById("currentPassword").value;
+                const newPwd = document.getElementById("newPassword").value;
+                const confirmPwd = document.getElementById("confirmPassword").value;
+                const statusMsg = document.getElementById("pwdModalStatus");
+
+                if (!currentPwd || !newPwd || !confirmPwd) {
                     statusMsg.style.color = "red";
-                    statusMsg.textContent = "Password kam az kam 6 characters ka hona chahiye.";
+                    statusMsg.textContent = "Tamam fields fill karna lazmi hain.";
                     return;
                 }
 
-                const currentUser = auth.currentUser;
-                if (!currentUser) {
+                if (newPwd.length < 6) {
+                    statusMsg.style.color = "red";
+                    statusMsg.textContent = "Naya password kam az kam 6 characters ka hona chahiye.";
+                    return;
+                }
+
+                if (newPwd !== confirmPwd) {
+                    statusMsg.style.color = "red";
+                    statusMsg.textContent = "Naya password aur confirm password match nahi kar rahe.";
+                    return;
+                }
+
+                const user = auth.currentUser;
+                if (!user) {
                     statusMsg.style.color = "red";
                     statusMsg.textContent = "Pehle login karein.";
                     return;
                 }
 
                 statusMsg.style.color = "black";
-                statusMsg.textContent = "Updating password...";
+                statusMsg.textContent = "Verifying current password...";
 
                 try {
-                    await updatePassword(currentUser, newPwd);
+                    // Re-authenticate user with current password
+                    const credential = EmailAuthProvider.credential(user.email, currentPwd);
+                    await reauthenticateWithCredential(user, credential);
+
+                    statusMsg.textContent = "Updating password...";
+                    await updatePassword(user, newPwd);
+
                     statusMsg.style.color = "green";
-                    statusMsg.textContent = "✅ Aapka password kamyabi se update ho gaya hai!";
-                    document.getElementById("globalNewPassword").value = "";
+                    statusMsg.textContent = "✅ Password kamyabi se tabdeel ho gaya hai!";
+                    setTimeout(() => {
+                        pwdModal.classList.add("hidden");
+                    }, 1500);
                 } catch (error) {
                     statusMsg.style.color = "red";
-                    statusMsg.textContent = "Error: " + error.message;
+                    statusMsg.textContent = "Error: " + (error.code === 'auth/wrong-password' ? 'Purana password ghalat hai.' : error.message);
                 }
             });
         }
@@ -524,7 +535,7 @@
             if (!studentsContainer) return;
 
             if (!teacherClass) {
-                studentsContainer.innerHTML = "<p style='color: red;'>Aap ko koi class assign nahi ki gayi. Admin se rabta karein.</p>";
+                studentsContainer.innerHTML = "<p style='color: red;'>Aap ko koi class assign nahi ki gayi.</p>";
                 return;
             }
 
@@ -689,40 +700,8 @@
             }
         }
 
-        // Teacher Workflow UI Logic
-        const stepClassSelect = document.getElementById("stepClassSelect");
-        const stepSubjectBox = document.getElementById("stepSubjectBox");
-        const stepCodeBox = document.getElementById("stepCodeBox");
-        const stepStudentsBox = document.getElementById("stepStudentsBox");
-
-        if (stepClassSelect) {
-            stepClassSelect.addEventListener("change", () => {
-                const selectedClass = stepClassSelect.value;
-                if (selectedClass) {
-                    if (stepSubjectBox) stepSubjectBox.classList.remove("hidden");
-                    loadTeacherAssignedStudents(selectedClass);
-                } else {
-                    if (stepSubjectBox) stepSubjectBox.classList.add("hidden");
-                    if (stepCodeBox) stepCodeBox.classList.add("hidden");
-                    if (stepStudentsBox) stepStudentsBox.classList.add("hidden");
-                }
-            });
-        }
-
-        const stepSubInput = document.getElementById("stepSubjectInput");
-        if (stepSubInput) {
-            stepSubInput.addEventListener("change", (e) => {
-                if (e.target.value) {
-                    if (stepCodeBox) stepCodeBox.classList.remove("hidden");
-                } else {
-                    if (stepCodeBox) stepCodeBox.classList.add("hidden");
-                    if (stepStudentsBox) stepStudentsBox.classList.add("hidden");
-                }
-            });
-        }
-
         // Student Profile Loader
-        async function loadStudentData(userData, userEmail) {
+        async function loadStudentData(userData) {
             const card = document.getElementById("studentDataCard");
             if (card) {
                 card.innerHTML = `<p><strong>Name:</strong> ${userData.name}</p><p><strong>Class:</strong> ${userData.class || 'N/A'}</p>`;

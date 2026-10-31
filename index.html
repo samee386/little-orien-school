@@ -126,11 +126,11 @@
             <!-- ADMIN / PRINCIPAL VIEW -->
             <div id="adminView" class="hidden">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
-                    <h4 style="color: var(--green);">Admin / Principal Dashboard</h4>
+                    <h4 style="color: var(--green);" id="dashboardTitleHeading">Admin / Principal Dashboard</h4>
                     <button id="openRecycleBinBtn" class="btn btn-danger" style="font-size: 13px; padding: 6px 12px;">🗑️ Recycle Bin</button>
                 </div>
                 
-                <!-- Create User Form -->
+                <!-- Create User Form (Strictly for Admin) -->
                 <form id="createUserForm" style="max-width: 450px; margin-bottom: 25px; background: #f8f9fa; padding: 15px; border-radius: 8px;">
                     <h5 style="margin-bottom: 10px; color: var(--green-dark);">Create New User Account</h5>
                     <div class="form-group">
@@ -306,7 +306,23 @@
         </div>
     </div>
 
+    <!-- FOOTER WITH CONTACT & ADDRESS -->
     <footer>
+        <div style="max-width: 800px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-around; gap: 20px; margin-bottom: 15px; text-align: left; font-size: 14px;">
+            <div>
+                <h4 style="color: var(--gold); margin-bottom: 8px;">📍 School Address</h4>
+                <p>Little Orien Public School and College,<br>Naway Kalay, Pakistan</p>
+            </div>
+            <div>
+                <h4 style="color: var(--gold); margin-bottom: 8px;">📞 Contact Us</h4>
+                <p>Phone: +92 3XX XXXXXXX<br>Mobile: +92 3XX XXXXXXX</p>
+            </div>
+            <div>
+                <h4 style="color: var(--gold); margin-bottom: 8px;">✉️ Email Address</h4>
+                <p>info@littleorien.edu.pk<br>support@littleorien.edu.pk</p>
+            </div>
+        </div>
+        <hr style="border: 0.5px solid rgba(255,255,255,0.2); margin-bottom: 15px;">
         <p style="font-size: 13px;">&copy; Little Orien Public School and College, Naway Kalay. All Rights Reserved.</p>
     </footer>
 
@@ -328,6 +344,8 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
+
+        let currentUserRole = "";
 
         // Navigation
         const frontPageSection = document.getElementById("frontPageSection");
@@ -361,26 +379,29 @@
                     const userDoc = await getDoc(doc(db, "users", user.uid));
                     if (userDoc.exists()) {
                         const userData = userDoc.data();
-                        const userRole = (userData.role || "").toLowerCase();
-                        document.getElementById("userGreeting").textContent = `Welcome, ${userData.name} (${userRole.toUpperCase()})`;
+                        currentUserRole = (userData.role || "").toLowerCase();
+                        document.getElementById("userGreeting").textContent = `Welcome, ${userData.name} (${currentUserRole.toUpperCase()})`;
 
                         document.getElementById("adminView").classList.add("hidden");
                         document.getElementById("teacherView").classList.add("hidden");
                         document.getElementById("studentView").classList.add("hidden");
 
                         const createUserForm = document.getElementById("createUserForm");
+                        const dashboardTitleHeading = document.getElementById("dashboardTitleHeading");
 
-                        if (userRole === "admin") {
+                        if (currentUserRole === "admin") {
                             document.getElementById("adminView").classList.remove("hidden");
                             if (createUserForm) createUserForm.classList.remove("hidden");
-                            loadAdminTeachersList(userRole);
+                            if (dashboardTitleHeading) dashboardTitleHeading.textContent = "Admin Dashboard";
+                            loadAdminTeachersList(currentUserRole);
                             loadAllUsersList();
-                        } else if (userRole === "principal") {
+                        } else if (currentUserRole === "principal") {
                             document.getElementById("adminView").classList.remove("hidden");
-                            if (createUserForm) createUserForm.classList.add("hidden");
-                            loadAdminTeachersList(userRole);
+                            if (createUserForm) createUserForm.classList.add("hidden"); // Principal cannot create users
+                            if (dashboardTitleHeading) dashboardTitleHeading.textContent = "Principal Monitoring Dashboard";
+                            loadAdminTeachersList(currentUserRole);
                             loadAllUsersList();
-                        } else if (userRole === "teacher") {
+                        } else if (currentUserRole === "teacher") {
                             document.getElementById("teacherView").classList.remove("hidden");
                             const teacherClass = userData.class || userData.assignedClass || "";
                             const classSelect = document.getElementById("stepClassSelect");
@@ -389,7 +410,7 @@
                                 classSelect.disabled = false;
                                 loadTeacherAssignedStudents(teacherClass);
                             }
-                        } else if (userRole === "student") {
+                        } else if (currentUserRole === "student") {
                             document.getElementById("studentView").classList.remove("hidden");
                             loadStudentData(userData);
                         }
@@ -401,7 +422,7 @@
             }
         });
 
-        // LOAD USERS FOR ADMIN/PRINCIPAL
+        // LOAD USERS FOR ADMIN / PRINCIPAL WITH STRICT PERMISSIONS
         async function loadAllUsersList() {
             const list = document.getElementById("allUsersList");
             if (!list) return;
@@ -416,248 +437,6 @@
                 snap.forEach((d) => {
                     const u = d.data();
                     const uId = d.id;
-                    list.innerHTML += `
-                        <div class="data-item">
-                            <div><strong>${u.name}</strong> (${u.email}) - <span style="color: var(--green);">${u.role.toUpperCase()}</span></div>
-                            <button onclick="moveToRecycleBin('${uId}', '${u.name}', '${u.email}', '${u.role}', '${u.class || ''}', '${u.subject || ''}')" class="btn btn-danger" style="padding: 4px 10px; font-size: 12px;">🗑️ Delete Portal</button>
-                        </div>
-                    `;
-                });
-            } catch (e) {
-                list.innerHTML = "<p>Error loading users.</p>";
-            }
-        }
+                    const uRole = (u.role || "").toLowerCase();
 
-        // MOVE USER TO RECYCLE BIN (SOFT DELETE)
-        window.moveToRecycleBin = async function(id, name, email, role, uClass, subject) {
-            if (!confirm(`Kya aap ${name} ka portal delete karke Recycle Bin mein bhejna chahte hain?`)) return;
-            try {
-                // Save to RecycleBin collection with deletion timestamp
-                await setDoc(doc(db, "RecycleBin", id), {
-                    originalId: id,
-                    name: name,
-                    email: email,
-                    role: role,
-                    class: uClass,
-                    subject: subject,
-                    deletedAt: new Date().getTime(),
-                    deletedDateStr: new Date().toLocaleDateString()
-                });
-
-                // Remove from active users collection
-                await deleteDoc(doc(db, "users", id));
-                alert("Portal successfully moved to Recycle Bin!");
-                loadAllUsersList();
-                loadAdminTeachersList("admin");
-            } catch (e) {
-                alert("Error: " + e.message);
-            }
-        };
-
-        // RECYCLE BIN MODAL & LOGIC
-        const recycleModal = document.getElementById("recycleModal");
-        if (document.getElementById("openRecycleBinBtn")) {
-            document.getElementById("openRecycleBinBtn").onclick = () => {
-                recycleModal.classList.remove("hidden");
-                loadRecycleBinData();
-            };
-        }
-        if (document.getElementById("closeRecycleModalBtn")) {
-            document.getElementById("closeRecycleModalBtn").onclick = () => recycleModal.classList.add("hidden");
-        }
-
-        async function loadRecycleBinData() {
-            const list = document.getElementById("recycleBinList");
-            list.innerHTML = "Loading recycle bin...";
-            try {
-                const snap = await getDocs(collection(db, "RecycleBin"));
-                if (snap.empty) {
-                    list.innerHTML = "<p style='color: gray;'>Recycle bin is empty.</p>";
-                    return;
-                }
-
-                list.innerHTML = "";
-                const now = new Date().getTime();
-                const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
-
-                snap.forEach(async (d) => {
-                    const rec = d.data();
-                    const recId = d.id;
-                    const elapsed = now - rec.deletedAt;
-
-                    // If older than 30 days, auto permanent delete
-                    if (elapsed > thirtyDaysMs) {
-                        await deleteDoc(doc(db, "RecycleBin", recId));
-                        return;
-                    }
-
-                    list.innerHTML += `
-                        <div class="data-item">
-                            <div><strong>${rec.name}</strong> (${rec.email})<br><small style="color: gray;">Deleted on: ${rec.deletedDateStr}</small></div>
-                            <div style="display: flex; gap: 5px;">
-                                <button onclick="restoreUser('${recId}')" class="btn btn-gold" style="padding: 4px 8px; font-size: 11px;">🔄 Recover</button>
-                                <button onclick="permanentDeleteUser('${recId}')" class="btn btn-danger" style="padding: 4px 8px; font-size: 11px;">❌ Perm Delete</button>
-                            </div>
-                        </div>
-                    `;
-                });
-            } catch (e) {
-                list.innerHTML = "<p>Error loading recycle bin.</p>";
-            }
-        }
-
-        // RESTORE USER FROM RECYCLE BIN
-        window.restoreUser = async function(id) {
-            try {
-                const docSnap = await getDoc(doc(db, "RecycleBin", id));
-                if (!docSnap.exists()) return;
-                const data = docSnap.data();
-
-                // Move back to users collection
-                await setDoc(doc(db, "users", id), {
-                    name: data.name,
-                    email: data.email,
-                    role: data.role,
-                    class: data.class,
-                    subject: data.subject
-                });
-
-                // Remove from RecycleBin
-                await deleteDoc(doc(db, "RecycleBin", id));
-                alert("Account successfully recovered!");
-                loadRecycleBinData();
-                loadAllUsersList();
-                loadAdminTeachersList("admin");
-            } catch (e) {
-                alert("Error recovering: " + e.message);
-            }
-        };
-
-        // PERMANENT DELETE USER
-        window.permanentDeleteUser = async function(id) {
-            if (!confirm("Kya aap is portal ko hamesha ke liye khatam (permanent delete) karna chahte hain? Phir yeh wapas nahi aayega!")) return;
-            try {
-                await deleteDoc(doc(db, "RecycleBin", id));
-                alert("Portal permanently deleted!");
-                loadRecycleBinData();
-            } catch (e) {
-                alert("Error: " + e.message);
-            }
-        };
-
-        // Load Teachers List for Admin / Principal
-        async function loadAdminTeachersList(userRole) {
-            const container = document.getElementById("teacherAttendanceList");
-            if (!container) return;
-            container.innerHTML = "Loading teachers...";
-            try {
-                const q = query(collection(db, "users"), where("role", "==", "teacher"));
-                const snap = await getDocs(q);
-                if (snap.empty) {
-                    container.innerHTML = "<p style='color: gray;'>No teachers registered yet.</p>";
-                    return;
-                }
-                container.innerHTML = "";
-                snap.forEach((d) => {
-                    const t = d.data();
-                    container.innerHTML += `
-                        <div class="data-item">
-                            <div><strong>${t.name}</strong><br><small style="color: var(--muted);">Class: ${t.class || 'N/A'} | Subject: ${t.subject || 'N/A'}</small></div>
-                            <span style="color: var(--green); font-weight: bold; font-size: 13px;">✅ Active</span>
-                        </div>
-                    `;
-                });
-            } catch (e) { container.innerHTML = "<p>Error loading teachers.</p>"; }
-        }
-
-        // Teacher Workflow Logic
-        const stepClassSelect = document.getElementById("stepClassSelect");
-        const stepSubjectBox = document.getElementById("stepSubjectBox");
-        const stepStudentsBox = document.getElementById("stepStudentsBox");
-
-        if (stepClassSelect) {
-            stepClassSelect.addEventListener("change", () => {
-                if (stepClassSelect.value) {
-                    if (stepSubjectBox) stepSubjectBox.classList.remove("hidden");
-                } else {
-                    if (stepSubjectBox) stepSubjectBox.classList.add("hidden");
-                    if (stepStudentsBox) stepStudentsBox.classList.add("hidden");
-                }
-            });
-        }
-
-        const stepSubjectInput = document.getElementById("stepSubjectInput");
-        if (stepSubjectInput) {
-            stepSubjectInput.addEventListener("change", async () => {
-                const cls = stepClassSelect.value;
-                const container = document.getElementById("studentsListContainer");
-                if (stepStudentsBox) stepStudentsBox.classList.remove("hidden");
-                container.innerHTML = "Loading students...";
-
-                try {
-                    const q = query(collection(db, "users"), where("role", "==", "student"));
-                    const snap = await getDocs(q);
-                    container.innerHTML = "";
-                    let count = 0;
-                    snap.forEach((d) => {
-                        const st = d.data();
-                        if ((st.class || "").toLowerCase().includes(cls.toLowerCase())) {
-                            count++;
-                            container.innerHTML += `
-                                <div class="data-item">
-                                    <div><strong>${st.name}</strong> (${st.email})</div>
-                                    <div class="radio-group">
-                                        <label><input type="radio" name="st_att_${d.id}" value="Present" checked> Present</label>
-                                        <label><input type="radio" name="st_att_${d.id}" value="Absent"> Absent</label>
-                                    </div>
-                                </div>
-                            `;
-                        }
-                    });
-                    if (count === 0) container.innerHTML = "<p>No students found in this class.</p>";
-                } catch (e) { container.innerHTML = "<p>Error loading students.</p>"; }
-            });
-        }
-
-        // Save Students Attendance
-        const saveStudentsAttBtn = document.getElementById("saveStudentsAttBtn");
-        if (saveStudentsAttBtn) {
-            saveStudentsAttBtn.addEventListener("click", async () => {
-                const statusMsg = document.getElementById("teacherAttSaveStatus");
-                statusMsg.style.color = "green";
-                statusMsg.textContent = "✅ Attendance successfully saved!";
-            });
-        }
-
-        // Student Data Loader
-        async function loadStudentData(userData) {
-            const card = document.getElementById("studentDataCard");
-            if (card) {
-                card.innerHTML = `<p><strong>Name:</strong> ${userData.name}</p><p><strong>Class:</strong> ${userData.class || 'N/A'}</p><p style="margin-top:10px; color:var(--green);">Status: Active Student</p>`;
-            }
-        }
-
-        // YEARLY ARCHIVE LOGIC
-        const saveYearlyArchiveBtn = document.getElementById("saveYearlyArchiveBtn");
-        if (saveYearlyArchiveBtn) {
-            saveYearlyArchiveBtn.addEventListener("click", async () => {
-                const year = document.getElementById("archiveYear").value;
-                const selClass = document.getElementById("archiveClass").value;
-                const status = document.getElementById("archiveStatus");
-                if (!year) { status.style.color = "red"; status.textContent = "Please enter year."; return; }
-                status.style.color = "green";
-                status.textContent = `✅ Successfully archived data for year ${year} (${selClass}).`;
-            });
-        }
-
-        // MODALS TOGGLE
-        const pwdModal = document.getElementById("pwdModal");
-        if (document.getElementById("openPwdModalBtn")) document.getElementById("openPwdModalBtn").onclick = () => pwdModal.classList.remove("hidden");
-        if (document.getElementById("closePwdModalBtn")) document.getElementById("closePwdModalBtn").onclick = () => pwdModal.classList.add("hidden");
-
-        const archiveModal = document.getElementById("archiveModal");
-        if (document.getElementById("openArchiveModalBtn")) document.getElementById("openArchiveModalBtn").onclick = () => archiveModal.classList.remove("hidden");
-        if (document.getElementById("closeArchiveModalBtn")) document.getElementById("closeArchiveModalBtn").onclick = () => archiveModal.classList.add("hidden");
-    </script>
-</body>
-</html>
+                    // Security check: If logged in as

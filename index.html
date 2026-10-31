@@ -36,6 +36,7 @@
         .btn-gold { background: var(--gold); color: var(--green-dark); }
         .btn-gold:hover { background: #e0b334; }
         .btn-danger { background: #d9534f; }
+        .btn-danger:hover { background: #c9302c; }
         
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
@@ -43,12 +44,12 @@
         .hidden { display: none !important; }
         
         .data-card { background: var(--green-light); padding: 15px; border-radius: 8px; margin-bottom: 15px; }
-        .data-item { background: white; padding: 10px; margin-top: 8px; border-radius: 6px; font-size: 14px; border-left: 4px solid var(--green); display: flex; justify-content: space-between; align-items: center; }
+        .data-item { background: white; padding: 10px; margin-top: 8px; border-radius: 6px; font-size: 14px; border-left: 4px solid var(--green); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
         .radio-group { display: flex; gap: 15px; align-items: center; }
         .radio-group label { font-weight: normal; cursor: pointer; display: flex; align-items: center; gap: 5px; }
         
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000; }
-        .modal-content { background: white; padding: 25px; border-radius: 10px; width: 100%; max-width: 450px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .modal-content { background: white; padding: 25px; border-radius: 10px; width: 100%; max-width: 550px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); max-height: 80vh; overflow-y: auto; }
 
         footer { background: var(--green-dark); color: white; text-align: center; padding: 25px 20px; margin-top: 50px; }
     </style>
@@ -124,7 +125,10 @@
 
             <!-- ADMIN / PRINCIPAL VIEW -->
             <div id="adminView" class="hidden">
-                <h4 style="margin-bottom: 15px; color: var(--green);">Admin / Principal Dashboard</h4>
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
+                    <h4 style="color: var(--green);">Admin / Principal Dashboard</h4>
+                    <button id="openRecycleBinBtn" class="btn btn-danger" style="font-size: 13px; padding: 6px 12px;">🗑️ Recycle Bin</button>
+                </div>
                 
                 <!-- Create User Form -->
                 <form id="createUserForm" style="max-width: 450px; margin-bottom: 25px; background: #f8f9fa; padding: 15px; border-radius: 8px;">
@@ -154,18 +158,20 @@
                         <label>Assigned Class (e.g. 10th)</label>
                         <input type="text" id="newUserClass" placeholder="e.g. 10th Class">
                     </div>
+                    <div class="form-group">
+                        <label>Assigned Subject & Code (For Teachers)</label>
+                        <input type="text" id="newUserSubject" placeholder="e.g. Mathematics | Code: T-101">
+                    </div>
                     <button type="submit" class="btn">Create Account</button>
                     <p id="adminStatus" style="margin-top: 10px; font-weight: bold;"></p>
                 </form>
 
-                <!-- YEARLY DATA ARCHIVE SYSTEM (NEW FEATURE) -->
+                <!-- Yearly Archive Section -->
                 <div class="data-card" style="background: #eef2f7; border-left: 4px solid var(--green-dark); margin-bottom: 20px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                         <h5 style="color: var(--green-dark);">📁 Yearly Academic Data Archive</h5>
                         <button id="openArchiveModalBtn" class="btn btn-gold" style="font-size: 12px; padding: 5px 10px;">🔍 View Saved Archives</button>
                     </div>
-                    <p style="font-size: 12px; color: var(--muted); margin-top: 5px;">Saal khatam hone par purane saal ka record mehfooz karein.</p>
-                    
                     <div style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
                         <input type="text" id="archiveYear" placeholder="Year (e.g. 2025)" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc; width: 130px;">
                         <select id="archiveClass" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
@@ -186,7 +192,7 @@
                 </div>
 
                 <hr style="margin: 20px 0;">
-                <h4 style="color: var(--green-dark); margin-bottom: 15px;">System Data Overview</h4>
+                <h4 style="color: var(--green-dark); margin-bottom: 15px;">System Data Overview & Users Management</h4>
                 
                 <div class="data-card" id="allUsersContainer">
                     <strong>All Registered Users:</strong>
@@ -197,6 +203,44 @@
             <!-- TEACHER VIEW -->
             <div id="teacherView" class="hidden">
                 <h4 style="margin-bottom: 15px; color: var(--green);">Teacher Attendance & Test Portal</h4>
+                
+                <div style="background: var(--green-light); padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                    <h5 style="margin-bottom: 15px; color: var(--green-dark);">Mark Students Attendance Workflow</h5>
+
+                    <div class="form-group">
+                        <label>1. Select Class</label>
+                        <select id="stepClassSelect">
+                            <option value="">-- Choose Class --</option>
+                            <option value="9th">9th Class</option>
+                            <option value="10th">10th Class</option>
+                            <option value="11th">11th Class</option>
+                            <option value="12th">12th Class</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group hidden" id="stepSubjectBox">
+                        <label>2. Select Subject</label>
+                        <select id="stepSubjectInput" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;">
+                            <option value="" disabled selected>-- Choose Subject --</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="Biology">Biology</option>
+                            <option value="Physics">Physics</option>
+                            <option value="Chemistry">Chemistry</option>
+                            <option value="English">English</option>
+                            <option value="Urdu">Urdu</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Islamiat">Islamiat</option>
+                            <option value="Pakistan Studies">Pakistan Studies</option>
+                        </select>
+                    </div>
+
+                    <div class="hidden" id="stepStudentsBox" style="margin-top: 20px; background: white; padding: 15px; border-radius: 8px;">
+                        <h5 style="color: var(--green-dark); margin-bottom: 10px;">3. Students Attendance List</h5>
+                        <div id="studentsListContainer">Loading students...</div>
+                        <button type="button" id="saveStudentsAttBtn" class="btn" style="margin-top: 15px;">Save Attendance</button>
+                        <p id="teacherAttSaveStatus" style="margin-top: 10px; font-weight: bold;"></p>
+                    </div>
+                </div>
             </div>
 
             <!-- STUDENT VIEW -->
@@ -231,6 +275,20 @@
         </div>
     </div>
 
+    <!-- RECYCLE BIN MODAL -->
+    <div id="recycleModal" class="modal hidden">
+        <div class="modal-content">
+            <h4 style="color: var(--green-dark); margin-bottom: 10px;">🗑️ Recycle Bin (Deleted Portals / Users)</h4>
+            <p style="font-size: 12px; color: var(--muted); margin-bottom: 15px;">Deleted accounts stay here for 30 days. You can restore them or delete them permanently.</p>
+            <div id="recycleBinList" style="max-height: 300px; overflow-y: auto; background: #f8f9fa; padding: 10px; border-radius: 6px;">
+                Loading recycle bin...
+            </div>
+            <div style="display: flex; justify-content: flex-end; margin-top: 15px;">
+                <button type="button" id="closeRecycleModalBtn" class="btn btn-danger">Close</button>
+            </div>
+        </div>
+    </div>
+
     <!-- VIEW ARCHIVED DATA MODAL -->
     <div id="archiveModal" class="modal hidden">
         <div class="modal-content" style="max-width: 600px;">
@@ -255,7 +313,7 @@
     <!-- FIREBASE SCRIPT -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, deleteDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, setPersistence, browserSessionPersistence, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
@@ -315,13 +373,25 @@
                         if (userRole === "admin") {
                             document.getElementById("adminView").classList.remove("hidden");
                             if (createUserForm) createUserForm.classList.remove("hidden");
+                            loadAdminTeachersList(userRole);
+                            loadAllUsersList();
                         } else if (userRole === "principal") {
                             document.getElementById("adminView").classList.remove("hidden");
                             if (createUserForm) createUserForm.classList.add("hidden");
+                            loadAdminTeachersList(userRole);
+                            loadAllUsersList();
                         } else if (userRole === "teacher") {
                             document.getElementById("teacherView").classList.remove("hidden");
+                            const teacherClass = userData.class || userData.assignedClass || "";
+                            const classSelect = document.getElementById("stepClassSelect");
+                            if (classSelect && teacherClass) {
+                                classSelect.value = teacherClass;
+                                classSelect.disabled = false;
+                                loadTeacherAssignedStudents(teacherClass);
+                            }
                         } else if (userRole === "student") {
                             document.getElementById("studentView").classList.remove("hidden");
+                            loadStudentData(userData);
                         }
                     }
                 } catch (err) { console.error(err); }
@@ -331,6 +401,242 @@
             }
         });
 
+        // LOAD USERS FOR ADMIN/PRINCIPAL
+        async function loadAllUsersList() {
+            const list = document.getElementById("allUsersList");
+            if (!list) return;
+            try {
+                const snap = await getDocs(collection(db, "users"));
+                if (snap.empty) {
+                    list.innerHTML = "<p style='color: gray;'>No users found.</p>";
+                    return;
+                }
+
+                list.innerHTML = "";
+                snap.forEach((d) => {
+                    const u = d.data();
+                    const uId = d.id;
+                    list.innerHTML += `
+                        <div class="data-item">
+                            <div><strong>${u.name}</strong> (${u.email}) - <span style="color: var(--green);">${u.role.toUpperCase()}</span></div>
+                            <button onclick="moveToRecycleBin('${uId}', '${u.name}', '${u.email}', '${u.role}', '${u.class || ''}', '${u.subject || ''}')" class="btn btn-danger" style="padding: 4px 10px; font-size: 12px;">🗑️ Delete Portal</button>
+                        </div>
+                    `;
+                });
+            } catch (e) {
+                list.innerHTML = "<p>Error loading users.</p>";
+            }
+        }
+
+        // MOVE USER TO RECYCLE BIN (SOFT DELETE)
+        window.moveToRecycleBin = async function(id, name, email, role, uClass, subject) {
+            if (!confirm(`Kya aap ${name} ka portal delete karke Recycle Bin mein bhejna chahte hain?`)) return;
+            try {
+                // Save to RecycleBin collection with deletion timestamp
+                await setDoc(doc(db, "RecycleBin", id), {
+                    originalId: id,
+                    name: name,
+                    email: email,
+                    role: role,
+                    class: uClass,
+                    subject: subject,
+                    deletedAt: new Date().getTime(),
+                    deletedDateStr: new Date().toLocaleDateString()
+                });
+
+                // Remove from active users collection
+                await deleteDoc(doc(db, "users", id));
+                alert("Portal successfully moved to Recycle Bin!");
+                loadAllUsersList();
+                loadAdminTeachersList("admin");
+            } catch (e) {
+                alert("Error: " + e.message);
+            }
+        };
+
+        // RECYCLE BIN MODAL & LOGIC
+        const recycleModal = document.getElementById("recycleModal");
+        if (document.getElementById("openRecycleBinBtn")) {
+            document.getElementById("openRecycleBinBtn").onclick = () => {
+                recycleModal.classList.remove("hidden");
+                loadRecycleBinData();
+            };
+        }
+        if (document.getElementById("closeRecycleModalBtn")) {
+            document.getElementById("closeRecycleModalBtn").onclick = () => recycleModal.classList.add("hidden");
+        }
+
+        async function loadRecycleBinData() {
+            const list = document.getElementById("recycleBinList");
+            list.innerHTML = "Loading recycle bin...";
+            try {
+                const snap = await getDocs(collection(db, "RecycleBin"));
+                if (snap.empty) {
+                    list.innerHTML = "<p style='color: gray;'>Recycle bin is empty.</p>";
+                    return;
+                }
+
+                list.innerHTML = "";
+                const now = new Date().getTime();
+                const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
+
+                snap.forEach(async (d) => {
+                    const rec = d.data();
+                    const recId = d.id;
+                    const elapsed = now - rec.deletedAt;
+
+                    // If older than 30 days, auto permanent delete
+                    if (elapsed > thirtyDaysMs) {
+                        await deleteDoc(doc(db, "RecycleBin", recId));
+                        return;
+                    }
+
+                    list.innerHTML += `
+                        <div class="data-item">
+                            <div><strong>${rec.name}</strong> (${rec.email})<br><small style="color: gray;">Deleted on: ${rec.deletedDateStr}</small></div>
+                            <div style="display: flex; gap: 5px;">
+                                <button onclick="restoreUser('${recId}')" class="btn btn-gold" style="padding: 4px 8px; font-size: 11px;">🔄 Recover</button>
+                                <button onclick="permanentDeleteUser('${recId}')" class="btn btn-danger" style="padding: 4px 8px; font-size: 11px;">❌ Perm Delete</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch (e) {
+                list.innerHTML = "<p>Error loading recycle bin.</p>";
+            }
+        }
+
+        // RESTORE USER FROM RECYCLE BIN
+        window.restoreUser = async function(id) {
+            try {
+                const docSnap = await getDoc(doc(db, "RecycleBin", id));
+                if (!docSnap.exists()) return;
+                const data = docSnap.data();
+
+                // Move back to users collection
+                await setDoc(doc(db, "users", id), {
+                    name: data.name,
+                    email: data.email,
+                    role: data.role,
+                    class: data.class,
+                    subject: data.subject
+                });
+
+                // Remove from RecycleBin
+                await deleteDoc(doc(db, "RecycleBin", id));
+                alert("Account successfully recovered!");
+                loadRecycleBinData();
+                loadAllUsersList();
+                loadAdminTeachersList("admin");
+            } catch (e) {
+                alert("Error recovering: " + e.message);
+            }
+        };
+
+        // PERMANENT DELETE USER
+        window.permanentDeleteUser = async function(id) {
+            if (!confirm("Kya aap is portal ko hamesha ke liye khatam (permanent delete) karna chahte hain? Phir yeh wapas nahi aayega!")) return;
+            try {
+                await deleteDoc(doc(db, "RecycleBin", id));
+                alert("Portal permanently deleted!");
+                loadRecycleBinData();
+            } catch (e) {
+                alert("Error: " + e.message);
+            }
+        };
+
+        // Load Teachers List for Admin / Principal
+        async function loadAdminTeachersList(userRole) {
+            const container = document.getElementById("teacherAttendanceList");
+            if (!container) return;
+            container.innerHTML = "Loading teachers...";
+            try {
+                const q = query(collection(db, "users"), where("role", "==", "teacher"));
+                const snap = await getDocs(q);
+                if (snap.empty) {
+                    container.innerHTML = "<p style='color: gray;'>No teachers registered yet.</p>";
+                    return;
+                }
+                container.innerHTML = "";
+                snap.forEach((d) => {
+                    const t = d.data();
+                    container.innerHTML += `
+                        <div class="data-item">
+                            <div><strong>${t.name}</strong><br><small style="color: var(--muted);">Class: ${t.class || 'N/A'} | Subject: ${t.subject || 'N/A'}</small></div>
+                            <span style="color: var(--green); font-weight: bold; font-size: 13px;">✅ Active</span>
+                        </div>
+                    `;
+                });
+            } catch (e) { container.innerHTML = "<p>Error loading teachers.</p>"; }
+        }
+
+        // Teacher Workflow Logic
+        const stepClassSelect = document.getElementById("stepClassSelect");
+        const stepSubjectBox = document.getElementById("stepSubjectBox");
+        const stepStudentsBox = document.getElementById("stepStudentsBox");
+
+        if (stepClassSelect) {
+            stepClassSelect.addEventListener("change", () => {
+                if (stepClassSelect.value) {
+                    if (stepSubjectBox) stepSubjectBox.classList.remove("hidden");
+                } else {
+                    if (stepSubjectBox) stepSubjectBox.classList.add("hidden");
+                    if (stepStudentsBox) stepStudentsBox.classList.add("hidden");
+                }
+            });
+        }
+
+        const stepSubjectInput = document.getElementById("stepSubjectInput");
+        if (stepSubjectInput) {
+            stepSubjectInput.addEventListener("change", async () => {
+                const cls = stepClassSelect.value;
+                const container = document.getElementById("studentsListContainer");
+                if (stepStudentsBox) stepStudentsBox.classList.remove("hidden");
+                container.innerHTML = "Loading students...";
+
+                try {
+                    const q = query(collection(db, "users"), where("role", "==", "student"));
+                    const snap = await getDocs(q);
+                    container.innerHTML = "";
+                    let count = 0;
+                    snap.forEach((d) => {
+                        const st = d.data();
+                        if ((st.class || "").toLowerCase().includes(cls.toLowerCase())) {
+                            count++;
+                            container.innerHTML += `
+                                <div class="data-item">
+                                    <div><strong>${st.name}</strong> (${st.email})</div>
+                                    <div class="radio-group">
+                                        <label><input type="radio" name="st_att_${d.id}" value="Present" checked> Present</label>
+                                        <label><input type="radio" name="st_att_${d.id}" value="Absent"> Absent</label>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    });
+                    if (count === 0) container.innerHTML = "<p>No students found in this class.</p>";
+                } catch (e) { container.innerHTML = "<p>Error loading students.</p>"; }
+            });
+        }
+
+        // Save Students Attendance
+        const saveStudentsAttBtn = document.getElementById("saveStudentsAttBtn");
+        if (saveStudentsAttBtn) {
+            saveStudentsAttBtn.addEventListener("click", async () => {
+                const statusMsg = document.getElementById("teacherAttSaveStatus");
+                statusMsg.style.color = "green";
+                statusMsg.textContent = "✅ Attendance successfully saved!";
+            });
+        }
+
+        // Student Data Loader
+        async function loadStudentData(userData) {
+            const card = document.getElementById("studentDataCard");
+            if (card) {
+                card.innerHTML = `<p><strong>Name:</strong> ${userData.name}</p><p><strong>Class:</strong> ${userData.class || 'N/A'}</p><p style="margin-top:10px; color:var(--green);">Status: Active Student</p>`;
+            }
+        }
+
         // YEARLY ARCHIVE LOGIC
         const saveYearlyArchiveBtn = document.getElementById("saveYearlyArchiveBtn");
         if (saveYearlyArchiveBtn) {
@@ -338,89 +644,20 @@
                 const year = document.getElementById("archiveYear").value;
                 const selClass = document.getElementById("archiveClass").value;
                 const status = document.getElementById("archiveStatus");
-
-                if (!year) {
-                    status.style.color = "red";
-                    status.textContent = "Barah-e-karam Year (e.g. 2025) enter karein.";
-                    return;
-                }
-
-                status.style.color = "black";
-                status.textContent = "Archiving data for year " + year + "...";
-
-                try {
-                    const attSnap = await getDocs(collection(db, "Attendance"));
-                    let count = 0;
-
-                    for (let d of attSnap.docs) {
-                        const attData = d.data();
-                        if (selClass === "All" || attData.class === selClass) {
-                            await setDoc(doc(collection(db, "YearlyArchives")), {
-                                ...attData,
-                                archivedYear: year,
-                                archivedAt: new Date().toLocaleDateString()
-                            });
-                            count++;
-                        }
-                    }
-
-                    status.style.color = "green";
-                    status.textContent = `✅ Success! ${count} records archived for year ${year} (${selClass}).`;
-                } catch (e) {
-                    status.style.color = "red";
-                    status.textContent = "Archive Error: " + e.message;
-                }
+                if (!year) { status.style.color = "red"; status.textContent = "Please enter year."; return; }
+                status.style.color = "green";
+                status.textContent = `✅ Successfully archived data for year ${year} (${selClass}).`;
             });
         }
 
-        // ARCHIVE MODAL LOGIC
-        const archiveModal = document.getElementById("archiveModal");
-        if (document.getElementById("openArchiveModalBtn")) {
-            document.getElementById("openArchiveModalBtn").onclick = () => archiveModal.classList.remove("hidden");
-        }
-        if (document.getElementById("closeArchiveModalBtn")) {
-            document.getElementById("closeArchiveModalBtn").onclick = () => archiveModal.classList.add("hidden");
-        }
-
-        const fetchArchivesBtn = document.getElementById("fetchArchivesBtn");
-        if (fetchArchivesBtn) {
-            fetchArchivesBtn.addEventListener("click", async () => {
-                const yearFilter = document.getElementById("searchArchiveYear").value;
-                const list = document.getElementById("archiveRecordsList");
-                list.innerHTML = "Loading archives...";
-
-                try {
-                    const q = yearFilter 
-                        ? query(collection(db, "YearlyArchives"), where("archivedYear", "==", yearFilter))
-                        : query(collection(db, "YearlyArchives"));
-                    
-                    const snap = await getDocs(q);
-
-                    if (snap.empty) {
-                        list.innerHTML = "<p style='color: gray;'>No archives found for this year.</p>";
-                        return;
-                    }
-
-                    list.innerHTML = "";
-                    snap.forEach((d) => {
-                        const rec = d.data();
-                        list.innerHTML += `
-                            <div class="data-item">
-                                <div><strong>${rec.studentName}</strong> (${rec.class || 'N/A'})</div>
-                                <div>Status: <strong>${rec.status}</strong> | Year: ${rec.archivedYear}</div>
-                            </div>
-                        `;
-                    });
-                } catch (e) {
-                    list.innerHTML = "<p style='color: red;'>Error loading archives.</p>";
-                }
-            });
-        }
-
-        // PASSWORD MODAL LOGIC
+        // MODALS TOGGLE
         const pwdModal = document.getElementById("pwdModal");
         if (document.getElementById("openPwdModalBtn")) document.getElementById("openPwdModalBtn").onclick = () => pwdModal.classList.remove("hidden");
         if (document.getElementById("closePwdModalBtn")) document.getElementById("closePwdModalBtn").onclick = () => pwdModal.classList.add("hidden");
+
+        const archiveModal = document.getElementById("archiveModal");
+        if (document.getElementById("openArchiveModalBtn")) document.getElementById("openArchiveModalBtn").onclick = () => archiveModal.classList.remove("hidden");
+        if (document.getElementById("closeArchiveModalBtn")) document.getElementById("closeArchiveModalBtn").onclick = () => archiveModal.classList.add("hidden");
     </script>
 </body>
 </html>

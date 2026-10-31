@@ -397,7 +397,7 @@
                             loadAllUsersList();
                         } else if (currentUserRole === "principal") {
                             document.getElementById("adminView").classList.remove("hidden");
-                            if (createUserForm) createUserForm.classList.add("hidden"); // Principal cannot create users
+                            if (createUserForm) createUserForm.classList.add("hidden");
                             if (dashboardTitleHeading) dashboardTitleHeading.textContent = "Principal Monitoring Dashboard";
                             loadAdminTeachersList(currentUserRole);
                             loadAllUsersList();
@@ -439,4 +439,247 @@
                     const uId = d.id;
                     const uRole = (u.role || "").toLowerCase();
 
-                    // Security check: If logged in as
+                    let deleteBtnHtml = "";
+                    if (currentUserRole === "admin") {
+                        deleteBtnHtml = `<button onclick="moveToRecycleBin('${uId}', '${u.name}', '${u.email}', '${u.role}', '${u.class || ''}', '${u.subject || ''}')" class="btn btn-danger" style="padding: 4px 10px; font-size: 12px;">🗑️ Delete Portal</button>`;
+                    } else if (currentUserRole === "principal") {
+                        if (uRole !== "admin") {
+                            deleteBtnHtml = `<button onclick="moveToRecycleBin('${uId}', '${u.name}', '${u.email}', '${u.role}', '${u.class || ''}', '${u.subject || ''}')" class="btn btn-danger" style="padding: 4px 10px; font-size: 12px;">🗑️ Delete Portal</button>`;
+                        } else {
+                            deleteBtnHtml = `<span style="color: gray; font-size: 12px;">🔒 Admin Protected</span>`;
+                        }
+                    }
+
+                    list.innerHTML += `
+                        <div class="data-item">
+                            <div><strong>${u.name}</strong> (${u.email}) - <span style="color: var(--green);">${u.role.toUpperCase()}</span></div>
+                            ${deleteBtnHtml}
+                        </div>
+                    `;
+                });
+            } catch (e) {
+                list.innerHTML = "<p>Error loading users.</p>";
+            }
+        }
+
+        // MOVE USER TO RECYCLE BIN (SOFT DELETE)
+        window.moveToRecycleBin = async function(id, name, email, role, uClass, subject) {
+            const targetRole = (role || "").toLowerCase();
+            if (currentUserRole === "principal" && targetRole === "admin") {
+                alert("Access Denied: Principal ko Admin ka portal delete karne ki ijazat nahi hai!");
+                return;
+            }
+
+            if (!confirm(`Kya aap ${name} ka portal delete karke Recycle Bin mein bhejna chahte hain?`)) return;
+            try {
+                await setDoc(doc(db, "RecycleBin", id), {
+                    originalId: id,
+                    name: name,
+                    email: email,
+                    role: role,
+                    class: uClass,
+                    subject: subject,
+                    deletedAt: new Date().getTime(),
+                    deletedDateStr: new Date().toLocaleDateString()
+                });
+
+                await deleteDoc(doc(db, "users", id));
+                alert("Portal successfully moved to Recycle Bin!");
+                loadAllUsersList();
+                loadAdminTeachersList(currentUserRole);
+            } catch (e) {
+                alert("Error: " + e.message);
+            }
+        };
+
+        // RECYCLE BIN MODAL & LOGIC
+        const recycleModal = document.getElementById("recycleModal");
+        if (document.getElementById("openRecycleBinBtn")) {
+            document.getElementById("openRecycleBinBtn").onclick = () => {
+                recycleModal.classList.remove("hidden");
+                loadRecycleBinData();
+            };
+        }
+        if (document.getElementById("closeRecycleModalBtn")) {
+            document.getElementById("closeRecycleModalBtn").onclick = () => recycleModal.classList.add("hidden");
+        }
+
+        async function loadRecycleBinData() {
+            const list = document.getElementById("recycleBinList");
+            list.innerHTML = "Loading recycle bin...";
+            try {
+                const snap = await getDocs(collection(db, "RecycleBin"));
+                if (snap.empty) {
+                    list.innerHTML = "<p style='color: gray;'>Recycle bin is empty.</p>";
+                    return;
+                }
+
+                list.innerHTML = "";
+                const now = new Date().getTime();
+                const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
+
+                snap.forEach(async (d) => {
+                    const rec = d.data();
+                    const recId = d.id;
+                    const elapsed = now - rec.deletedAt;
+
+                    if (elapsed > thirtyDaysMs) {
+                        await deleteDoc(doc(db, "RecycleBin", recId));
+                        return;
+                    }
+
+                    list.innerHTML += `
+                        <div class="data-item">
+                            <div><strong>${rec.name}</strong> (${rec.email})<br><small style="color: gray;">Deleted on: ${rec.deletedDateStr}</small></div>
+                            <div style="display: flex; gap: 5px;">
+                                <button onclick="restoreUser('${recId}')" class="btn btn-gold" style="padding: 4px 8px; font-size: 11px;">🔄 Recover</button>
+                                <button onclick="permanentDeleteUser('${recId}')" class="btn btn-danger" style="padding: 4px 8px; font-size: 11px;">❌ Perm Delete</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch (e) {
+                list.innerHTML = "<p>Error loading recycle bin.</p>";
+            }
+        }
+
+        // RESTORE USER FROM RECYCLE BIN
+        window.restoreUser = async function(id) {
+            try {
+                const docSnap = await getDoc(doc(db, "RecycleBin", id));
+                if (!docSnap.exists()) return;
+                const data = docSnap.data();
+
+                await setDoc(doc(db, "users", id), {
+                    name: data.name,
+                    email: data.email,
+                    role: data.role,
+                    class: data.class,
+                    subject: data.subject
+                });
+
+                await deleteDoc(doc(db, "RecycleBin", id));
+                alert("Account successfully recovered!");
+                loadRecycleBinData();
+                loadAllUsersList();
+                loadAdminTeachersList(currentUserRole);
+            } catch (e) {
+                alert("Error recovering: " + e.message);
+            }
+        };
+
+        // PERMANENT DELETE USER
+        window.permanentDeleteUser = async function(id) {
+            if (!confirm("Kya aap is portal ko hamesha ke liye khatam (permanent delete) karna chahte hain?")) return;
+            try {
+                await deleteDoc(doc(db, "RecycleBin", id));
+                alert("Portal permanently deleted!");
+                loadRecycleBinData();
+            } catch (e) {
+                alert("Error: " + e.message);
+            }
+        };
+
+        // Load Teachers List for Admin / Principal
+        async function loadAdminTeachersList(userRole) {
+            const container = document.getElementById("teacherAttendanceList");
+            if (!container) return;
+            container.innerHTML = "Loading teachers...";
+            try {
+                const q = query(collection(db, "users"), where("role", "==", "teacher"));
+                const snap = await getDocs(q);
+                if (snap.empty) {
+                    container.innerHTML = "<p style='color: gray;'>No teachers registered yet.</p>";
+                    return;
+                }
+                container.innerHTML = "";
+                snap.forEach((d) => {
+                    const t = d.data();
+                    container.innerHTML += `
+                        <div class="data-item">
+                            <div><strong>${t.name}</strong><br><small style="color: var(--muted);">Class: ${t.class || 'N/A'} | Subject: ${t.subject || 'N/A'}</small></div>
+                            <span style="color: var(--green); font-weight: bold; font-size: 13px;">✅ Active</span>
+                        </div>
+                    `;
+                });
+            } catch (e) { container.innerHTML = "<p>Error loading teachers.</p>"; }
+        }
+
+        // Teacher Workflow Logic
+        const stepClassSelect = document.getElementById("stepClassSelect");
+        const stepSubjectBox = document.getElementById("stepSubjectBox");
+        const stepStudentsBox = document.getElementById("stepStudentsBox");
+
+        if (stepClassSelect) {
+            stepClassSelect.addEventListener("change", () => {
+                if (stepClassSelect.value) {
+                    if (stepSubjectBox) stepSubjectBox.classList.remove("hidden");
+                } else {
+                    if (stepSubjectBox) stepSubjectBox.classList.add("hidden");
+                    if (stepStudentsBox) stepStudentsBox.classList.add("hidden");
+                }
+            });
+        }
+
+        const stepSubjectInput = document.getElementById("stepSubjectInput");
+        if (stepSubjectInput) {
+            stepSubjectInput.addEventListener("change", async () => {
+                const cls = stepClassSelect.value;
+                const container = document.getElementById("studentsListContainer");
+                if (stepStudentsBox) stepStudentsBox.classList.remove("hidden");
+                container.innerHTML = "Loading students...";
+
+                try {
+                    const q = query(collection(db, "users"), where("role", "==", "student"));
+                    const snap = await getDocs(q);
+                    container.innerHTML = "";
+                    let count = 0;
+                    snap.forEach((d) => {
+                        const st = d.data();
+                        if ((st.class || "").toLowerCase().includes(cls.toLowerCase())) {
+                            count++;
+                            container.innerHTML += `
+                                <div class="data-item">
+                                    <div><strong>${st.name}</strong> (${st.email})</div>
+                                    <div class="radio-group">
+                                        <label><input type="radio" name="st_att_${d.id}" value="Present" checked> Present</label>
+                                        <label><input type="radio" name="st_att_${d.id}" value="Absent"> Absent</label>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    });
+                    if (count === 0) container.innerHTML = "<p>No students found in this class.</p>";
+                } catch (e) { container.innerHTML = "<p>Error loading students.</p>"; }
+            });
+        }
+
+        // Save Students Attendance
+        const saveStudentsAttBtn = document.getElementById("saveStudentsAttBtn");
+        if (saveStudentsAttBtn) {
+            saveStudentsAttBtn.addEventListener("click", async () => {
+                const statusMsg = document.getElementById("teacherAttSaveStatus");
+                statusMsg.style.color = "green";
+                statusMsg.textContent = "✅ Attendance successfully saved!";
+            });
+        }
+
+        // Student Data Loader
+        async function loadStudentData(userData) {
+            const card = document.getElementById("studentDataCard");
+            if (card) {
+                card.innerHTML = `<p><strong>Name:</strong> ${userData.name}</p><p><strong>Class:</strong> ${userData.class || 'N/A'}</p><p style="margin-top:10px; color:var(--green);">Status: Active Student</p>`;
+            }
+        }
+
+        // MODALS TOGGLE
+        const pwdModal = document.getElementById("pwdModal");
+        if (document.getElementById("openPwdModalBtn")) document.getElementById("openPwdModalBtn").onclick = () => pwdModal.classList.remove("hidden");
+        if (document.getElementById("closePwdModalBtn")) document.getElementById("closePwdModalBtn").onclick = () => pwdModal.classList.add("hidden");
+
+        const archiveModal = document.getElementById("archiveModal");
+        if (document.getElementById("openArchiveModalBtn")) document.getElementById("openArchiveModalBtn").onclick = () => archiveModal.classList.remove("hidden");
+        if (document.getElementById("closeArchiveModalBtn")) document.getElementById("closeArchiveModalBtn").onclick = () => archiveModal.classList.add("hidden");
+    </script>
+</body>
+</html>

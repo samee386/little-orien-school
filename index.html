@@ -159,6 +159,10 @@
                         <input type="text" id="newUserClass" placeholder="e.g. 10th Class">
                     </div>
                     <div class="form-group">
+                        <label>Monthly Fee Amount (For Students)</label>
+                        <input type="number" id="newUserMonthlyFee" placeholder="e.g. 3000">
+                    </div>
+                    <div class="form-group">
                         <label>Assigned Subject & Code (For Teachers)</label>
                         <input type="text" id="newUserSubject" placeholder="e.g. Mathematics | Code: T-101">
                     </div>
@@ -186,16 +190,27 @@
                     <p id="archiveStatus" style="margin-top: 8px; font-weight: bold; font-size: 13px;"></p>
                 </div>
 
-                <!-- Student Fee Management Section -->
+                <!-- Smart Auto Fee Challan Generator Section -->
+                <div class="data-card" style="background: #e2f0d9; border-left: 4px solid #385723; margin-bottom: 20px;">
+                    <h5 style="color: #385723; margin-bottom: 8px;">⚡ Smart Auto Fee Challan Generator</h5>
+                    <p style="font-size: 12px; color: #555; margin-bottom: 10px;">Har student ki apni mukhtasif fee aur purani pending dues ke sath auto challan banayein.</p>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <input type="text" id="challanMonthInput" placeholder="Month Name (e.g. November 2026)" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc; flex: 1; min-width: 200px;">
+                        <button type="button" id="generateSmartChallansBtn" class="btn" style="background: #385723;">Generate Smart Challans</button>
+                    </div>
+                    <p id="challanGenStatus" style="margin-top: 8px; font-weight: bold; font-size: 13px;"></p>
+                </div>
+
+                <!-- Manual Student Fee Management -->
                 <div class="data-card" style="background: #fff3cd; border-left: 4px solid #ffc107; margin-bottom: 20px;">
-                    <h5 style="color: #856404; margin-bottom: 10px;">💰 Student Fee Management</h5>
+                    <h5 style="color: #856404; margin-bottom: 10px;">💰 Manual Fee Record & Status Update</h5>
                     <div class="form-group">
                         <label>Student Email</label>
                         <input type="text" id="feeStudentEmail" placeholder="student@school.com">
                     </div>
                     <div class="form-group">
-                        <label>Fee Month & Amount</label>
-                        <input type="text" id="feeDetails" placeholder="Misal: November 2026 - 3500 PKR">
+                        <label>Fee Month & Details</label>
+                        <input type="text" id="feeDetails" placeholder="Misal: November 2026 Fee - 3500 PKR">
                     </div>
                     <div class="form-group">
                         <label>Status</label>
@@ -208,23 +223,30 @@
                     <p id="feeMsg" style="margin-top: 5px; font-weight: bold; font-size: 13px;"></p>
                 </div>
 
-                <!-- Marks / Grades Management Section -->
-                <div class="data-card" style="background: #d4edda; border-left: 4px solid var(--green); margin-bottom: 20px;">
-                    <h5 style="color: var(--green-dark); margin-bottom: 10px;">📊 Add Student Marks & Grades</h5>
+                <!-- Marks / Grades Management Section (Strictly for Admin only, Principal hidden) -->
+                <div class="data-card" id="adminMarksCard" style="background: #d4edda; border-left: 4px solid var(--green); margin-bottom: 20px;">
+                    <h5 style="color: var(--green-dark); margin-bottom: 10px;">📊 Add Student Marks & Grades (Admin)</h5>
                     <div class="form-group">
                         <label>Student Email</label>
-                        <input type="text" id="gradeStudentEmail" placeholder="student@school.com">
+                        <input type="text" id="adminGradeStudentEmail" placeholder="student@school.com">
                     </div>
                     <div class="form-group">
-                        <label>Subject & Test Name</label>
-                        <input type="text" id="testName" placeholder="Misal: Math Mid-Term Test">
+                        <label>Category Type</label>
+                        <select id="adminGradeCategory">
+                            <option value="Test">Weekly / Monthly Test</option>
+                            <option value="Exam">Term / Final Exam</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Subject & Title</label>
+                        <input type="text" id="adminTestName" placeholder="Misal: Math Mid-Term Exam / Test 1">
                     </div>
                     <div class="form-group">
                         <label>Marks Obtained / Total Marks</label>
-                        <input type="text" id="marksObtained" placeholder="Misal: 45 / 50 (Grade: A+)">
+                        <input type="text" id="adminMarksObtained" placeholder="Misal: 45 / 50 (Grade: A+)">
                     </div>
-                    <button type="button" id="saveGradeBtn" class="btn">Save Marks</button>
-                    <p id="gradeMsg" style="margin-top: 5px; font-weight: bold; font-size: 13px;"></p>
+                    <button type="button" id="adminSaveGradeBtn" class="btn">Save Marks</button>
+                    <p id="adminGradeMsg" style="margin-top: 5px; font-weight: bold; font-size: 13px;"></p>
                 </div>
 
                 <div class="data-card" style="background: #eef7f2;">
@@ -282,6 +304,32 @@
                         <p id="teacherAttSaveStatus" style="margin-top: 10px; font-weight: bold;"></p>
                     </div>
                 </div>
+
+                <!-- Teacher Marks Entry Section -->
+                <div class="data-card" style="background: #d4edda; border-left: 4px solid var(--green); margin-bottom: 20px;">
+                    <h5 style="color: var(--green-dark); margin-bottom: 10px;">📊 Add Student Marks & Grades (Teacher)</h5>
+                    <div class="form-group">
+                        <label>Student Email</label>
+                        <input type="text" id="teacherGradeStudentEmail" placeholder="student@school.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Category Type</label>
+                        <select id="teacherGradeCategory">
+                            <option value="Test">Weekly / Monthly Test</option>
+                            <option value="Exam">Term / Final Exam</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Subject & Title</label>
+                        <input type="text" id="teacherTestName" placeholder="Misal: Physics Class Test 2 / Mid Exam">
+                    </div>
+                    <div class="form-group">
+                        <label>Marks Obtained / Total Marks</label>
+                        <input type="text" id="teacherMarksObtained" placeholder="Misal: 18 / 20 (Grade: A)">
+                    </div>
+                    <button type="button" id="teacherSaveGradeBtn" class="btn">Save Marks</button>
+                    <p id="teacherGradeMsg" style="margin-top: 5px; font-weight: bold; font-size: 13px;"></p>
+                </div>
             </div>
 
             <!-- STUDENT VIEW -->
@@ -290,13 +338,18 @@
                 <div id="studentDataCard" class="data-card">Loading profile...</div>
 
                 <div class="data-card" style="background: #fff3cd; border-left: 4px solid #ffc107; margin-top: 15px;">
-                    <h5 style="color: #856404; margin-bottom: 8px;">💰 My Fee Status:</h5>
+                    <h5 style="color: #856404; margin-bottom: 8px;">💰 My Fee Challan & Status:</h5>
                     <div id="studentFeeList">Loading fee status...</div>
                 </div>
 
-                <div class="data-card" style="background: #d4edda; border-left: 4px solid var(--green); margin-top: 15px;">
-                    <h5 style="color: var(--green-dark); margin-bottom: 8px;">📊 My Marks & Grades:</h5>
-                    <div id="studentGradesList">Loading grades...</div>
+                <div class="data-card" style="background: #eef7f2; border-left: 4px solid var(--green); margin-top: 15px;">
+                    <h5 style="color: var(--green-dark); margin-bottom: 8px;">📝 My Test Marks:</h5>
+                    <div id="studentTestMarksList">Loading test marks...</div>
+                </div>
+
+                <div class="data-card" style="background: #d4edda; border-left: 4px solid #155724; margin-top: 15px;">
+                    <h5 style="color: #155724; margin-bottom: 8px;">🏆 My Exam Marks & Grades:</h5>
+                    <div id="studentExamMarksList">Loading exam marks...</div>
                 </div>
             </div>
         </div>
@@ -439,16 +492,19 @@
 
                         const createUserForm = document.getElementById("createUserForm");
                         const dashboardTitleHeading = document.getElementById("dashboardTitleHeading");
+                        const adminMarksCard = document.getElementById("adminMarksCard");
 
                         if (currentUserRole === "admin") {
                             document.getElementById("adminView").classList.remove("hidden");
                             if (createUserForm) createUserForm.classList.remove("hidden");
+                            if (adminMarksCard) adminMarksCard.classList.remove("hidden"); // Admin can enter marks
                             if (dashboardTitleHeading) dashboardTitleHeading.textContent = "Admin Dashboard";
                             loadAdminTeachersList(currentUserRole);
                             loadAllUsersList();
                         } else if (currentUserRole === "principal") {
                             document.getElementById("adminView").classList.remove("hidden");
-                            if (createUserForm) createUserForm.classList.add("hidden"); // Principal cannot create users
+                            if (createUserForm) createUserForm.classList.add("hidden");
+                            if (adminMarksCard) adminMarksCard.classList.add("hidden"); // Principal CANNOT enter marks
                             if (dashboardTitleHeading) dashboardTitleHeading.textContent = "Principal Monitoring Dashboard";
                             loadAdminTeachersList(currentUserRole);
                             loadAllUsersList();
@@ -473,7 +529,77 @@
             }
         });
 
-        // SAVE FEE RECORD
+        // SMART AUTO FEE CHALLAN GENERATOR
+        const generateSmartChallansBtn = document.getElementById("generateSmartChallansBtn");
+        if (generateSmartChallansBtn) {
+            generateSmartChallansBtn.addEventListener("click", async () => {
+                const monthName = document.getElementById("challanMonthInput").value;
+                const statusMsg = document.getElementById("challanGenStatus");
+
+                if (!monthName) {
+                    statusMsg.style.color = "red";
+                    statusMsg.textContent = "Barah-e-karam month name enter karein (e.g. November 2026).";
+                    return;
+                }
+
+                statusMsg.style.color = "black";
+                statusMsg.textContent = "Generating smart challans for all students...";
+
+                try {
+                    const studentsQuery = query(collection(db, "users"), where("role", "==", "student"));
+                    const studentsSnap = await getDocs(studentsQuery);
+
+                    if (studentsSnap.empty) {
+                        statusMsg.style.color = "red";
+                        statusMsg.textContent = "Koi student registered nahi hai!";
+                        return;
+                    }
+
+                    let count = 0;
+                    for (let studentDoc of studentsSnap.docs) {
+                        const studentData = studentDoc.data();
+                        const standardFee = Number(studentData.monthlyFee || 3000);
+
+                        const existingFeeQuery = query(
+                            collection(db, "FeeRecords"), 
+                            where("studentEmail", "==", studentData.email),
+                            where("status", "==", "Pending")
+                        );
+                        const existingFeeSnap = await getDocs(existingFeeQuery);
+                        
+                        let previousPendingTotal = 0;
+                        existingFeeSnap.forEach((docSnap) => {
+                            const rec = docSnap.data();
+                            previousPendingTotal += Number(rec.totalAmount || standardFee);
+                        });
+
+                        const totalPayable = standardFee + previousPendingTotal;
+
+                        await setDoc(doc(collection(db, "FeeRecords")), {
+                            studentEmail: studentData.email,
+                            studentName: studentData.name,
+                            class: studentData.class || 'N/A',
+                            feeInfo: `${monthName} Fee`,
+                            monthlyAmount: standardFee,
+                            previousPending: previousPendingTotal,
+                            totalAmount: totalPayable,
+                            status: "Pending",
+                            createdAt: new Date().toLocaleDateString()
+                        });
+                        count++;
+                    }
+
+                    statusMsg.style.color = "green";
+                    statusMsg.textContent = `✅ Success! ${count} students ke smart challans generate ho gaye hain.`;
+                    document.getElementById("challanMonthInput").value = "";
+                } catch (e) {
+                    statusMsg.style.color = "red";
+                    statusMsg.textContent = "Error: " + e.message;
+                }
+            });
+        }
+
+        // SAVE FEE RECORD (MANUAL)
         const saveFeeBtn = document.getElementById("saveFeeBtn");
         if (saveFeeBtn) {
             saveFeeBtn.addEventListener("click", async () => {
@@ -492,6 +618,7 @@
                     await setDoc(doc(collection(db, "FeeRecords")), {
                         studentEmail: email,
                         feeInfo: details,
+                        totalAmount: details,
                         status: status,
                         date: new Date().toLocaleDateString()
                     });
@@ -506,14 +633,15 @@
             });
         }
 
-        // SAVE MARKS / GRADES
-        const saveGradeBtn = document.getElementById("saveGradeBtn");
-        if (saveGradeBtn) {
-            saveGradeBtn.addEventListener("click", async () => {
-                const email = document.getElementById("gradeStudentEmail").value;
-                const test = document.getElementById("testName").value;
-                const marks = document.getElementById("marksObtained").value;
-                const msg = document.getElementById("gradeMsg");
+        // SAVE MARKS / GRADES (ADMIN)
+        const adminSaveGradeBtn = document.getElementById("adminSaveGradeBtn");
+        if (adminSaveGradeBtn) {
+            adminSaveGradeBtn.addEventListener("click", async () => {
+                const email = document.getElementById("adminGradeStudentEmail").value;
+                const category = document.getElementById("adminGradeCategory").value;
+                const test = document.getElementById("adminTestName").value;
+                const marks = document.getElementById("adminMarksObtained").value;
+                const msg = document.getElementById("adminGradeMsg");
 
                 if (!email || !test || !marks) {
                     msg.style.color = "red";
@@ -524,15 +652,52 @@
                 try {
                     await setDoc(doc(collection(db, "StudentGrades")), {
                         studentEmail: email,
+                        category: category,
                         testName: test,
                         marks: marks,
                         date: new Date().toLocaleDateString()
                     });
                     msg.style.color = "green";
-                    msg.textContent = "✅ Marks successfully save ho gaye!";
-                    document.getElementById("gradeStudentEmail").value = "";
-                    document.getElementById("testName").value = "";
-                    document.getElementById("marksObtained").value = "";
+                    msg.textContent = `✅ ${category} marks successfully save ho gaye!`;
+                    document.getElementById("adminGradeStudentEmail").value = "";
+                    document.getElementById("adminTestName").value = "";
+                    document.getElementById("adminMarksObtained").value = "";
+                } catch (e) {
+                    msg.style.color = "red";
+                    msg.textContent = "Error: " + e.message;
+                }
+            });
+        }
+
+        // SAVE MARKS / GRADES (TEACHER)
+        const teacherSaveGradeBtn = document.getElementById("teacherSaveGradeBtn");
+        if (teacherSaveGradeBtn) {
+            teacherSaveGradeBtn.addEventListener("click", async () => {
+                const email = document.getElementById("teacherGradeStudentEmail").value;
+                const category = document.getElementById("teacherGradeCategory").value;
+                const test = document.getElementById("teacherTestName").value;
+                const marks = document.getElementById("teacherMarksObtained").value;
+                const msg = document.getElementById("teacherGradeMsg");
+
+                if (!email || !test || !marks) {
+                    msg.style.color = "red";
+                    msg.textContent = "Tamam fields fill karna lazmi hain.";
+                    return;
+                }
+
+                try {
+                    await setDoc(doc(collection(db, "StudentGrades")), {
+                        studentEmail: email,
+                        category: category,
+                        testName: test,
+                        marks: marks,
+                        date: new Date().toLocaleDateString()
+                    });
+                    msg.style.color = "green";
+                    msg.textContent = `✅ ${category} marks successfully save ho gaye!`;
+                    document.getElementById("teacherGradeStudentEmail").value = "";
+                    document.getElementById("teacherTestName").value = "";
+                    document.getElementById("teacherMarksObtained").value = "";
                 } catch (e) {
                     msg.style.color = "red";
                     msg.textContent = "Error: " + e.message;
@@ -782,7 +947,7 @@
             });
         }
 
-        // Student Data Loader (Profile, Fee & Grades)
+        // Student Data Loader (Profile, Fee Challan, Test & Exam Marks)
         async function loadStudentData(userData) {
             const card = document.getElementById("studentDataCard");
             if (card) {
@@ -796,14 +961,14 @@
                 const feeQ = query(collection(db, "FeeRecords"), where("studentEmail", "==", userData.email));
                 const feeSnap = await getDocs(feeQ);
                 if (feeSnap.empty) {
-                    feeList.innerHTML = "<p style='color: gray; font-size: 13px;'>Koi fee record mojood nahi hai.</p>";
+                    feeList.innerHTML = "<p style='color: gray; font-size: 13px;'>Fee record mojood nahi hai.</p>";
                 } else {
                     feeList.innerHTML = "";
                     feeSnap.forEach((doc) => {
                         const f = doc.data();
                         feeList.innerHTML += `
                             <div class="data-item" style="margin-top: 5px; font-size: 13px;">
-                                <div><strong>${f.feeInfo}</strong></div>
+                                <div><strong>${f.feeInfo}</strong><br><small>Total: ${f.totalAmount || f.totalAmount === 0 ? f.totalAmount + ' PKR' : (f.feeInfo || '')}</small></div>
                                 <div>Status: <span style="color: ${f.status === 'Paid' ? 'green' : 'red'}; font-weight: bold;">${f.status}</span></div>
                             </div>
                         `;
@@ -811,27 +976,51 @@
                 }
             } catch (e) { feeList.innerHTML = "<p style='color: red;'>Error loading fee.</p>"; }
 
-            // Load Student Grades
-            const gradesList = document.getElementById("studentGradesList");
-            gradesList.innerHTML = "Loading...";
+            // Load Student Test & Exam Marks Categorized
+            const testList = document.getElementById("studentTestMarksList");
+            const examList = document.getElementById("studentExamMarksList");
+            testList.innerHTML = "Loading...";
+            examList.innerHTML = "Loading...";
+
             try {
                 const gradeQ = query(collection(db, "StudentGrades"), where("studentEmail", "==", userData.email));
                 const gradeSnap = await getDocs(gradeQ);
+                
                 if (gradeSnap.empty) {
-                    gradesList.innerHTML = "<p style='color: gray; font-size: 13px;'>Koi marks ya grades mojood nahi hain.</p>";
+                    testList.innerHTML = "<p style='color: gray; font-size: 13px;'>Test marks mojood nahi hain.</p>";
+                    examList.innerHTML = "<p style='color: gray; font-size: 13px;'>Exam marks mojood nahi hain.</p>";
                 } else {
-                    gradesList.innerHTML = "";
+                    testList.innerHTML = "";
+                    examList.innerHTML = "";
+                    let hasTest = false;
+                    let hasExam = false;
+
                     gradeSnap.forEach((doc) => {
                         const g = doc.data();
-                        gradesList.innerHTML += `
+                        const cat = (g.category || "Test").toLowerCase();
+                        const htmlItem = `
                             <div class="data-item" style="margin-top: 5px; font-size: 13px;">
                                 <div><strong>${g.testName}</strong></div>
                                 <div>Marks: <strong>${g.marks}</strong></div>
                             </div>
                         `;
+
+                        if (cat === "exam") {
+                            examList.innerHTML += htmlItem;
+                            hasExam = true;
+                        } else {
+                            testList.innerHTML += htmlItem;
+                            hasTest = true;
+                        }
                     });
+
+                    if (!hasTest) testList.innerHTML = "<p style='color: gray; font-size: 13px;'>Test marks mojood nahi hain.</p>";
+                    if (!hasExam) examList.innerHTML = "<p style='color: gray; font-size: 13px;'>Exam marks mojood nahi hain.</p>";
                 }
-            } catch (e) { gradesList.innerHTML = "<p style='color: red;'>Error loading grades.</p>"; }
+            } catch (e) { 
+                testList.innerHTML = "<p style='color: red;'>Error loading test marks.</p>";
+                examList.innerHTML = "<p style='color: red;'>Error loading exam marks.</p>";
+            }
         }
 
         // MODALS TOGGLE

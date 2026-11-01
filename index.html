@@ -186,6 +186,47 @@
                     <p id="archiveStatus" style="margin-top: 8px; font-weight: bold; font-size: 13px;"></p>
                 </div>
 
+                <!-- Student Fee Management Section -->
+                <div class="data-card" style="background: #fff3cd; border-left: 4px solid #ffc107; margin-bottom: 20px;">
+                    <h5 style="color: #856404; margin-bottom: 10px;">💰 Student Fee Management</h5>
+                    <div class="form-group">
+                        <label>Student Email</label>
+                        <input type="text" id="feeStudentEmail" placeholder="student@school.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Fee Month & Amount</label>
+                        <input type="text" id="feeDetails" placeholder="Misal: November 2026 - 3500 PKR">
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="feeStatus">
+                            <option value="Paid">Paid (Ada shuda)</option>
+                            <option value="Pending">Pending (Baqaya)</option>
+                        </select>
+                    </div>
+                    <button type="button" id="saveFeeBtn" class="btn btn-gold" style="background: #ffc107; color: #000;">Save Fee Record</button>
+                    <p id="feeMsg" style="margin-top: 5px; font-weight: bold; font-size: 13px;"></p>
+                </div>
+
+                <!-- Marks / Grades Management Section -->
+                <div class="data-card" style="background: #d4edda; border-left: 4px solid var(--green); margin-bottom: 20px;">
+                    <h5 style="color: var(--green-dark); margin-bottom: 10px;">📊 Add Student Marks & Grades</h5>
+                    <div class="form-group">
+                        <label>Student Email</label>
+                        <input type="text" id="gradeStudentEmail" placeholder="student@school.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Subject & Test Name</label>
+                        <input type="text" id="testName" placeholder="Misal: Math Mid-Term Test">
+                    </div>
+                    <div class="form-group">
+                        <label>Marks Obtained / Total Marks</label>
+                        <input type="text" id="marksObtained" placeholder="Misal: 45 / 50 (Grade: A+)">
+                    </div>
+                    <button type="button" id="saveGradeBtn" class="btn">Save Marks</button>
+                    <p id="gradeMsg" style="margin-top: 5px; font-weight: bold; font-size: 13px;"></p>
+                </div>
+
                 <div class="data-card" style="background: #eef7f2;">
                     <h5 style="margin-bottom: 10px; color: var(--green-dark);">Mark Teachers Attendance Today</h5>
                     <div id="teacherAttendanceList">Loading teachers...</div>
@@ -247,6 +288,16 @@
             <div id="studentView" class="hidden">
                 <h4 style="margin-bottom: 15px; color: var(--green);">Student Portal</h4>
                 <div id="studentDataCard" class="data-card">Loading profile...</div>
+
+                <div class="data-card" style="background: #fff3cd; border-left: 4px solid #ffc107; margin-top: 15px;">
+                    <h5 style="color: #856404; margin-bottom: 8px;">💰 My Fee Status:</h5>
+                    <div id="studentFeeList">Loading fee status...</div>
+                </div>
+
+                <div class="data-card" style="background: #d4edda; border-left: 4px solid var(--green); margin-top: 15px;">
+                    <h5 style="color: var(--green-dark); margin-bottom: 8px;">📊 My Marks & Grades:</h5>
+                    <div id="studentGradesList">Loading grades...</div>
+                </div>
             </div>
         </div>
     </div>
@@ -397,7 +448,7 @@
                             loadAllUsersList();
                         } else if (currentUserRole === "principal") {
                             document.getElementById("adminView").classList.remove("hidden");
-                            if (createUserForm) createUserForm.classList.add("hidden");
+                            if (createUserForm) createUserForm.classList.add("hidden"); // Principal cannot create users
                             if (dashboardTitleHeading) dashboardTitleHeading.textContent = "Principal Monitoring Dashboard";
                             loadAdminTeachersList(currentUserRole);
                             loadAllUsersList();
@@ -421,6 +472,73 @@
                 document.getElementById("dashboardSection").classList.add("hidden");
             }
         });
+
+        // SAVE FEE RECORD
+        const saveFeeBtn = document.getElementById("saveFeeBtn");
+        if (saveFeeBtn) {
+            saveFeeBtn.addEventListener("click", async () => {
+                const email = document.getElementById("feeStudentEmail").value;
+                const details = document.getElementById("feeDetails").value;
+                const status = document.getElementById("feeStatus").value;
+                const msg = document.getElementById("feeMsg");
+
+                if (!email || !details) {
+                    msg.style.color = "red";
+                    msg.textContent = "Email aur Fee details likhna lazmi hai.";
+                    return;
+                }
+
+                try {
+                    await setDoc(doc(collection(db, "FeeRecords")), {
+                        studentEmail: email,
+                        feeInfo: details,
+                        status: status,
+                        date: new Date().toLocaleDateString()
+                    });
+                    msg.style.color = "green";
+                    msg.textContent = "✅ Fee record successfully save ho gaya!";
+                    document.getElementById("feeStudentEmail").value = "";
+                    document.getElementById("feeDetails").value = "";
+                } catch (e) {
+                    msg.style.color = "red";
+                    msg.textContent = "Error: " + e.message;
+                }
+            });
+        }
+
+        // SAVE MARKS / GRADES
+        const saveGradeBtn = document.getElementById("saveGradeBtn");
+        if (saveGradeBtn) {
+            saveGradeBtn.addEventListener("click", async () => {
+                const email = document.getElementById("gradeStudentEmail").value;
+                const test = document.getElementById("testName").value;
+                const marks = document.getElementById("marksObtained").value;
+                const msg = document.getElementById("gradeMsg");
+
+                if (!email || !test || !marks) {
+                    msg.style.color = "red";
+                    msg.textContent = "Tamam fields fill karna lazmi hain.";
+                    return;
+                }
+
+                try {
+                    await setDoc(doc(collection(db, "StudentGrades")), {
+                        studentEmail: email,
+                        testName: test,
+                        marks: marks,
+                        date: new Date().toLocaleDateString()
+                    });
+                    msg.style.color = "green";
+                    msg.textContent = "✅ Marks successfully save ho gaye!";
+                    document.getElementById("gradeStudentEmail").value = "";
+                    document.getElementById("testName").value = "";
+                    document.getElementById("marksObtained").value = "";
+                } catch (e) {
+                    msg.style.color = "red";
+                    msg.textContent = "Error: " + e.message;
+                }
+            });
+        }
 
         // LOAD USERS FOR ADMIN / PRINCIPAL WITH STRICT PERMISSIONS
         async function loadAllUsersList() {
@@ -664,12 +782,56 @@
             });
         }
 
-        // Student Data Loader
+        // Student Data Loader (Profile, Fee & Grades)
         async function loadStudentData(userData) {
             const card = document.getElementById("studentDataCard");
             if (card) {
-                card.innerHTML = `<p><strong>Name:</strong> ${userData.name}</p><p><strong>Class:</strong> ${userData.class || 'N/A'}</p><p style="margin-top:10px; color:var(--green);">Status: Active Student</p>`;
+                card.innerHTML = `<p><strong>Name:</strong> ${userData.name}</p><p><strong>Class:</strong> ${userData.class || 'N/A'}</p><p style="margin-top:5px; color:var(--green);">Status: Active Student</p>`;
             }
+
+            // Load Student Fee
+            const feeList = document.getElementById("studentFeeList");
+            feeList.innerHTML = "Loading...";
+            try {
+                const feeQ = query(collection(db, "FeeRecords"), where("studentEmail", "==", userData.email));
+                const feeSnap = await getDocs(feeQ);
+                if (feeSnap.empty) {
+                    feeList.innerHTML = "<p style='color: gray; font-size: 13px;'>Koi fee record mojood nahi hai.</p>";
+                } else {
+                    feeList.innerHTML = "";
+                    feeSnap.forEach((doc) => {
+                        const f = doc.data();
+                        feeList.innerHTML += `
+                            <div class="data-item" style="margin-top: 5px; font-size: 13px;">
+                                <div><strong>${f.feeInfo}</strong></div>
+                                <div>Status: <span style="color: ${f.status === 'Paid' ? 'green' : 'red'}; font-weight: bold;">${f.status}</span></div>
+                            </div>
+                        `;
+                    });
+                }
+            } catch (e) { feeList.innerHTML = "<p style='color: red;'>Error loading fee.</p>"; }
+
+            // Load Student Grades
+            const gradesList = document.getElementById("studentGradesList");
+            gradesList.innerHTML = "Loading...";
+            try {
+                const gradeQ = query(collection(db, "StudentGrades"), where("studentEmail", "==", userData.email));
+                const gradeSnap = await getDocs(gradeQ);
+                if (gradeSnap.empty) {
+                    gradesList.innerHTML = "<p style='color: gray; font-size: 13px;'>Koi marks ya grades mojood nahi hain.</p>";
+                } else {
+                    gradesList.innerHTML = "";
+                    gradeSnap.forEach((doc) => {
+                        const g = doc.data();
+                        gradesList.innerHTML += `
+                            <div class="data-item" style="margin-top: 5px; font-size: 13px;">
+                                <div><strong>${g.testName}</strong></div>
+                                <div>Marks: <strong>${g.marks}</strong></div>
+                            </div>
+                        `;
+                    });
+                }
+            } catch (e) { gradesList.innerHTML = "<p style='color: red;'>Error loading grades.</p>"; }
         }
 
         // MODALS TOGGLE

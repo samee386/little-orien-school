@@ -436,14 +436,15 @@
         import { getFirestore, doc, getDoc, setDoc, deleteDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, setPersistence, browserSessionPersistence, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyDoOtmxvdFOyo2e-NmdNMDeSv9smiPbrTM",
-            authDomain: "little-orien-school.firebaseapp.com",
-            projectId: "little-orien-school",
-            storageBucket: "little-orien-school.firebasestorage.app",
-            messagingSenderId: "920778107064",
-            appId: "1:920778107064:web:a50ee9d38e79bae6adec4d"
-        };
+       const firebaseConfig = {
+    apiKey: "AIzaSyDoOtmxvdFOyo2e-NmdNMDeSv9smiPbrTM",
+    authDomain: "little-orien-school.firebaseapp.com",
+    projectId: "little-orien-school",
+    storageBucket: "little-orien-school.firebasestorage.app",
+    messagingSenderId: "920778107064",
+    appId: "1:920778107064:web:a50ee9d38e79bae6adec4d",
+    measurementId: "G-0EN3D539FC"
+};
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);

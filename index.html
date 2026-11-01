@@ -45,8 +45,6 @@
         
         .data-card { background: var(--green-light); padding: 15px; border-radius: 8px; margin-bottom: 15px; }
         .data-item { background: white; padding: 10px; margin-top: 8px; border-radius: 6px; font-size: 14px; border-left: 4px solid var(--green); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-        .radio-group { display: flex; gap: 15px; align-items: center; }
-        .radio-group label { font-weight: normal; cursor: pointer; display: flex; align-items: center; gap: 5px; }
         
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000; }
         .modal-content { background: white; padding: 25px; border-radius: 10px; width: 100%; max-width: 550px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); max-height: 80vh; overflow-y: auto; }
@@ -130,9 +128,18 @@
                     <button id="openRecycleBinBtn" class="btn btn-danger" style="font-size: 13px; padding: 6px 12px;">🗑️ Recycle Bin</button>
                 </div>
                 
-                <!-- Create User Form (Now allowed for both Admin & Principal) -->
+                <!-- Dynamic Create User Form -->
                 <form id="createUserForm" style="max-width: 450px; margin-bottom: 25px; background: #f8f9fa; padding: 15px; border-radius: 8px;">
-                    <h5 style="margin-bottom: 10px; color: var(--green-dark);">Create New User Account (Students/Staff)</h5>
+                    <h5 style="margin-bottom: 10px; color: var(--green-dark);">Create New User Account</h5>
+                    <div class="form-group">
+                        <label>Role</label>
+                        <select id="newUserRole">
+                            <option value="student">Student</option>
+                            <option value="teacher">Teacher</option>
+                            <option value="admin">Admin</option>
+                            <option value="principal">Principal</option>
+                        </select>
+                    </div>
                     <div class="form-group">
                         <label>Full Name</label>
                         <input type="text" id="newUserName" required placeholder="Ali Khan">
@@ -145,87 +152,79 @@
                         <label>Password</label>
                         <input type="password" id="newUserPassword" required placeholder="Min 6 characters">
                     </div>
-                    <div class="form-group">
-                        <label>Role</label>
-                        <select id="newUserRole">
-                            <option value="student">Student</option>
-                            <option value="teacher">Teacher</option>
-                            <option value="admin">Admin</option>
-                            <option value="principal">Principal</option>
-                        </select>
+                    
+                    <!-- Student Specific Fields -->
+                    <div id="studentFields">
+                        <div class="form-group">
+                            <label>Assigned Class (e.g. 10th)</label>
+                            <input type="text" id="newUserClass" placeholder="e.g. 10th Class">
+                        </div>
+                        <div class="form-group">
+                            <label>Monthly Fee Amount</label>
+                            <input type="number" id="newUserMonthlyFee" placeholder="e.g. 3000">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>Assigned Class (e.g. 10th)</label>
-                        <input type="text" id="newUserClass" placeholder="e.g. 10th Class">
+
+                    <!-- Teacher Specific Fields -->
+                    <div id="teacherFields" class="hidden">
+                        <div class="form-group">
+                            <label>Assigned Class</label>
+                            <input type="text" id="teacherAssignedClass" placeholder="e.g. 9th Class">
+                        </div>
+                        <div class="form-group">
+                            <label>Assigned Subject & Code</label>
+                            <input type="text" id="newUserSubject" placeholder="e.g. Mathematics | Code: T-101">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>Monthly Fee Amount (For Students)</label>
-                        <input type="number" id="newUserMonthlyFee" placeholder="e.g. 3000">
-                    </div>
-                    <div class="form-group">
-                        <label>Assigned Subject & Code (For Teachers)</label>
-                        <input type="text" id="newUserSubject" placeholder="e.g. Mathematics | Code: T-101">
-                    </div>
+
                     <button type="submit" class="btn">Create Account</button>
                     <p id="adminStatus" style="margin-top: 10px; font-weight: bold;"></p>
                 </form>
 
-                <!-- Yearly Archive Section -->
-                <div class="data-card" style="background: #eef2f7; border-left: 4px solid var(--green-dark); margin-bottom: 20px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                        <h5 style="color: var(--green-dark);">📁 Yearly Academic Data Archive</h5>
-                        <button id="openArchiveModalBtn" class="btn btn-gold" style="font-size: 12px; padding: 5px 10px;">🔍 View Saved Archives</button>
-                    </div>
-                    <div style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
-                        <input type="text" id="archiveYear" placeholder="Year (e.g. 2025)" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc; width: 130px;">
-                        <select id="archiveClass" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
-                            <option value="All">All Classes</option>
-                            <option value="9th">9th Class</option>
-                            <option value="10th">10th Class</option>
-                            <option value="11th">11th Class</option>
-                            <option value="12th">12th Class</option>
-                        </select>
-                        <button id="saveYearlyArchiveBtn" class="btn">Archive Data Now</button>
-                    </div>
-                    <p id="archiveStatus" style="margin-top: 8px; font-weight: bold; font-size: 13px;"></p>
-                </div>
-
-                <!-- Smart Auto Fee Challan Generator Section -->
+                <!-- Advanced Custom Multi-Month Fee Challan Generator -->
                 <div class="data-card" style="background: #e2f0d9; border-left: 4px solid #385723; margin-bottom: 20px;">
-                    <h5 style="color: #385723; margin-bottom: 8px;">⚡ Smart Auto Fee Challan Generator</h5>
-                    <p style="font-size: 12px; color: #555; margin-bottom: 10px;">Har student ki apni mukhtasif fee aur purani pending dues ke sath auto challan banayein.</p>
-                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                        <input type="text" id="challanMonthInput" placeholder="Month Name (e.g. November 2026)" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc; flex: 1; min-width: 200px;">
-                        <button type="button" id="generateSmartChallansBtn" class="btn" style="background: #385723;">Generate Smart Challans</button>
-                    </div>
-                    <p id="challanGenStatus" style="margin-top: 8px; font-weight: bold; font-size: 13px;"></p>
-                </div>
-
-                <!-- Manual Student Fee Management -->
-                <div class="data-card" style="background: #fff3cd; border-left: 4px solid #ffc107; margin-bottom: 20px;">
-                    <h5 style="color: #856404; margin-bottom: 10px;">💰 Manual Fee Record & Status Update</h5>
+                    <h5 style="color: #385723; margin-bottom: 8px;">⚡ Custom Multi-Month Fee Challan Generator</h5>
+                    <p style="font-size: 12px; color: #555; margin-bottom: 10px;">Student email likhein, mahine select karein aur har mahine ki alag fee aur discount enter karein.</p>
+                    
                     <div class="form-group">
                         <label>Student Email</label>
-                        <input type="text" id="feeStudentEmail" placeholder="student@school.com">
+                        <input type="email" id="customChallanStudentEmail" placeholder="student@school.com">
                     </div>
+
                     <div class="form-group">
-                        <label>Fee Month & Details</label>
-                        <input type="text" id="feeDetails" placeholder="Misal: November 2026 Fee - 3500 PKR">
-                    </div>
-                    <div class="form-group">
-                        <label>Status</label>
-                        <select id="feeStatus">
-                            <option value="Paid">Paid (Ada shuda)</option>
-                            <option value="Pending">Pending (Baqaya)</option>
+                        <label>Select Months (Aap multiple select kar sakte hain)</label>
+                        <select id="customMonthsSelect" multiple style="height: 120px;">
+                            <option value="January">January</option>
+                            <option value="February">February</option>
+                            <option value="March">March</option>
+                            <option value="April">April</option>
+                            <option value="May">May</option>
+                            <option value="June">June</option>
+                            <option value="July">July</option>
+                            <option value="August">August</option>
+                            <option value="September">September</option>
+                            <option value="October">October</option>
+                            <option value="November">November</option>
+                            <option value="December">December</option>
                         </select>
                     </div>
-                    <button type="button" id="saveFeeBtn" class="btn btn-gold" style="background: #ffc107; color: #000;">Save Fee Record</button>
-                    <p id="feeMsg" style="margin-top: 5px; font-weight: bold; font-size: 13px;"></p>
+
+                    <button type="button" id="loadMonthsInputsBtn" class="btn btn-gold" style="margin-bottom: 10px; font-size: 13px;">Set Monthly Breakdown</button>
+                    
+                    <div id="monthlyAmountsContainer" style="margin-bottom: 15px;"></div>
+
+                    <div class="form-group">
+                        <label>Discount Amount (Optional - PKR)</label>
+                        <input type="number" id="customChallanDiscount" placeholder="Misal: 500 (Agar discount nahi hai toh khali chhod dein)">
+                    </div>
+
+                    <button type="button" id="generateCustomChallanBtn" class="btn" style="background: #385723;">Generate & Issue Challan</button>
+                    <p id="customChallanStatus" style="margin-top: 8px; font-weight: bold; font-size: 13px;"></p>
                 </div>
 
-                <!-- Marks / Grades Management Section (Admin only) -->
+                <!-- Marks / Grades Management Section -->
                 <div class="data-card" id="adminMarksCard" style="background: #d4edda; border-left: 4px solid var(--green); margin-bottom: 20px;">
-                    <h5 style="color: var(--green-dark); margin-bottom: 10px;">📊 Add Student Marks & Grades (Admin)</h5>
+                    <h5 style="color: var(--green-dark); margin-bottom: 10px;">📊 Add Student Marks & Grades</h5>
                     <div class="form-group">
                         <label>Student Email</label>
                         <input type="text" id="adminGradeStudentEmail" placeholder="student@school.com">
@@ -332,22 +331,30 @@
                 </div>
             </div>
 
-            <!-- STUDENT VIEW -->
+            <!-- STUDENT VIEW WITH OPERATIONAL BUTTONS -->
             <div id="studentView" class="hidden">
                 <h4 style="margin-bottom: 15px; color: var(--green);">Student Portal</h4>
                 <div id="studentDataCard" class="data-card">Loading profile...</div>
 
-                <div class="data-card" style="background: #fff3cd; border-left: 4px solid #ffc107; margin-top: 15px;">
+                <!-- Operational Tab Buttons for Student Portal -->
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                    <button type="button" id="showFeeTabBtn" class="btn btn-gold" style="flex: 1;">💰 My Fee Challan</button>
+                    <button type="button" id="showTestTabBtn" class="btn" style="flex: 1; background: var(--green-dark);">📝 Test Marks</button>
+                    <button type="button" id="showExamTabBtn" class="btn" style="flex: 1; background: var(--green);">🏆 Exam Marks</button>
+                </div>
+
+                <!-- Tab Sections -->
+                <div id="studentFeeSection" class="data-card" style="background: #fff3cd; border-left: 4px solid #ffc107;">
                     <h5 style="color: #856404; margin-bottom: 8px;">💰 My Fee Challan & Status:</h5>
                     <div id="studentFeeList">Loading fee status...</div>
                 </div>
 
-                <div class="data-card" style="background: #eef7f2; border-left: 4px solid var(--green); margin-top: 15px;">
+                <div id="studentTestSection" class="data-card hidden" style="background: #eef7f2; border-left: 4px solid var(--green);">
                     <h5 style="color: var(--green-dark); margin-bottom: 8px;">📝 My Test Marks:</h5>
                     <div id="studentTestMarksList">Loading test marks...</div>
                 </div>
 
-                <div class="data-card" style="background: #d4edda; border-left: 4px solid #155724; margin-top: 15px;">
+                <div id="studentExamSection" class="data-card hidden" style="background: #d4edda; border-left: 4px solid #155724;">
                     <h5 style="color: #155724; margin-bottom: 8px;">🏆 My Exam Marks & Grades:</h5>
                     <div id="studentExamMarksList">Loading exam marks...</div>
                 </div>
@@ -393,24 +400,7 @@
         </div>
     </div>
 
-    <!-- VIEW ARCHIVED DATA MODAL -->
-    <div id="archiveModal" class="modal hidden">
-        <div class="modal-content" style="max-width: 600px;">
-            <h4 style="color: var(--green-dark); margin-bottom: 15px;">📜 Saved Academic Archives</h4>
-            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                <input type="text" id="searchArchiveYear" placeholder="Filter Year (e.g. 2025)" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; width: 150px;">
-                <button id="fetchArchivesBtn" class="btn btn-gold">Load Records</button>
-            </div>
-            <div id="archiveRecordsList" style="max-height: 300px; overflow-y: auto; background: #f8f9fa; padding: 10px; border-radius: 6px;">
-                Select year and click Load Records...
-            </div>
-            <div style="display: flex; justify-content: flex-end; margin-top: 15px;">
-                <button type="button" id="closeArchiveModalBtn" class="btn btn-danger">Close</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- FOOTER WITH CONTACT & ADDRESS -->
+    <!-- FOOTER -->
     <footer>
         <div style="max-width: 800px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-around; gap: 20px; margin-bottom: 15px; text-align: left; font-size: 14px;">
             <div>
@@ -476,25 +466,55 @@
 
         if (document.getElementById("logoutBtn")) document.getElementById("logoutBtn").onclick = () => signOut(auth);
 
-        // CREATE NEW USER ACCOUNT HANDLER (Using Secondary App to prevent session override)
+        // Dynamic Form Fields toggle based on Role
+        const newUserRoleSelect = document.getElementById("newUserRole");
+        const studentFields = document.getElementById("studentFields");
+        const teacherFields = document.getElementById("teacherFields");
+
+        if (newUserRoleSelect) {
+            newUserRoleSelect.addEventListener("change", () => {
+                const role = newUserRoleSelect.value;
+                if (role === "student") {
+                    studentFields.classList.remove("hidden");
+                    teacherFields.classList.add("hidden");
+                } else if (role === "teacher") {
+                    studentFields.classList.add("hidden");
+                    teacherFields.classList.remove("hidden");
+                } else {
+                    // Admin or Principal
+                    studentFields.classList.add("hidden");
+                    teacherFields.classList.add("hidden");
+                }
+            });
+        }
+
+        // CREATE NEW USER ACCOUNT HANDLER
         const createUserForm = document.getElementById("createUserForm");
         if (createUserForm) {
             createUserForm.addEventListener("submit", async (e) => {
                 e.preventDefault();
+                const role = document.getElementById("newUserRole").value;
                 const name = document.getElementById("newUserName").value;
                 const email = document.getElementById("newUserEmail").value;
                 const password = document.getElementById("newUserPassword").value;
-                const role = document.getElementById("newUserRole").value;
-                const uClass = document.getElementById("newUserClass").value;
-                const monthlyFee = document.getElementById("newUserMonthlyFee").value;
-                const subject = document.getElementById("newUserSubject").value;
                 const status = document.getElementById("adminStatus");
+
+                let uClass = "";
+                let monthlyFee = 0;
+                let subject = "";
+
+                if (role === "student") {
+                    uClass = document.getElementById("newUserClass").value;
+                    monthlyFee = Number(document.getElementById("newUserMonthlyFee").value || 3000);
+                } else if (role === "teacher") {
+                    uClass = document.getElementById("teacherAssignedClass").value;
+                    subject = document.getElementById("newUserSubject").value;
+                }
 
                 status.style.color = "black";
                 status.textContent = "Creating user account...";
 
                 try {
-                    // Secondary app instance to create user without logging out the principal/admin
                     const secondaryAppName = "SecondaryAppForCreation";
                     let secondaryApp = getApps().find(a => a.name === secondaryAppName);
                     if (!secondaryApp) {
@@ -509,9 +529,9 @@
                         name: name,
                         email: email,
                         role: role,
-                        class: uClass || "",
-                        monthlyFee: monthlyFee ? Number(monthlyFee) : 3000,
-                        subject: subject || "",
+                        class: uClass,
+                        monthlyFee: monthlyFee,
+                        subject: subject,
                         createdAt: new Date().toLocaleDateString()
                     });
 
@@ -522,6 +542,94 @@
                 } catch (err) {
                     status.style.color = "red";
                     status.textContent = "Error: " + err.message;
+                }
+            });
+        }
+
+        // Custom Multi-Month Fee Challan Generator Logic
+        const loadMonthsInputsBtn = document.getElementById("loadMonthsInputsBtn");
+        const monthlyAmountsContainer = document.getElementById("monthlyAmountsContainer");
+        
+        if (loadMonthsInputsBtn) {
+            loadMonthsInputsBtn.addEventListener("click", () => {
+                const select = document.getElementById("customMonthsSelect");
+                const selectedOptions = Array.from(select.selectedOptions);
+                monthlyAmountsContainer.innerHTML = "";
+
+                if (selectedOptions.length === 0) {
+                    monthlyAmountsContainer.innerHTML = "<p style='color:red; font-size:12px;'>Barah-e-karam kam az kam aik mahina select karein.</p>";
+                    return;
+                }
+
+                selectedOptions.forEach(opt => {
+                    const mName = opt.value;
+                    monthlyAmountsContainer.innerHTML += `
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:5px; gap:10px;">
+                            <span style="font-size:13px; font-weight:bold;">${mName} Fee (PKR):</span>
+                            <input type="number" class="month-fee-input" data-month="${mName}" placeholder="Amount" value="3000" style="padding:5px; width:120px; border:1px solid #ccc; border-radius:4px;">
+                        </div>
+                    `;
+                });
+            });
+        }
+
+        const generateCustomChallanBtn = document.getElementById("generateCustomChallanBtn");
+        if (generateCustomChallanBtn) {
+            generateCustomChallanBtn.addEventListener("click", async () => {
+                const email = document.getElementById("customChallanStudentEmail").value;
+                const discountInput = document.getElementById("customChallanDiscount").value;
+                const statusMsg = document.getElementById("customChallanStatus");
+
+                if (!email) {
+                    statusMsg.style.color = "red";
+                    statusMsg.textContent = "Student email likhna lazmi hai.";
+                    return;
+                }
+
+                const feeInputs = document.querySelectorAll(".month-fee-input");
+                if (feeInputs.length === 0) {
+                    statusMsg.style.color = "red";
+                    statusMsg.textContent = "Pehle mahine select karke 'Set Monthly Breakdown' par click karein.";
+                    return;
+                }
+
+                let monthsBreakdown = [];
+                let subTotal = 0;
+
+                feeInputs.forEach(inp => {
+                    const m = inp.getAttribute("data-month");
+                    const amt = Number(inp.value || 0);
+                    subTotal += amt;
+                    monthsBreakdown.push({ month: m, amount: amt });
+                });
+
+                const discount = discountInput ? Number(discountInput) : 0;
+                const totalPayable = subTotal - discount;
+
+                statusMsg.style.color = "black";
+                statusMsg.textContent = "Generating custom challan...";
+
+                try {
+                    await setDoc(doc(collection(db, "FeeRecords")), {
+                        studentEmail: email,
+                        feeInfo: "Custom Multi-Month Challan",
+                        breakdown: monthsBreakdown,
+                        subTotal: subTotal,
+                        discount: discount,
+                        hasDiscount: discount > 0,
+                        totalAmount: totalPayable,
+                        status: "Pending",
+                        createdAt: new Date().toLocaleDateString()
+                    });
+
+                    statusMsg.style.color = "green";
+                    statusMsg.textContent = "✅ Custom Fee Challan successfully generate ho gaya!";
+                    document.getElementById("customChallanStudentEmail").value = "";
+                    document.getElementById("customChallanDiscount").value = "";
+                    monthlyAmountsContainer.innerHTML = "";
+                } catch (e) {
+                    statusMsg.style.color = "red";
+                    statusMsg.textContent = "Error: " + e.message;
                 }
             });
         }
@@ -547,7 +655,7 @@
 
                         if (currentUserRole === "admin" || currentUserRole === "principal") {
                             document.getElementById("adminView").classList.remove("hidden");
-                            if (createUserForm) createUserForm.classList.remove("hidden"); // Principal & Admin dono ab accounts bana sakte hain
+                            if (createUserForm) createUserForm.classList.remove("hidden");
                             if (currentUserRole === "principal") {
                                 if (adminMarksCard) adminMarksCard.classList.add("hidden");
                                 if (dashboardTitleHeading) dashboardTitleHeading.textContent = "Principal Monitoring & Account Creation Dashboard";
@@ -576,110 +684,6 @@
                 document.getElementById("dashboardSection").classList.add("hidden");
             }
         });
-
-        // SMART AUTO FEE CHALLAN GENERATOR
-        const generateSmartChallansBtn = document.getElementById("generateSmartChallansBtn");
-        if (generateSmartChallansBtn) {
-            generateSmartChallansBtn.addEventListener("click", async () => {
-                const monthName = document.getElementById("challanMonthInput").value;
-                const statusMsg = document.getElementById("challanGenStatus");
-
-                if (!monthName) {
-                    statusMsg.style.color = "red";
-                    statusMsg.textContent = "Barah-e-karam month name enter karein (e.g. November 2026).";
-                    return;
-                }
-
-                statusMsg.style.color = "black";
-                statusMsg.textContent = "Generating smart challans for all students...";
-
-                try {
-                    const studentsQuery = query(collection(db, "users"), where("role", "==", "student"));
-                    const studentsSnap = await getDocs(studentsQuery);
-
-                    if (studentsSnap.empty) {
-                        statusMsg.style.color = "red";
-                        statusMsg.textContent = "Koi student registered nahi hai!";
-                        return;
-                    }
-
-                    let count = 0;
-                    for (let studentDoc of studentsSnap.docs) {
-                        const studentData = studentDoc.data();
-                        const standardFee = Number(studentData.monthlyFee || 3000);
-
-                        const existingFeeQuery = query(
-                            collection(db, "FeeRecords"), 
-                            where("studentEmail", "==", studentData.email),
-                            where("status", "==", "Pending")
-                        );
-                        const existingFeeSnap = await getDocs(existingFeeQuery);
-                        
-                        let previousPendingTotal = 0;
-                        existingFeeSnap.forEach((docSnap) => {
-                            const rec = docSnap.data();
-                            previousPendingTotal += Number(rec.totalAmount || standardFee);
-                        });
-
-                        const totalPayable = standardFee + previousPendingTotal;
-
-                        await setDoc(doc(collection(db, "FeeRecords")), {
-                            studentEmail: studentData.email,
-                            studentName: studentData.name,
-                            class: studentData.class || 'N/A',
-                            feeInfo: `${monthName} Fee`,
-                            monthlyAmount: standardFee,
-                            previousPending: previousPendingTotal,
-                            totalAmount: totalPayable,
-                            status: "Pending",
-                            createdAt: new Date().toLocaleDateString()
-                        });
-                        count++;
-                    }
-
-                    statusMsg.style.color = "green";
-                    statusMsg.textContent = `✅ Success! ${count} students ke smart challans generate ho gaye hain.`;
-                    document.getElementById("challanMonthInput").value = "";
-                } catch (e) {
-                    statusMsg.style.color = "red";
-                    statusMsg.textContent = "Error: " + e.message;
-                }
-            });
-        }
-
-        // SAVE FEE RECORD (MANUAL)
-        const saveFeeBtn = document.getElementById("saveFeeBtn");
-        if (saveFeeBtn) {
-            saveFeeBtn.addEventListener("click", async () => {
-                const email = document.getElementById("feeStudentEmail").value;
-                const details = document.getElementById("feeDetails").value;
-                const status = document.getElementById("feeStatus").value;
-                const msg = document.getElementById("feeMsg");
-
-                if (!email || !details) {
-                    msg.style.color = "red";
-                    msg.textContent = "Email aur Fee details likhna lazmi hai.";
-                    return;
-                }
-
-                try {
-                    await setDoc(doc(collection(db, "FeeRecords")), {
-                        studentEmail: email,
-                        feeInfo: details,
-                        totalAmount: details,
-                        status: status,
-                        date: new Date().toLocaleDateString()
-                    });
-                    msg.style.color = "green";
-                    msg.textContent = "✅ Fee record successfully save ho gaya!";
-                    document.getElementById("feeStudentEmail").value = "";
-                    document.getElementById("feeDetails").value = "";
-                } catch (e) {
-                    msg.style.color = "red";
-                    msg.textContent = "Error: " + e.message;
-                }
-            });
-        }
 
         // SAVE MARKS / GRADES (ADMIN)
         const adminSaveGradeBtn = document.getElementById("adminSaveGradeBtn");
@@ -717,7 +721,43 @@
             });
         }
 
-        // LOAD USERS FOR ADMIN / PRINCIPAL WITH STRICT PERMISSIONS
+        // SAVE MARKS / GRADES (TEACHER)
+        const teacherSaveGradeBtn = document.getElementById("teacherSaveGradeBtn");
+        if (teacherSaveGradeBtn) {
+            teacherSaveGradeBtn.addEventListener("click", async () => {
+                const email = document.getElementById("teacherGradeStudentEmail").value;
+                const category = document.getElementById("teacherGradeCategory").value;
+                const test = document.getElementById("teacherTestName").value;
+                const marks = document.getElementById("teacherMarksObtained").value;
+                const msg = document.getElementById("teacherGradeMsg");
+
+                if (!email || !test || !marks) {
+                    msg.style.color = "red";
+                    msg.textContent = "Tamam fields fill karna lazmi hain.";
+                    return;
+                }
+
+                try {
+                    await setDoc(doc(collection(db, "StudentGrades")), {
+                        studentEmail: email,
+                        category: category,
+                        testName: test,
+                        marks: marks,
+                        date: new Date().toLocaleDateString()
+                    });
+                    msg.style.color = "green";
+                    msg.textContent = `✅ ${category} marks successfully save ho gaye!`;
+                    document.getElementById("teacherGradeStudentEmail").value = "";
+                    document.getElementById("teacherTestName").value = "";
+                    document.getElementById("teacherMarksObtained").value = "";
+                } catch (e) {
+                    msg.style.color = "red";
+                    msg.textContent = "Error: " + e.message;
+                }
+            });
+        }
+
+        // LOAD USERS FOR ADMIN / PRINCIPAL
         async function loadAllUsersList() {
             const list = document.getElementById("allUsersList");
             if (!list) return;
@@ -757,7 +797,7 @@
             }
         }
 
-        // MOVE USER TO RECYCLE BIN (SOFT DELETE)
+        // MOVE USER TO RECYCLE BIN
         window.moveToRecycleBin = async function(id, name, email, role, uClass, subject) {
             const targetRole = (role || "").toLowerCase();
             if (currentUserRole === "principal" && targetRole === "admin") {
@@ -787,95 +827,7 @@
             }
         };
 
-        // RECYCLE BIN MODAL & LOGIC
-        const recycleModal = document.getElementById("recycleModal");
-        if (document.getElementById("openRecycleBinBtn")) {
-            document.getElementById("openRecycleBinBtn").onclick = () => {
-                recycleModal.classList.remove("hidden");
-                loadRecycleBinData();
-            };
-        }
-        if (document.getElementById("closeRecycleModalBtn")) {
-            document.getElementById("closeRecycleModalBtn").onclick = () => recycleModal.classList.add("hidden");
-        }
-
-        async function loadRecycleBinData() {
-            const list = document.getElementById("recycleBinList");
-            list.innerHTML = "Loading recycle bin...";
-            try {
-                const snap = await getDocs(collection(db, "RecycleBin"));
-                if (snap.empty) {
-                    list.innerHTML = "<p style='color: gray;'>Recycle bin is empty.</p>";
-                    return;
-                }
-
-                list.innerHTML = "";
-                const now = new Date().getTime();
-                const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
-
-                snap.forEach(async (d) => {
-                    const rec = d.data();
-                    const recId = d.id;
-                    const elapsed = now - rec.deletedAt;
-
-                    if (elapsed > thirtyDaysMs) {
-                        await deleteDoc(doc(db, "RecycleBin", recId));
-                        return;
-                    }
-
-                    list.innerHTML += `
-                        <div class="data-item">
-                            <div><strong>${rec.name}</strong> (${rec.email})<br><small style="color: gray;">Deleted on: ${rec.deletedDateStr}</small></div>
-                            <div style="display: flex; gap: 5px;">
-                                <button onclick="restoreUser('${recId}')" class="btn btn-gold" style="padding: 4px 8px; font-size: 11px;">🔄 Recover</button>
-                                <button onclick="permanentDeleteUser('${recId}')" class="btn btn-danger" style="padding: 4px 8px; font-size: 11px;">❌ Perm Delete</button>
-                            </div>
-                        </div>
-                    `;
-                });
-            } catch (e) {
-                list.innerHTML = "<p>Error loading recycle bin.</p>";
-            }
-        }
-
-        // RESTORE USER FROM RECYCLE BIN
-        window.restoreUser = async function(id) {
-            try {
-                const docSnap = await getDoc(doc(db, "RecycleBin", id));
-                if (!docSnap.exists()) return;
-                const data = docSnap.data();
-
-                await setDoc(doc(db, "users", id), {
-                    name: data.name,
-                    email: data.email,
-                    role: data.role,
-                    class: data.class,
-                    subject: data.subject
-                });
-
-                await deleteDoc(doc(db, "RecycleBin", id));
-                alert("Account successfully recovered!");
-                loadRecycleBinData();
-                loadAllUsersList();
-                loadAdminTeachersList(currentUserRole);
-            } catch (e) {
-                alert("Error recovering: " + e.message);
-            }
-        };
-
-        // PERMANENT DELETE USER
-        window.permanentDeleteUser = async function(id) {
-            if (!confirm("Kya aap is portal ko hamesha ke liye khatam (permanent delete) karna chahte hain?")) return;
-            try {
-                await deleteDoc(doc(db, "RecycleBin", id));
-                alert("Portal permanently deleted!");
-                loadRecycleBinData();
-            } catch (e) {
-                alert("Error: " + e.message);
-            }
-        };
-
-        // Load Teachers List for Admin / Principal
+        // Load Teachers List
         async function loadAdminTeachersList(userRole) {
             const container = document.getElementById("teacherAttendanceList");
             if (!container) return;
@@ -900,73 +852,43 @@
             } catch (e) { container.innerHTML = "<p>Error loading teachers.</p>"; }
         }
 
-        // Teacher Workflow Logic
-        const stepClassSelect = document.getElementById("stepClassSelect");
-        const stepSubjectBox = document.getElementById("stepSubjectBox");
-        const stepStudentsBox = document.getElementById("stepStudentsBox");
+        // Student Portal Tab Toggles (Fee, Test, Exam buttons)
+        const showFeeTabBtn = document.getElementById("showFeeTabBtn");
+        const showTestTabBtn = document.getElementById("showTestTabBtn");
+        const showExamTabBtn = document.getElementById("showExamTabBtn");
+        const studentFeeSection = document.getElementById("studentFeeSection");
+        const studentTestSection = document.getElementById("studentTestSection");
+        const studentExamSection = document.getElementById("studentExamSection");
 
-        if (stepClassSelect) {
-            stepClassSelect.addEventListener("change", () => {
-                if (stepClassSelect.value) {
-                    if (stepSubjectBox) stepSubjectBox.classList.remove("hidden");
-                } else {
-                    if (stepSubjectBox) stepSubjectBox.classList.add("hidden");
-                    if (stepStudentsBox) stepStudentsBox.classList.add("hidden");
-                }
-            });
+        if (showFeeTabBtn) {
+            showFeeTabBtn.onclick = () => {
+                studentFeeSection.classList.remove("hidden");
+                studentTestSection.classList.add("hidden");
+                studentExamSection.classList.add("hidden");
+            };
+        }
+        if (showTestTabBtn) {
+            showTestTabBtn.onclick = () => {
+                studentFeeSection.classList.add("hidden");
+                studentTestSection.classList.remove("hidden");
+                studentExamSection.classList.add("hidden");
+            };
+        }
+        if (showExamTabBtn) {
+            showExamTabBtn.onclick = () => {
+                studentFeeSection.classList.add("hidden");
+                studentTestSection.classList.add("hidden");
+                studentExamSection.classList.remove("hidden");
+            };
         }
 
-        const stepSubjectInput = document.getElementById("stepSubjectInput");
-        if (stepSubjectInput) {
-            stepSubjectInput.addEventListener("change", async () => {
-                const cls = stepClassSelect.value;
-                const container = document.getElementById("studentsListContainer");
-                if (stepStudentsBox) stepStudentsBox.classList.remove("hidden");
-                container.innerHTML = "Loading students...";
-
-                try {
-                    const q = query(collection(db, "users"), where("role", "==", "student"));
-                    const snap = await getDocs(q);
-                    container.innerHTML = "";
-                    let count = 0;
-                    snap.forEach((d) => {
-                        const st = d.data();
-                        if ((st.class || "").toLowerCase().includes(cls.toLowerCase())) {
-                            count++;
-                            container.innerHTML += `
-                                <div class="data-item">
-                                    <div><strong>${st.name}</strong> (${st.email})</div>
-                                    <div class="radio-group">
-                                        <label><input type="radio" name="st_att_${d.id}" value="Present" checked> Present</label>
-                                        <label><input type="radio" name="st_att_${d.id}" value="Absent"> Absent</label>
-                                    </div>
-                                </div>
-                            `;
-                        }
-                    });
-                    if (count === 0) container.innerHTML = "<p>No students found in this class.</p>";
-                } catch (e) { container.innerHTML = "<p>Error loading students.</p>"; }
-            });
-        }
-
-        // Save Students Attendance
-        const saveStudentsAttBtn = document.getElementById("saveStudentsAttBtn");
-        if (saveStudentsAttBtn) {
-            saveStudentsAttBtn.addEventListener("click", async () => {
-                const statusMsg = document.getElementById("teacherAttSaveStatus");
-                statusPS.style.color = "green";
-                statusMsg.textContent = "✅ Attendance successfully saved!";
-            });
-        }
-
-        // Student Data Loader (Profile, Fee Challan, Test & Exam Marks)
+        // Student Data Loader with multi-month challan details & discount handling
         async function loadStudentData(userData) {
             const card = document.getElementById("studentDataCard");
             if (card) {
                 card.innerHTML = `<p><strong>Name:</strong> ${userData.name}</p><p><strong>Class:</strong> ${userData.class || 'N/A'}</p><p style="margin-top:5px; color:var(--green);">Status: Active Student</p>`;
             }
 
-            // Load Student Fee
             const feeList = document.getElementById("studentFeeList");
             feeList.innerHTML = "Loading...";
             try {
@@ -978,17 +900,37 @@
                     feeList.innerHTML = "";
                     feeSnap.forEach((doc) => {
                         const f = doc.data();
+                        
+                        let monthsHtml = "";
+                        if (f.breakdown && Array.isArray(f.breakdown)) {
+                            f.breakdown.forEach(b => {
+                                monthsHtml += `<div>• ${b.month}: <strong>${b.amount} PKR</strong></div>`;
+                            });
+                        }
+
+                        let discountHtml = "";
+                        if (f.hasDiscount && f.discount > 0) {
+                            discountHtml = `<div style="color: #d9534f; margin-top:3px;">Discount Applied: <strong>-${f.discount} PKR</strong></div>`;
+                        }
+
                         feeList.innerHTML += `
-                            <div class="data-item" style="margin-top: 5px; font-size: 13px;">
-                                <div><strong>${f.feeInfo}</strong><br><small>Total: ${f.totalAmount || f.totalAmount === 0 ? f.totalAmount + ' PKR' : (f.feeInfo || '')}</small></div>
-                                <div>Status: <span style="color: ${f.status === 'Paid' ? 'green' : 'red'}; font-weight: bold;">${f.status}</span></div>
+                            <div class="data-item" style="margin-top: 8px; font-size: 13px; display: block;">
+                                <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                                    <strong>${f.feeInfo || 'Fee Challan'}</strong>
+                                    <span>Status: <b style="color: ${f.status === 'Paid' ? 'green' : 'red'};">${f.status}</b></span>
+                                </div>
+                                <div style="background:#fdfdfd; padding:8px; border-radius:4px; margin-top:4px;">
+                                    ${monthsHtml}
+                                    ${discountHtml}
+                                    <hr style="border:0.5px solid #eee; margin:5px 0;">
+                                    <div style="font-weight:bold; color:var(--green-dark);">Total Payable: ${f.totalAmount} PKR</div>
+                                </div>
                             </div>
                         `;
                     });
                 }
             } catch (e) { feeList.innerHTML = "<p style='color: red;'>Error loading fee.</p>"; }
 
-            // Load Student Test & Exam Marks Categorized
             const testList = document.getElementById("studentTestMarksList");
             const examList = document.getElementById("studentExamMarksList");
             testList.innerHTML = "Loading...";
@@ -1035,14 +977,14 @@
             }
         }
 
-        // MODALS TOGGLE
+        // Modals Toggle
         const pwdModal = document.getElementById("pwdModal");
         if (document.getElementById("openPwdModalBtn")) document.getElementById("openPwdModalBtn").onclick = () => pwdModal.classList.remove("hidden");
         if (document.getElementById("closePwdModalBtn")) document.getElementById("closePwdModalBtn").onclick = () => pwdModal.classList.add("hidden");
 
-        const archiveModal = document.getElementById("archiveModal");
-        if (document.getElementById("openArchiveModalBtn")) document.getElementById("openArchiveModalBtn").onclick = () => archiveModal.classList.remove("hidden");
-        if (document.getElementById("closeArchiveModalBtn")) document.getElementById("closeArchiveModalBtn").onclick = () => archiveModal.classList.add("hidden");
+        const recycleModal = document.getElementById("recycleModal");
+        if (document.getElementById("openRecycleBinBtn")) document.getElementById("openRecycleBinBtn").onclick = () => recycleModal.classList.remove("hidden");
+        if (document.getElementById("closeRecycleModalBtn")) document.getElementById("closeRecycleModalBtn").onclick = () => recycleModal.classList.add("hidden");
     </script>
 </body>
 </html>

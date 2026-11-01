@@ -807,15 +807,15 @@
 
             if (!confirm(`Kya aap ${name} ka portal delete karke Recycle Bin mein bhejna chahte hain?`)) return;
             try {
-                await setDoc(doc(db, "RecycleBin", id), {
-                    originalId: id,
-                    name: name,
-                    email: email,
-                    role: role,
-                    class: uClass,
-                    subject: subject,
-                    deletedAt: new Date().getTime(),
-                    deletedDateStr: new Date().toLocaleDateString()
+               await setDoc(doc(db, "RecycleBin", "rec_" + id), {
+    originalId: id,
+    name: name || "Unnamed",
+    email: email || "No Email",
+    role: role || "user",
+    class: uClass || "",
+    subject: subject || "",
+    deletedAt: new Date().getTime(),
+    deletedDateStr: new Date().toLocaleDateString()
                 });
 
                 await deleteDoc(doc(db, "users", id));

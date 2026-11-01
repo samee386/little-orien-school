@@ -130,9 +130,9 @@
                     <button id="openRecycleBinBtn" class="btn btn-danger" style="font-size: 13px; padding: 6px 12px;">🗑️ Recycle Bin</button>
                 </div>
                 
-                <!-- Create User Form (Strictly for Admin) -->
+                <!-- Create User Form (Now allowed for both Admin & Principal) -->
                 <form id="createUserForm" style="max-width: 450px; margin-bottom: 25px; background: #f8f9fa; padding: 15px; border-radius: 8px;">
-                    <h5 style="margin-bottom: 10px; color: var(--green-dark);">Create New User Account</h5>
+                    <h5 style="margin-bottom: 10px; color: var(--green-dark);">Create New User Account (Students/Staff)</h5>
                     <div class="form-group">
                         <label>Full Name</label>
                         <input type="text" id="newUserName" required placeholder="Ali Khan">
@@ -148,10 +148,10 @@
                     <div class="form-group">
                         <label>Role</label>
                         <select id="newUserRole">
+                            <option value="student">Student</option>
+                            <option value="teacher">Teacher</option>
                             <option value="admin">Admin</option>
                             <option value="principal">Principal</option>
-                            <option value="teacher">Teacher</option>
-                            <option value="student">Student</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -223,7 +223,7 @@
                     <p id="feeMsg" style="margin-top: 5px; font-weight: bold; font-size: 13px;"></p>
                 </div>
 
-                <!-- Marks / Grades Management Section (Strictly for Admin only, Principal hidden) -->
+                <!-- Marks / Grades Management Section (Admin only) -->
                 <div class="data-card" id="adminMarksCard" style="background: #d4edda; border-left: 4px solid var(--green); margin-bottom: 20px;">
                     <h5 style="color: var(--green-dark); margin-bottom: 10px;">📊 Add Student Marks & Grades (Admin)</h5>
                     <div class="form-group">
@@ -432,19 +432,19 @@
 
     <!-- FIREBASE SCRIPT -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, getDoc, setDoc, deleteDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, setPersistence, browserSessionPersistence, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-       const firebaseConfig = {
-    apiKey: "AIzaSyDoOtmxvdFOyo2e-NmdNMDeSv9smiPbrTM",
-    authDomain: "little-orien-school.firebaseapp.com",
-    projectId: "little-orien-school",
-    storageBucket: "little-orien-school.firebasestorage.app",
-    messagingSenderId: "920778107064",
-    appId: "1:920778107064:web:a50ee9d38e79bae6adec4d",
-    measurementId: "G-0EN3D539FC"
-};
+        const firebaseConfig = {
+            apiKey: "AIzaSyDoOtmxvdFOyo2e-NmdNMDeSv9smiPbrTM",
+            authDomain: "little-orien-school.firebaseapp.com",
+            projectId: "little-orien-school",
+            storageBucket: "little-orien-school.firebasestorage.app",
+            messagingSenderId: "920778107064",
+            appId: "1:920778107064:web:a50ee9d38e79bae6adec4d",
+            measurementId: "G-0EN3D539FC"
+        };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
@@ -476,6 +476,56 @@
 
         if (document.getElementById("logoutBtn")) document.getElementById("logoutBtn").onclick = () => signOut(auth);
 
+        // CREATE NEW USER ACCOUNT HANDLER (Using Secondary App to prevent session override)
+        const createUserForm = document.getElementById("createUserForm");
+        if (createUserForm) {
+            createUserForm.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const name = document.getElementById("newUserName").value;
+                const email = document.getElementById("newUserEmail").value;
+                const password = document.getElementById("newUserPassword").value;
+                const role = document.getElementById("newUserRole").value;
+                const uClass = document.getElementById("newUserClass").value;
+                const monthlyFee = document.getElementById("newUserMonthlyFee").value;
+                const subject = document.getElementById("newUserSubject").value;
+                const status = document.getElementById("adminStatus");
+
+                status.style.color = "black";
+                status.textContent = "Creating user account...";
+
+                try {
+                    // Secondary app instance to create user without logging out the principal/admin
+                    const secondaryAppName = "SecondaryAppForCreation";
+                    let secondaryApp = getApps().find(a => a.name === secondaryAppName);
+                    if (!secondaryApp) {
+                        secondaryApp = initializeApp(firebaseConfig, secondaryAppName);
+                    }
+                    const secondaryAuth = getAuth(secondaryApp);
+
+                    const userCred = await createUserWithEmailAndPassword(secondaryAuth, email, password);
+                    const newUid = userCred.user.uid;
+
+                    await setDoc(doc(db, "users", newUid), {
+                        name: name,
+                        email: email,
+                        role: role,
+                        class: uClass || "",
+                        monthlyFee: monthlyFee ? Number(monthlyFee) : 3000,
+                        subject: subject || "",
+                        createdAt: new Date().toLocaleDateString()
+                    });
+
+                    status.style.color = "green";
+                    status.textContent = `✅ Account successfully created for ${name} (${role.toUpperCase()})!`;
+                    createUserForm.reset();
+                    loadAllUsersList();
+                } catch (err) {
+                    status.style.color = "red";
+                    status.textContent = "Error: " + err.message;
+                }
+            });
+        }
+
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 document.getElementById("loginSection").classList.add("hidden");
@@ -495,18 +545,16 @@
                         const dashboardTitleHeading = document.getElementById("dashboardTitleHeading");
                         const adminMarksCard = document.getElementById("adminMarksCard");
 
-                        if (currentUserRole === "admin") {
+                        if (currentUserRole === "admin" || currentUserRole === "principal") {
                             document.getElementById("adminView").classList.remove("hidden");
-                            if (createUserForm) createUserForm.classList.remove("hidden");
-                            if (adminMarksCard) adminMarksCard.classList.remove("hidden"); // Admin can enter marks
-                            if (dashboardTitleHeading) dashboardTitleHeading.textContent = "Admin Dashboard";
-                            loadAdminTeachersList(currentUserRole);
-                            loadAllUsersList();
-                        } else if (currentUserRole === "principal") {
-                            document.getElementById("adminView").classList.remove("hidden");
-                            if (createUserForm) createUserForm.classList.add("hidden");
-                            if (adminMarksCard) adminMarksCard.classList.add("hidden"); // Principal CANNOT enter marks
-                            if (dashboardTitleHeading) dashboardTitleHeading.textContent = "Principal Monitoring Dashboard";
+                            if (createUserForm) createUserForm.classList.remove("hidden"); // Principal & Admin dono ab accounts bana sakte hain
+                            if (currentUserRole === "principal") {
+                                if (adminMarksCard) adminMarksCard.classList.add("hidden");
+                                if (dashboardTitleHeading) dashboardTitleHeading.textContent = "Principal Monitoring & Account Creation Dashboard";
+                            } else {
+                                if (adminMarksCard) adminMarksCard.classList.remove("hidden");
+                                if (dashboardTitleHeading) dashboardTitleHeading.textContent = "Admin Dashboard";
+                            }
                             loadAdminTeachersList(currentUserRole);
                             loadAllUsersList();
                         } else if (currentUserRole === "teacher") {
@@ -516,7 +564,6 @@
                             if (classSelect && teacherClass) {
                                 classSelect.value = teacherClass;
                                 classSelect.disabled = false;
-                                loadTeacherAssignedStudents(teacherClass);
                             }
                         } else if (currentUserRole === "student") {
                             document.getElementById("studentView").classList.remove("hidden");
@@ -663,42 +710,6 @@
                     document.getElementById("adminGradeStudentEmail").value = "";
                     document.getElementById("adminTestName").value = "";
                     document.getElementById("adminMarksObtained").value = "";
-                } catch (e) {
-                    msg.style.color = "red";
-                    msg.textContent = "Error: " + e.message;
-                }
-            });
-        }
-
-        // SAVE MARKS / GRADES (TEACHER)
-        const teacherSaveGradeBtn = document.getElementById("teacherSaveGradeBtn");
-        if (teacherSaveGradeBtn) {
-            teacherSaveGradeBtn.addEventListener("click", async () => {
-                const email = document.getElementById("teacherGradeStudentEmail").value;
-                const category = document.getElementById("teacherGradeCategory").value;
-                const test = document.getElementById("teacherTestName").value;
-                const marks = document.getElementById("teacherMarksObtained").value;
-                const msg = document.getElementById("teacherGradeMsg");
-
-                if (!email || !test || !marks) {
-                    msg.style.color = "red";
-                    msg.textContent = "Tamam fields fill karna lazmi hain.";
-                    return;
-                }
-
-                try {
-                    await setDoc(doc(collection(db, "StudentGrades")), {
-                        studentEmail: email,
-                        category: category,
-                        testName: test,
-                        marks: marks,
-                        date: new Date().toLocaleDateString()
-                    });
-                    msg.style.color = "green";
-                    msg.textContent = `✅ ${category} marks successfully save ho gaye!`;
-                    document.getElementById("teacherGradeStudentEmail").value = "";
-                    document.getElementById("teacherTestName").value = "";
-                    document.getElementById("teacherMarksObtained").value = "";
                 } catch (e) {
                     msg.style.color = "red";
                     msg.textContent = "Error: " + e.message;
@@ -943,7 +954,7 @@
         if (saveStudentsAttBtn) {
             saveStudentsAttBtn.addEventListener("click", async () => {
                 const statusMsg = document.getElementById("teacherAttSaveStatus");
-                statusMsg.style.color = "green";
+                statusPS.style.color = "green";
                 statusMsg.textContent = "✅ Attendance successfully saved!";
             });
         }
